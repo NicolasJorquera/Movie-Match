@@ -12,5 +12,5 @@ void main() => runApp(
         enabled: !kReleaseMode,
         builder: (context) => const App(), // Wrap your app
       ),*/
-    const App()
+        const App()
     );
