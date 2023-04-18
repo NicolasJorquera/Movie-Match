@@ -8,8 +8,9 @@ import 'src/app.dart';
 
 // void main() => runApp(const App());
 void main() => runApp(
-      DevicePreview(
+      /*DevicePreview(
         enabled: !kReleaseMode,
         builder: (context) => const App(), // Wrap your app
-      ),
+      ),*/
+    const App()
     );
