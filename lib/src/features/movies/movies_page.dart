@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import 'widgets/widgets.dart';
@@ -40,7 +42,7 @@ class _MoviesPageState extends State<MoviesPage>
           MoviesView(),
           SizedBox.expand(),
         ],
-      ),
+      )
     );
   }
 

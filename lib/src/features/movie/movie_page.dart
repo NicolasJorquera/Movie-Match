@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_movie_ticket/src/core/constants/constants.dart';
@@ -148,7 +150,7 @@ class MoviePage extends StatelessWidget {
                 ),
               ],
             ),
-          ),
+          )
         );
       },
     );

@@ -6,7 +6,7 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.16.0 <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -14,6 +14,7 @@ dependencies:
   # Optional dependency
   lottie: ^1.2.2
   device_preview: ^1.1.0
+  appinio_swiper: ^2.0.0
 
 dev_dependencies:
   flutter_lints: ^1.0.0
@@ -24,5 +25,6 @@ flutter:
   assets:
     - assets/images/
     - assets/lotties/
+    - assets/logos/
 
   uses-material-design: true
