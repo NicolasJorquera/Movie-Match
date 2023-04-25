@@ -127,7 +127,7 @@ class _MoviesViewState extends State<MoviesView>
             const Spacer(),
             //* Movie Details
             SizedBox(
-              height: h * 0.25,
+              height: h * .3,
               child: PageView.builder(
                 controller: _movieDetailPageController,
                 physics: const NeverScrollableScrollPhysics(),
