@@ -31,17 +31,22 @@ class _HomePageState extends State<HomePage> {
         actions: <Widget>[
           Container(
             padding: const EdgeInsets.only(left: 10, top: 20),
+            width: 50,
             child: Ink(
               decoration: const BoxDecoration(
                 color: Colors.white24,
                 borderRadius: BorderRadius.all(
                   Radius.circular(10),
                 ),
+                image:DecorationImage(
+                  image: AssetImage('assets/logos/disneyp.png',
+                  ),
+                  fit: BoxFit.cover
+                  )
                 
               ),
-              child: IconButton(
-                icon: Image.asset('assets/logos/primelogo.png', fit: BoxFit.fill),
-                splashColor: Colors.transparent,  
+              child: TextButton(
+                child: const Text(''),
                 onPressed: () {
                 },
               ),
@@ -49,17 +54,22 @@ class _HomePageState extends State<HomePage> {
           ),
           Container(
             padding: const EdgeInsets.only(left: 10, top: 20),
+            width: 50,
             child: Ink(
               decoration: const BoxDecoration(
                 color: Colors.white24,
                 borderRadius: BorderRadius.all(
                   Radius.circular(10),
                 ),
+                image:DecorationImage(
+                  image: AssetImage('assets/logos/primelogo.png',
+                  ),
+                  fit: BoxFit.cover
+                  )
                 
               ),
-              child: IconButton(
-                splashColor: Colors.transparent,  
-                icon: Image.asset('assets/logos/netflix.png', fit: BoxFit.fill),
+              child: TextButton(
+                child: const Text(''),
                 onPressed: () {
                 },
               ),
@@ -67,6 +77,30 @@ class _HomePageState extends State<HomePage> {
           ),
           Container(
             padding: const EdgeInsets.only(left: 10, top: 20),
+            width: 50,
+            child: Ink(
+              decoration: const BoxDecoration(
+                color: Colors.white24,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                ),
+                image:DecorationImage(
+                  image: AssetImage('assets/logos/netflix.png',
+                  ),
+                  fit: BoxFit.cover
+                  )
+                
+              ),
+              child: TextButton(
+                child: const Text(''),
+                onPressed: () {
+                },
+              ),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.only(left: 10, top: 20),
+            width: 50,
             child: Ink(
               decoration: const BoxDecoration(
                 color: Colors.white24,
@@ -75,9 +109,8 @@ class _HomePageState extends State<HomePage> {
                 ),
                 
               ),
-              child: IconButton(
-                icon: const Icon(Icons.add, size: 17,),
-                splashColor: Colors.transparent,  
+              child: TextButton(
+                child: const Icon(Icons.add, size: 15, color: Colors.white,),
                 onPressed: () {
                 },
               ),

@@ -24,7 +24,7 @@ class _MovieMatchViewState extends State<MovieMatchView> {
             alignment: Alignment.center,
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(
-                Radius.circular(40),
+                Radius.circular(10),
               ),
               image: DecorationImage(
                 image: AssetImage(movie.image),
