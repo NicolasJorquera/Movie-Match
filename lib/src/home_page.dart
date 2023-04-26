@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
-import 'features/movies/movies_page.dart';
+
+import 'features/home/home_page.dart';
 import 'features/search/search_page.dart';
 import 'features/movieMatch/movieMatch_page.dart';
 import 'features/user/user_page.dart';
@@ -14,15 +17,16 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int selectedIndex = 0;
+  List<dynamic> dayTrendingMovies = [];
+  List<dynamic> genres = [];
+
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-
     final screens = [
       const SearchView(),
       const MovieMatchView(),
-      const MoviesPage(),
+      const HomeView(),
       const UsersView()
     ];
 
@@ -34,21 +38,58 @@ class _HomePageState extends State<HomePage> {
             width: 50,
             child: Ink(
               decoration: const BoxDecoration(
-                color: Colors.white24,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10),
-                ),
-                image:DecorationImage(
-                  image: AssetImage('assets/logos/disneyp.png',
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
                   ),
-                  fit: BoxFit.cover
-                  )
-                
-              ),
+                  image: DecorationImage(
+                      image: AssetImage(
+                        'assets/logos/disneyp.png',
+                      ),
+                      fit: BoxFit.cover)),
               child: TextButton(
                 child: const Text(''),
-                onPressed: () {
-                },
+                onPressed: () {},
+              ),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.only(left: 10, top: 20),
+            width: 50,
+            child: Ink(
+              decoration: const BoxDecoration(
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                  image: DecorationImage(
+                      image: AssetImage(
+                        'assets/logos/primelogo.png',
+                      ),
+                      fit: BoxFit.cover)),
+              child: TextButton(
+                child: const Text(''),
+                onPressed: () {},
+              ),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.only(left: 10, top: 20),
+            width: 50,
+            child: Ink(
+              decoration: const BoxDecoration(
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                  image: DecorationImage(
+                      image: AssetImage(
+                        'assets/logos/netflix.png',
+                      ),
+                      fit: BoxFit.cover)),
+              child: TextButton(
+                child: const Text(''),
+                onPressed: () {},
               ),
             ),
           ),
@@ -61,76 +102,37 @@ class _HomePageState extends State<HomePage> {
                 borderRadius: BorderRadius.all(
                   Radius.circular(10),
                 ),
-                image:DecorationImage(
-                  image: AssetImage('assets/logos/primelogo.png',
+              ),
+              child: TextButton(
+                child: const Icon(
+                  Icons.add,
+                  size: 15,
+                  color: Colors.white,
+                ),
+                onPressed: () {},
+              ),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.only(left: 10, right: 20, top: 20),
+            child: Ink(
+                decoration: const BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                    border: Border(
+                        top: BorderSide(color: Colors.white24, width: 2),
+                        left: BorderSide(color: Colors.white24, width: 2),
+                        bottom: BorderSide(color: Colors.white24, width: 2),
+                        right: BorderSide(color: Colors.white24, width: 2))),
+                child: TextButton(
+                  onPressed: () {},
+                  child: const Text(
+                    'All',
+                    style: TextStyle(color: Colors.white),
                   ),
-                  fit: BoxFit.cover
-                  )
-                
-              ),
-              child: TextButton(
-                child: const Text(''),
-                onPressed: () {
-                },
-              ),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.only(left: 10, top: 20),
-            width: 50,
-            child: Ink(
-              decoration: const BoxDecoration(
-                color: Colors.white24,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10),
-                ),
-                image:DecorationImage(
-                  image: AssetImage('assets/logos/netflix.png',
-                  ),
-                  fit: BoxFit.cover
-                  )
-                
-              ),
-              child: TextButton(
-                child: const Text(''),
-                onPressed: () {
-                },
-              ),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.only(left: 10, top: 20),
-            width: 50,
-            child: Ink(
-              decoration: const BoxDecoration(
-                color: Colors.white24,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10),
-                ),
-                
-              ),
-              child: TextButton(
-                child: const Icon(Icons.add, size: 15, color: Colors.white,),
-                onPressed: () {
-                },
-              ),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.only(left: 10,right: 20, top: 20),
-            child: Ink(
-              decoration: const BoxDecoration(
-                color: Colors.transparent,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10),
-                ),
-                border: Border(top: BorderSide(color: Colors.white24, width: 2), left: BorderSide(color: Colors.white24, width: 2), bottom: BorderSide(color: Colors.white24, width: 2), right: BorderSide(color: Colors.white24, width: 2))
-              ),
-              child: TextButton(
-                onPressed: () { },
-                child: const Text('All', style: TextStyle(color: Colors.white),),
-              )
-            ),
+                )),
           ),
         ],
       ),
@@ -141,7 +143,6 @@ class _HomePageState extends State<HomePage> {
           children: screens,
         ),
       ),
-      
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.black,
         type: BottomNavigationBarType.fixed,
@@ -157,25 +158,26 @@ class _HomePageState extends State<HomePage> {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.search, color: Colors.white),
-            activeIcon: Icon(Icons.search, color: Colors.red),
+            activeIcon: Icon(Icons.search, color: Color.fromRGBO(230, 0, 0, 1)),
             label: '',
             backgroundColor: Colors.transparent,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.check_circle_rounded, color: Colors.white),
-            activeIcon: Icon(Icons.check_circle_rounded, color: Colors.red),
+            activeIcon: Icon(Icons.check_circle_rounded,
+                color: Color.fromRGBO(230, 0, 0, 1)),
             label: '',
             backgroundColor: Colors.transparent,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.home, color: Colors.white),
-            activeIcon: Icon(Icons.home, color: Colors.red),
+            activeIcon: Icon(Icons.home, color: Color.fromRGBO(230, 0, 0, 1)),
             label: '',
             backgroundColor: Colors.transparent,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person, color: Colors.white),
-            activeIcon: Icon(Icons.person, color: Colors.red),
+            activeIcon: Icon(Icons.person, color: Color.fromRGBO(230, 0, 0, 1)),
             label: '',
             backgroundColor: Colors.transparent,
           ),
@@ -183,4 +185,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  
+
 }

@@ -1,6 +1,9 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
 import 'package:appinio_swiper/appinio_swiper.dart';
-import 'package:flutter_movie_ticket/src/core/data/data.dart';
+
 
 class MovieMatchView extends StatefulWidget {
   const MovieMatchView({super.key});
@@ -10,24 +13,31 @@ class MovieMatchView extends StatefulWidget {
 }
 
 class _MovieMatchViewState extends State<MovieMatchView> {
-  int count = 0;
+  List <dynamic> dayTrending = [];
+
+
+  @override
+  void initState() {
+    super.initState();
+    fetchTrendingMovies();
+  }
+  
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       child: AppinioSwiper(
-        loop: true,
-        cardsCount: 3,
-        cardsBuilder: (BuildContext context, int index){
-          final movie = movies[index];
+        loop: dayTrending.isNotEmpty ? true : false,
+        cardsCount: dayTrending.length,
+        cardsBuilder: (BuildContext context, int index) {
+          final movie = dayTrending[index];
           return Container(
-            alignment: Alignment.center,
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(
                 Radius.circular(10),
               ),
               image: DecorationImage(
-                image: AssetImage(movie.image),
+                image: NetworkImage(movie),
                 fit: BoxFit.cover,
               ),
             ),
@@ -36,4 +46,26 @@ class _MovieMatchViewState extends State<MovieMatchView> {
       ),
     );
   }
+
+  void fetchTrendingMovies() async {
+    const api_url = 'https://api.themoviedb.org/3';
+    const api_Key = '36e984f2374fdfcbcea58dba752094dc';
+    const image_path = 'https://image.tmdb.org/t/p/original';
+    const url_image = 'https://image.tmdb.org/t/p/original';
+
+    var url = api_url + '/trending/movie/day?api_key=' + api_Key;
+
+    final uri = Uri.parse(url);
+    final response = await http.get(uri);
+    final body = response.body;
+    final json = jsonDecode(body);
+    final movs = json['results'];
+
+    for (var movie in movs) {
+      setState(() {
+        dayTrending.add(url_image + movie['poster_path']);
+      });
+    }
+  }
+  
 }

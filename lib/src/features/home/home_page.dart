@@ -3,14 +3,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class SearchView extends StatefulWidget {
-  const SearchView({super.key});
+class HomeView extends StatefulWidget {
+  const HomeView({super.key});
 
   @override
-  State<SearchView> createState() => _SearchViewState();
+  State<HomeView> createState() => _HomeViewState();
 }
 
-class _SearchViewState extends State<SearchView> {
+class _HomeViewState extends State<HomeView> {
   List<dynamic> genres = [];
 
   @override
@@ -39,8 +39,8 @@ class _SearchViewState extends State<SearchView> {
               child: movies.isNotEmpty
                   ? Image.network(
                       'https://image.tmdb.org/t/p/w500' + movies[index]['poster_path'],
-                      height: (MediaQuery.of(context).size.width * 0.46 * 3) / 2,
-                      width: MediaQuery.of(context).size.width * 0.46,
+                      height: (MediaQuery.of(context).size.width * 0.4 * 3) / 2,
+                      width: MediaQuery.of(context).size.width * 0.4,
                       fit: BoxFit.cover,
                     )
                   : null)
@@ -49,7 +49,7 @@ class _SearchViewState extends State<SearchView> {
 
   Widget buildRow(int index1) => Column(children: [
         Padding(
-          padding: const EdgeInsets.only(left: 12, top: 20, bottom: 2),
+          padding: const EdgeInsets.only(left: 12, top: 10),
           child: Align(
               alignment: Alignment.bottomLeft,
               child: Text(
@@ -59,7 +59,7 @@ class _SearchViewState extends State<SearchView> {
               )),
         ),
         SizedBox(
-            height: (MediaQuery.of(context).size.width * 0.46 * 3) / 2,
+            height: (MediaQuery.of(context).size.width * 0.4 * 3) / 2,
             child: ListView.builder(
               shrinkWrap: true,
               physics: const ScrollPhysics(),
