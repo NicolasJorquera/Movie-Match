@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'features/movies/movies_page.dart';
 import 'features/search/search_page.dart';
+import 'features/trending/trending_page.dart';
 import 'features/user/user_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -21,7 +22,8 @@ class _HomePageState extends State<HomePage> {
     final screens = [
       const SearchView(),
       const MoviesPage(),
-      const UsersView()
+      // const UsersView(),
+      const TrendingView(),
     ];
 
     return Scaffold(
