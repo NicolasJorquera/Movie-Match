@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:appinio_swiper/appinio_swiper.dart';
 
+import 'widgets/createOrJoin_widget.dart';
+import 'widgets/movieTinder_widget.dart';
 
 class MovieMatchView extends StatefulWidget {
   const MovieMatchView({super.key});
@@ -13,38 +15,31 @@ class MovieMatchView extends StatefulWidget {
 }
 
 class _MovieMatchViewState extends State<MovieMatchView> {
-  List <dynamic> dayTrending = [];
-
-
-  @override
-  void initState() {
-    super.initState();
-    fetchTrendingMovies();
-  }
-  
+  List<dynamic> dayTrending = [];
+  int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      child: AppinioSwiper(
-        loop: dayTrending.isNotEmpty ? true : false,
-        cardsCount: dayTrending.length,
-        cardsBuilder: (BuildContext context, int index) {
-          final movie = dayTrending[index];
-          return Container(
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(
-                Radius.circular(10),
-              ),
-              image: DecorationImage(
-                image: NetworkImage(movie),
-                fit: BoxFit.cover,
-              ),
-            ),
-          );
+    final widgets = [
+      CreateOrJoinWidget(
+        setSelectedIndex: () {
+          setState(() {
+            selectedIndex = 1;
+          });
         },
+        selectedIndex: selectedIndex,
       ),
-    );
+      MovieTinderWidget(
+        setSelectedIndex: () {
+          setState(() {
+            selectedIndex = 0;
+          });
+        },
+        selectedIndex: selectedIndex,
+      )
+    ];
+
+    return widgets[selectedIndex];
   }
 
   void fetchTrendingMovies() async {
@@ -67,5 +62,4 @@ class _MovieMatchViewState extends State<MovieMatchView> {
       });
     }
   }
-  
 }

@@ -16,6 +16,7 @@ dependencies:
   device_preview: ^1.1.0
   appinio_swiper: ^2.0.0
   http: ^0.13.5
+  dropdown_search: ^5.0.6
 
 dev_dependencies:
   flutter_lints: ^1.0.0

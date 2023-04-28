@@ -4,27 +4,34 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:appinio_swiper/appinio_swiper.dart';
 
-class SearchView extends StatefulWidget {
-  const SearchView({super.key});
+
+class MovieTinderWidget extends StatefulWidget {
+  int selectedIndex;
+  Function setSelectedIndex;
+  MovieTinderWidget({super.key, required this.setSelectedIndex, required this.selectedIndex});
 
   @override
-  State<SearchView> createState() => _SearchViewState();
+  State<MovieTinderWidget> createState() => _MovieTinderWidgetState(this.setSelectedIndex, this.selectedIndex);
 }
 
-class _SearchViewState extends State<SearchView> {
-  List<dynamic> dayTrending = [];
+class _MovieTinderWidgetState extends State<MovieTinderWidget> {
+  List <dynamic> dayTrending = [];
+  Function setSelectedIndex;
+  int selectedIndex;
+  _MovieTinderWidgetState(this.setSelectedIndex, this.selectedIndex);
 
   @override
   void initState() {
     super.initState();
     fetchTrendingMovies();
   }
+  
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       child: AppinioSwiper(
-        loop: dayTrending.isNotEmpty ? true : false,
+        onEnd: ()=> widget.setSelectedIndex() ,
         cardsCount: dayTrending.length,
         cardsBuilder: (BuildContext context, int index) {
           final movie = dayTrending[index];
@@ -64,4 +71,5 @@ class _SearchViewState extends State<SearchView> {
       });
     }
   }
+  
 }

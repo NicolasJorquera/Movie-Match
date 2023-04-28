@@ -18,9 +18,9 @@ class MovieDateCard extends StatelessWidget {
     return Container(
       width: 100,
       decoration: BoxDecoration(
-        color: isSelected ? AppColors.primaryColor : Colors.white,
+        color: isSelected ? Color.fromRGBO(180, 0, 0, 1) : Colors.white,
         borderRadius: const BorderRadius.all(Radius.circular(15)),
-        border: Border.all(color: AppColors.primaryColor),
+        border: Border.all(color: Color.fromRGBO(180, 0, 0, 1)),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -28,7 +28,8 @@ class MovieDateCard extends StatelessWidget {
           Text(
             '${date.day} ${date.month}',
             style: TextStyle(
-                color: isSelected ? Colors.white70 : AppColors.primaryColor),
+                color:
+                    isSelected ? Colors.white70 : Color.fromRGBO(180, 0, 0, 1)),
           ),
           const SizedBox(height: 5),
           Text(
@@ -36,7 +37,7 @@ class MovieDateCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: isSelected ? Colors.white : AppColors.primaryColor,
+              color: isSelected ? Colors.white : Color.fromRGBO(180, 0, 0, 1),
             ),
           ),
         ],

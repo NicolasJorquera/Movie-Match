@@ -52,7 +52,7 @@ class FaceIDPainter extends CustomPainter {
     final strokeWidth = s * 0.06;
     final facePaint = Paint()
       ..strokeWidth = strokeWidth
-      ..color = AppColors.primaryColor.withOpacity(faceOpacity)
+      ..color = Color.fromRGBO(180, 0, 0, 1).withOpacity(faceOpacity)
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
@@ -62,7 +62,7 @@ class FaceIDPainter extends CustomPainter {
       ..strokeWidth = strokeWidth
       ..color = canBlink
           ? Colors.transparent
-          : AppColors.primaryColor.withOpacity(faceOpacity)
+          : Color.fromRGBO(180, 0, 0, 1).withOpacity(faceOpacity)
       ..strokeCap = StrokeCap.round;
     final leftEyeP1 = Offset(oneThird + moveX, oneThird + moveY);
     final leftEyeP2 = Offset(oneThird + moveX, oneThird + eyeLength + moveY);
@@ -106,7 +106,7 @@ class FaceIDPainter extends CustomPainter {
     //* Borders
     final paintBorders = Paint()
       ..style = PaintingStyle.stroke
-      ..color = AppColors.primaryColor
+      ..color = Color.fromRGBO(180, 0, 0, 1)
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;
     final rRect = RRect.fromRectAndRadius(
@@ -146,7 +146,7 @@ class FaceIDPainter extends CustomPainter {
     //* Borders Caps
     final circle = Paint()
       ..style = PaintingStyle.fill
-      ..color = AppColors.primaryColor
+      ..color = Color.fromRGBO(180, 0, 0, 1)
       ..strokeWidth = s * 0.025;
     final capRadius = s * .03;
     canvas.drawCircle(Offset(0, closeOffsetYP1), capRadius, circle);
@@ -161,7 +161,8 @@ class FaceIDPainter extends CustomPainter {
     //* Check
     final check1 = Paint()
       ..strokeCap = StrokeCap.round
-      ..color = canShowCheck1 ? AppColors.primaryColor : Colors.transparent
+      ..color =
+          canShowCheck1 ? Color.fromRGBO(180, 0, 0, 1) : Colors.transparent
       ..strokeWidth = strokeWidth;
     canvas.drawLine(
       Offset(s * .275, oneHalf),
@@ -170,7 +171,8 @@ class FaceIDPainter extends CustomPainter {
     );
     final check2 = Paint()
       ..strokeCap = StrokeCap.round
-      ..color = canShowCheck2 ? AppColors.primaryColor : Colors.transparent
+      ..color =
+          canShowCheck2 ? Color.fromRGBO(180, 0, 0, 1) : Colors.transparent
       ..strokeWidth = strokeWidth;
     canvas.drawLine(
       Offset(oneHalf, s * .7),

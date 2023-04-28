@@ -23,7 +23,7 @@ class _SeatBoxState extends State<MovieSeatBox> {
         : widget.seat.isOcuppied
             ? Colors.black
             : widget.seat.isSelected
-                ? AppColors.primaryColor
+                ? Color.fromRGBO(180, 0, 0, 1)
                 : Colors.grey.shade200;
     return GestureDetector(
       onTap: () {

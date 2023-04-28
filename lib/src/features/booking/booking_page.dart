@@ -142,7 +142,7 @@ class _BookingPageState extends State<BookingPage>
                       height: size.height,
                       margin: EdgeInsets.only(bottom: margin),
                       decoration: const BoxDecoration(
-                        color: AppColors.primaryColor,
+                        color: Color.fromRGBO(180, 0, 0, 1),
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
                     );

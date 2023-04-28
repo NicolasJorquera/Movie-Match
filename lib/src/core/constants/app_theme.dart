@@ -7,6 +7,7 @@ class AppTheme {
   AppTheme._();
 
   static ThemeData dark = ThemeData(
+    primaryColor: const Color.fromRGBO(180, 0, 0, 1),
     appBarTheme: const AppBarTheme(
       elevation: 0,
       foregroundColor: Colors.white,
