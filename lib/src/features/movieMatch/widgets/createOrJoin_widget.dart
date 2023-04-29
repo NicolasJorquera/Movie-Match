@@ -68,11 +68,7 @@ class _CreateOrJoinWidgetState extends State<CreateOrJoinWidget>
                 selectedIndex: selectedIndex,
               ),
               JoinWidget(
-                setSelectedIndex: () {
-                  setState(() {
-                    selectedIndex = 1;
-                  });
-                },
+                setSelectedIndex: setSelectedIndex,
                 selectedIndex: selectedIndex,
               ),
             ],

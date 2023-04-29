@@ -6,6 +6,7 @@ import 'features/home/home_page.dart';
 import 'features/search/search_page.dart';
 import 'features/movieMatch/movieMatch_page.dart';
 import 'features/user/user_page.dart';
+import 'features/selectPlatform/selectPlatform_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -16,185 +17,208 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int selectedIndex = 0;
+  int previousSelectedIndex = 0;
+  bool allPlatformsSelected = false;
   List<dynamic> dayTrendingMovies = [];
 
   @override
   Widget build(BuildContext context) {
     final screens = [
-      const SearchView(),
-      const MovieMatchView(),
       const HomeView(),
-      const UsersView()
+      const MovieMatchView(),
+      const SearchView(),
+      const UsersView(),
+      SelectPlatformView(
+          setSelectedIndex: () {
+            setState(() {
+              selectedIndex = previousSelectedIndex;
+            });
+          },
+          selectedIndex: selectedIndex,
+          previousSelectedIndex: previousSelectedIndex)
     ];
 
     return Scaffold(
-        appBar: selectedIndex == 1
+        appBar: selectedIndex == 1 || selectedIndex == 4
             ? null
             : AppBar(
-                actions: <Widget>[
-                  Container(
-                    padding: const EdgeInsets.only(left: 10, top: 20),
-                    width: 50,
-                    child: Ink(
-                      decoration: const BoxDecoration(
-                          color: Colors.white24,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                          image: DecorationImage(
-                              image: AssetImage(
-                                'assets/logos/disneyp.png',
+                bottom: PreferredSize(
+                    child: SizedBox(
+                        height: 50,
+                        child: Row(
+                          children: [
+                            Expanded(
+                                child: ShaderMask(
+                              shaderCallback: (Rect rect) {
+                                return const LinearGradient(
+                                  colors: [
+                                    Colors.purple,
+                                    Colors.transparent,
+                                    Colors.transparent,
+                                    Colors.purple
+                                  ],
+                                  stops: [
+                                    0.0,
+                                    0.0,
+                                    0.95,
+                                    1.0
+                                  ], // 10% purple, 80% transparent, 10% purple
+                                ).createShader(rect);
+                              },
+                              blendMode: BlendMode.dstOut,
+                              child: ListView.separated(
+                                  reverse: true,
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: (context, index) {
+                                    return Card(
+                                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                                      shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                      child: Image.asset(
+                                        'assets/logos/primelogo.png',
+                                        fit: BoxFit.cover,
+                                        color: allPlatformsSelected? Color.fromRGBO(0, 0, 0, 0.5) : Colors.transparent,
+                                        colorBlendMode: BlendMode.darken,
+                                      ),
+                                    );
+                                  },
+                                  separatorBuilder: (context, index) {
+                                    return const SizedBox(
+                                      width: 0.1,
+                                    );
+                                  },
+                                  itemCount: 10),
+                            )),
+                            SizedBox(
+                              height: 50,
+                              width: 50,
+                              child: Card(
+                                color: Colors.white24,
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                                child: TextButton(
+                                  child: const Icon(
+                                    Icons.add,
+                                    size: 15,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      previousSelectedIndex = selectedIndex;
+                                      selectedIndex = 4;
+                                    });
+                                  },
+                                ),
                               ),
-                              fit: BoxFit.cover)),
-                      child: TextButton(
-                        child: const Text(''),
-                        onPressed: () {},
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(left: 10, top: 20),
-                    width: 50,
-                    child: Ink(
-                      decoration: const BoxDecoration(
-                          color: Colors.white24,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                          image: DecorationImage(
-                              image: AssetImage(
-                                'assets/logos/primelogo.png',
-                              ),
-                              fit: BoxFit.cover)),
-                      child: TextButton(
-                        child: const Text(''),
-                        onPressed: () {},
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(left: 10, top: 20),
-                    width: 50,
-                    child: Ink(
-                      decoration: const BoxDecoration(
-                          color: Colors.white24,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                          image: DecorationImage(
-                              image: AssetImage(
-                                'assets/logos/netflix.png',
-                              ),
-                              fit: BoxFit.cover)),
-                      child: TextButton(
-                        child: const Text(''),
-                        onPressed: () {},
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(left: 10, top: 20),
-                    width: 50,
-                    child: Ink(
-                      decoration: const BoxDecoration(
-                        color: Colors.white24,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
-                        ),
-                      ),
-                      child: TextButton(
-                        child: const Icon(
-                          Icons.add,
-                          size: 15,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {},
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding:
-                        const EdgeInsets.only(left: 10, right: 20, top: 20),
-                    child: Ink(
-                        decoration: const BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10),
                             ),
-                            border: Border(
-                                top:
-                                    BorderSide(color: Colors.white24, width: 2),
-                                left:
-                                    BorderSide(color: Colors.white24, width: 2),
-                                bottom:
-                                    BorderSide(color: Colors.white24, width: 2),
-                                right: BorderSide(
-                                    color: Colors.white24, width: 2))),
-                        child: TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            'All',
-                            style: TextStyle(color: Colors.white),
-                          ),
+                            SizedBox(
+                              height: 50,
+                              width: 50,
+                              child: Card(
+                                  color: allPlatformsSelected
+                                      ? const Color.fromRGBO(180, 0, 0, 1)
+                                      : Colors.black,
+                                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                                  shape:  RoundedRectangleBorder(
+                                      side: BorderSide(
+                                          color: allPlatformsSelected
+                                              ? const Color.fromRGBO(180, 0, 0, 1)
+                                              : Colors.white24,
+                                          width: 2),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10))),
+                                  child: TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        allPlatformsSelected =
+                                            !allPlatformsSelected;
+                                      });
+                                    },
+                                    child: const Text(
+                                      'All',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  )),
+                            ),
+                            const SizedBox(
+                              width: 12,
+                            )
+                          ],
                         )),
-                  ),
-                ],
+                    preferredSize: const Size.fromHeight(0)),
               ),
-        body: Container(
-          padding: const EdgeInsets.only(top: 10),
-          child: IndexedStack(
-            index: selectedIndex,
-            children: screens,
+        body: WillPopScope(
+          child: Container(
+            padding: const EdgeInsets.only(top: 10),
+            child: IndexedStack(
+              index: selectedIndex,
+              children: screens,
+            ),
           ),
+          onWillPop: () async {
+            setState(() {
+              selectedIndex = previousSelectedIndex;
+            });
+            return false;
+          },
         ),
-        bottomNavigationBar: Theme(
-          data: ThemeData(
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-          ),
-          child: BottomNavigationBar(
-            backgroundColor: Colors.black,
-            type: BottomNavigationBarType.fixed,
-            showSelectedLabels: false,
-            showUnselectedLabels: false,
-            currentIndex: selectedIndex,
-            onTap: (value) {
-              setState(() {
-                selectedIndex = value;
-              });
-            },
-            elevation: 0,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.search, color: Colors.white),
-                activeIcon:
-                    Icon(Icons.search, color: Color.fromRGBO(180, 0, 0, 1)),
-                label: '',
-                backgroundColor: Colors.transparent,
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.check_circle_rounded, color: Colors.white),
-                activeIcon: Icon(Icons.check_circle_rounded,
-                    color: Color.fromRGBO(180, 0, 0, 1)),
-                label: '',
-                backgroundColor: Colors.transparent,
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home, color: Colors.white),
-                activeIcon:
-                    Icon(Icons.home, color: Color.fromRGBO(180, 0, 0, 1)),
-                label: '',
-                backgroundColor: Colors.transparent,
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person, color: Colors.white),
-                activeIcon:
-                    Icon(Icons.person, color: Color.fromRGBO(180, 0, 0, 1)),
-                label: '',
-                backgroundColor: Colors.transparent,
-              ),
-            ],
-          ),
-        ));
+        bottomNavigationBar: selectedIndex > 3
+            ? null
+            : Theme(
+                data: ThemeData(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                ),
+                child: BottomNavigationBar(
+                  backgroundColor: Colors.black,
+                  type: BottomNavigationBarType.fixed,
+                  showSelectedLabels: false,
+                  showUnselectedLabels: false,
+                  currentIndex: selectedIndex,
+                  onTap: (value) {
+                    setState(() {
+                      previousSelectedIndex = selectedIndex;
+                      selectedIndex = value;
+                    });
+                  },
+                  elevation: 0,
+                  items: const [
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.home, color: Colors.white),
+                      activeIcon:
+                          Icon(Icons.home, color: Color.fromRGBO(180, 0, 0, 1)),
+                      label: '',
+                      backgroundColor: Colors.transparent,
+                    ),
+                    BottomNavigationBarItem(
+                      icon:
+                          Icon(Icons.flash_on, color: Colors.white),
+                      activeIcon: Icon(Icons.flash_on,
+                          color: Color.fromRGBO(180, 0, 0, 1)),
+                      label: '',
+                      backgroundColor: Colors.transparent,
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.search, color: Colors.white),
+                      activeIcon: Icon(Icons.search,
+                          color: Color.fromRGBO(180, 0, 0, 1)),
+                      label: '',
+                      backgroundColor: Colors.transparent,
+                    ),
+                    
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.person, color: Colors.white),
+                      activeIcon: Icon(Icons.person,
+                          color: Color.fromRGBO(180, 0, 0, 1)),
+                      label: '',
+                      backgroundColor: Colors.transparent,
+                    ),
+                  ],
+                ),
+              ));
   }
 }

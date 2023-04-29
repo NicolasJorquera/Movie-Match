@@ -20,72 +20,139 @@ class _JoinWidgetState extends State<JoinWidget> {
   int currentStep = 0;
   Function setSelectedIndex;
   int selectedIndex;
+  Map sessionData = {
+    'Country': 'Chile',
+    'Platforms': [''],
+    'MovieOrSerie': 'Movie',
+    'Genres': ['']
+  };
   _JoinWidgetState(this.setSelectedIndex, this.selectedIndex);
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-        data: Theme.of(context).copyWith(
-            colorScheme:
-                const ColorScheme.light(primary: Color.fromRGBO(180, 0, 0, 1))),
-        child: Stepper(
-          type: StepperType.vertical,
-          steps: getSteps(),
-          currentStep: currentStep,
-          onStepContinue: () {
-            final isLastStep = currentStep == getSteps().length - 1;
-            if (isLastStep) {
-              widget.setSelectedIndex();
-            } else {
-              setState(() {
-                currentStep += 1;
-              });
-            }
-          },
-          onStepCancel: () {
-            final isFirstStep = currentStep == 0;
-            if (isFirstStep) {
-            } else {
-              setState(() {
-                currentStep -= 1;
-              });
-            }
-          },
-          onStepTapped: (value) {
-            setState(() {
-              currentStep = value;
-            });
-          },
-          controlsBuilder: (context, details) {
-            return Container(
-              margin: const EdgeInsets.only(top: 50),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                      onPressed: details.onStepContinue,
-                      child: const Text(
-                        'Continue',
+    return Container(
+      padding: const EdgeInsets.all(30),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10, left: 50, right: 50),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(10)),
+                        border: Border.all(color: Colors.white)),
+                    child: const Padding(
+                      padding: EdgeInsets.all(10),
+                      child: SelectableText(
+                        'Session ID',
                         style: TextStyle(color: Colors.white),
-                      )),
-                  ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor:
-                              const MaterialStatePropertyAll(Colors.black),
-                          side: MaterialStateProperty.all(const BorderSide(
-                              color: Color.fromRGBO(180, 0, 0, 1),
-                              width: 1.0,
-                              style: BorderStyle.solid))),
-                      onPressed: details.onStepCancel,
-                      child: const Text(
-                        'Cancel',
-                        style: TextStyle(),
-                      )),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ),
+                // IconButton(
+                //     onPressed: () {},
+                //     icon: const Icon(
+                //       Icons.ios_share,
+                //       color: Color.fromRGBO(180, 0, 0, 1),
+                //     ))
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Session data',
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
+                  Text(
+                    'Country:  ' + sessionData['Country'],
+                    style: const TextStyle(color: Colors.white),
+                  ),
                 ],
               ),
-            );
-          },
-        ));
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
+                  const Text(
+                    'Platforms: ',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  SizedBox(
+                      height: 40,
+                      width: 200,
+                      child: ListView.separated(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            return Card(
+                              clipBehavior: Clip.antiAliasWithSaveLayer,
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
+                              child: Image.asset(
+                                'assets/logos/primelogo.png',
+                                fit: BoxFit.cover,
+                              ),
+                            );
+                          },
+                          separatorBuilder: (context, index) {
+                            return const SizedBox(
+                              width: 0.1,
+                            );
+                          },
+                          itemCount: 50)),
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                sessionData['MovieOrSerie'] +
+                    's of ' +
+                    sessionData['Genres'].toString(),
+                style: const TextStyle(color: Colors.white),
+              ),
+            ],
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 50),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                    style: const ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(
+                            Color.fromRGBO(180, 0, 0, 1))),
+                    onPressed: () {
+                      widget.setSelectedIndex();
+                    },
+                    child: const Text(
+                      'Start',
+                      style: TextStyle(color: Colors.white),
+                    )),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   List<Step> getSteps() => [
