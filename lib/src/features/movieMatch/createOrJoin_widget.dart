@@ -10,12 +10,10 @@ import 'widgets/createOrJoin/create_widget.dart';
 import 'widgets/createOrJoin/join_widget.dart';
 
 class CreateOrJoinWidget extends StatefulWidget {
-  CreateOrJoinWidget(
-      {super.key});
+  const CreateOrJoinWidget({super.key});
 
   @override
-  State<CreateOrJoinWidget> createState() =>
-      _CreateOrJoinWidgetState();
+  State<CreateOrJoinWidget> createState() => _CreateOrJoinWidgetState();
 }
 
 class _CreateOrJoinWidgetState extends State<CreateOrJoinWidget>
@@ -57,10 +55,8 @@ class _CreateOrJoinWidgetState extends State<CreateOrJoinWidget>
           child: TabBarView(
             controller: _tabController,
             children: [
-              CreateWidget(
-              ),
-              JoinWidget(
-              ),
+              CreateWidget(),
+              JoinWidget(),
             ],
           ),
         )

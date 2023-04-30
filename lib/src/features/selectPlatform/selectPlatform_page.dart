@@ -17,10 +17,19 @@ class _SelectPlatformViewState extends State<SelectPlatformView> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Padding(
-      padding: EdgeInsets.only(top: 50),
+      padding: const EdgeInsets.only(top: 50),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Row(children: const [
+            BackButton(
+              color: Colors.white,
+            ),
+            Text('Streaming services', style: TextStyle(color: Colors.white, fontSize: 20),)
+          ]),
+          const SizedBox(
+            height: 30,
+          ),
           const Padding(
             padding: EdgeInsets.only(left: 20),
             child: Text(
@@ -29,7 +38,7 @@ class _SelectPlatformViewState extends State<SelectPlatformView> {
               style: TextStyle(color: Colors.white, fontSize: 20),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           SizedBox(
@@ -54,7 +63,7 @@ class _SelectPlatformViewState extends State<SelectPlatformView> {
                     );
                   },
                   itemCount: 50)),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           Row(
@@ -128,7 +137,7 @@ class _SelectPlatformViewState extends State<SelectPlatformView> {
           ),
           Expanded(
               child: Padding(
-            padding: EdgeInsets.only(left: 10, right: 10),
+            padding: const EdgeInsets.only(left: 10, right: 10),
             child: ListView.separated(
                 itemBuilder: (context, index) {
                   return Row(
