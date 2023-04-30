@@ -4,49 +4,43 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:appinio_swiper/appinio_swiper.dart';
 
-
 class MovieTinderWidget extends StatefulWidget {
-  int selectedIndex;
-  Function setSelectedIndex;
-  MovieTinderWidget({super.key, required this.setSelectedIndex, required this.selectedIndex});
+  MovieTinderWidget({super.key});
 
   @override
-  State<MovieTinderWidget> createState() => _MovieTinderWidgetState(this.setSelectedIndex, this.selectedIndex);
+  State<MovieTinderWidget> createState() => _MovieTinderWidgetState();
 }
 
 class _MovieTinderWidgetState extends State<MovieTinderWidget> {
-  List <dynamic> dayTrending = [];
-  Function setSelectedIndex;
-  int selectedIndex;
-  _MovieTinderWidgetState(this.setSelectedIndex, this.selectedIndex);
-
+  List<dynamic> dayTrending = [];
   @override
   void initState() {
     super.initState();
     fetchTrendingMovies();
   }
-  
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      child: AppinioSwiper(
-        onEnd: ()=> widget.setSelectedIndex() ,
-        cardsCount: dayTrending.length,
-        cardsBuilder: (BuildContext context, int index) {
-          final movie = dayTrending[index];
-          return Container(
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(
-                Radius.circular(10),
+    return Scaffold(
+      body: SizedBox(
+        child: AppinioSwiper(
+          onEnd: () => Navigator.pop(context),
+          cardsCount: dayTrending.length,
+          cardsBuilder: (BuildContext context, int index) {
+            final movie = dayTrending[index];
+            return Container(
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(10),
+                ),
+                image: DecorationImage(
+                  image: NetworkImage(movie),
+                  fit: BoxFit.cover,
+                ),
               ),
-              image: DecorationImage(
-                image: NetworkImage(movie),
-                fit: BoxFit.cover,
-              ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
@@ -71,5 +65,4 @@ class _MovieTinderWidgetState extends State<MovieTinderWidget> {
       });
     }
   }
-  
 }

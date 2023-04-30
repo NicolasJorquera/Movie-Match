@@ -5,28 +5,26 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:appinio_swiper/appinio_swiper.dart';
 
+import '../movieTinder_widget.dart';
+
 class JoinWidget extends StatefulWidget {
-  int selectedIndex;
-  Function setSelectedIndex;
   JoinWidget(
-      {super.key, required this.setSelectedIndex, required this.selectedIndex});
+      {super.key});
 
   @override
   State<JoinWidget> createState() =>
-      _JoinWidgetState(this.setSelectedIndex, this.selectedIndex);
+      _JoinWidgetState();
 }
 
 class _JoinWidgetState extends State<JoinWidget> {
   int currentStep = 0;
-  Function setSelectedIndex;
-  int selectedIndex;
   Map sessionData = {
     'Country': 'Chile',
     'Platforms': [''],
     'MovieOrSerie': 'Movie',
     'Genres': ['']
   };
-  _JoinWidgetState(this.setSelectedIndex, this.selectedIndex);
+  _JoinWidgetState();
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +139,11 @@ class _JoinWidgetState extends State<JoinWidget> {
                         backgroundColor: MaterialStatePropertyAll(
                             Color.fromRGBO(180, 0, 0, 1))),
                     onPressed: () {
-                      widget.setSelectedIndex();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MovieTinderWidget()),
+                      );
                     },
                     child: const Text(
                       'Start',

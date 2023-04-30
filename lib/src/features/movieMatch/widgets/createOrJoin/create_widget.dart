@@ -1,32 +1,29 @@
 import 'dart:convert';
 import 'dart:ffi';
+import 'package:flutter_movie_ticket/src/features/movieMatch/widgets/movieTinder_widget.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 
 class CreateWidget extends StatefulWidget {
-  int selectedIndex;
-  Function setSelectedIndex;
   CreateWidget(
-      {super.key, required this.setSelectedIndex, required this.selectedIndex});
+      {super.key});
 
   @override
   State<CreateWidget> createState() =>
-      _CreateWidgetState(this.setSelectedIndex, this.selectedIndex);
+      _CreateWidgetState();
 }
 
 class _CreateWidgetState extends State<CreateWidget> {
   int currentStep = 0;
-  Function setSelectedIndex;
-  int selectedIndex;
   Map sessionData = {
     'Country': 'Chile',
     'Platforms': [''],
     'MovieOrSerie': 'Movie',
     'Genres': ['']
   };
-  _CreateWidgetState(this.setSelectedIndex, this.selectedIndex);
+  _CreateWidgetState();
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +38,10 @@ class _CreateWidgetState extends State<CreateWidget> {
           onStepContinue: () {
             final isLastStep = currentStep == getSteps().length - 1;
             if (isLastStep) {
-              widget.setSelectedIndex();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MovieTinderWidget()),
+              );
             } else {
               setState(() {
                 currentStep += 1;
@@ -106,7 +106,10 @@ class _CreateWidgetState extends State<CreateWidget> {
             content: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Select your country ', style: TextStyle(color: Colors.white,)),
+                Text('Select your country ',
+                    style: TextStyle(
+                      color: Colors.white,
+                    )),
                 Container(
                   padding: const EdgeInsets.only(top: 15),
                   child: DropdownSearch<String>(

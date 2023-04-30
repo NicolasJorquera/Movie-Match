@@ -1,10 +1,10 @@
-import 'dart:convert';
+
 
 import 'package:flutter/material.dart';
 
 import 'features/home/home_page.dart';
 import 'features/search/search_page.dart';
-import 'features/movieMatch/movieMatch_page.dart';
+import 'features/movieMatch/createOrJoin_widget.dart';
 import 'features/user/user_page.dart';
 import 'features/selectPlatform/selectPlatform_page.dart';
 
@@ -25,21 +25,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final screens = [
       const HomeView(),
-      const MovieMatchView(),
+       CreateOrJoinWidget(),
       const SearchView(),
-      const UsersView(),
-      SelectPlatformView(
-          setSelectedIndex: () {
-            setState(() {
-              selectedIndex = previousSelectedIndex;
-            });
-          },
-          selectedIndex: selectedIndex,
-          previousSelectedIndex: previousSelectedIndex)
+      const UsersView()
     ];
 
     return Scaffold(
-        appBar: selectedIndex == 1 || selectedIndex == 4
+        appBar: selectedIndex == 4
             ? null
             : AppBar(
                 bottom: PreferredSize(
@@ -79,7 +71,9 @@ class _HomePageState extends State<HomePage> {
                                       child: Image.asset(
                                         'assets/logos/primelogo.png',
                                         fit: BoxFit.cover,
-                                        color: allPlatformsSelected? Color.fromRGBO(0, 0, 0, 0.5) : Colors.transparent,
+                                        color: allPlatformsSelected
+                                            ? Color.fromRGBO(0, 0, 0, 0.5)
+                                            : Colors.transparent,
                                         colorBlendMode: BlendMode.darken,
                                       ),
                                     );
@@ -107,10 +101,12 @@ class _HomePageState extends State<HomePage> {
                                     color: Colors.white,
                                   ),
                                   onPressed: () {
-                                    setState(() {
-                                      previousSelectedIndex = selectedIndex;
-                                      selectedIndex = 4;
-                                    });
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              SelectPlatformView()),
+                                    );
                                   },
                                 ),
                               ),
@@ -123,10 +119,11 @@ class _HomePageState extends State<HomePage> {
                                       ? const Color.fromRGBO(180, 0, 0, 1)
                                       : Colors.black,
                                   clipBehavior: Clip.antiAliasWithSaveLayer,
-                                  shape:  RoundedRectangleBorder(
+                                  shape: RoundedRectangleBorder(
                                       side: BorderSide(
                                           color: allPlatformsSelected
-                                              ? const Color.fromRGBO(180, 0, 0, 1)
+                                              ? const Color.fromRGBO(
+                                                  180, 0, 0, 1)
                                               : Colors.white24,
                                           width: 2),
                                       borderRadius: const BorderRadius.all(
@@ -151,20 +148,12 @@ class _HomePageState extends State<HomePage> {
                         )),
                     preferredSize: const Size.fromHeight(0)),
               ),
-        body: WillPopScope(
-          child: Container(
-            padding: const EdgeInsets.only(top: 10),
-            child: IndexedStack(
-              index: selectedIndex,
-              children: screens,
-            ),
+        body: Container(
+          padding: const EdgeInsets.only(top: 10),
+          child: IndexedStack(
+            index: selectedIndex,
+            children: screens,
           ),
-          onWillPop: () async {
-            setState(() {
-              selectedIndex = previousSelectedIndex;
-            });
-            return false;
-          },
         ),
         bottomNavigationBar: selectedIndex > 3
             ? null
@@ -195,8 +184,7 @@ class _HomePageState extends State<HomePage> {
                       backgroundColor: Colors.transparent,
                     ),
                     BottomNavigationBarItem(
-                      icon:
-                          Icon(Icons.flash_on, color: Colors.white),
+                      icon: Icon(Icons.flash_on, color: Colors.white),
                       activeIcon: Icon(Icons.flash_on,
                           color: Color.fromRGBO(180, 0, 0, 1)),
                       label: '',
@@ -209,7 +197,6 @@ class _HomePageState extends State<HomePage> {
                       label: '',
                       backgroundColor: Colors.transparent,
                     ),
-                    
                     BottomNavigationBarItem(
                       icon: Icon(Icons.person, color: Colors.white),
                       activeIcon: Icon(Icons.person,

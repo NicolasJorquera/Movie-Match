@@ -6,27 +6,22 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:appinio_swiper/appinio_swiper.dart';
 
-import 'createOrJoin/create_widget.dart';
-import 'createOrJoin/join_widget.dart';
+import 'widgets/createOrJoin/create_widget.dart';
+import 'widgets/createOrJoin/join_widget.dart';
 
 class CreateOrJoinWidget extends StatefulWidget {
-  int selectedIndex;
-  Function setSelectedIndex;
   CreateOrJoinWidget(
-      {super.key, required this.setSelectedIndex, required this.selectedIndex});
+      {super.key});
 
   @override
   State<CreateOrJoinWidget> createState() =>
-      _CreateOrJoinWidgetState(this.setSelectedIndex, this.selectedIndex);
+      _CreateOrJoinWidgetState();
 }
 
 class _CreateOrJoinWidgetState extends State<CreateOrJoinWidget>
     with SingleTickerProviderStateMixin {
   int currentStep = 0;
-  Function setSelectedIndex;
-  int selectedIndex;
   late final TabController _tabController;
-  _CreateOrJoinWidgetState(this.setSelectedIndex, this.selectedIndex);
 
   @override
   void initState() {
@@ -42,7 +37,6 @@ class _CreateOrJoinWidgetState extends State<CreateOrJoinWidget>
           controller: _tabController,
           unselectedLabelColor: Colors.white,
           labelColor: Colors.white,
-          padding: const EdgeInsets.only(top: 20),
           indicatorColor: Color.fromRGBO(180, 0, 0, 1),
           tabs: const [
             Tab(
@@ -64,12 +58,8 @@ class _CreateOrJoinWidgetState extends State<CreateOrJoinWidget>
             controller: _tabController,
             children: [
               CreateWidget(
-                setSelectedIndex: setSelectedIndex,
-                selectedIndex: selectedIndex,
               ),
               JoinWidget(
-                setSelectedIndex: setSelectedIndex,
-                selectedIndex: selectedIndex,
               ),
             ],
           ),

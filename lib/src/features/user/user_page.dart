@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_ticket/src/core/constants/app_colors.dart';
 
+import 'settings/settings_widget.dart';
+
 class UsersView extends StatefulWidget {
-  const UsersView({super.key});
+  const UsersView({
+    super.key,
+  });
 
   @override
   State<UsersView> createState() => _UsersViewState();
 }
 
 class _UsersViewState extends State<UsersView> {
-  int count = 0;
-
+  int selectedIndex = 0;
+  int previousSelectedIndex = 0;
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -85,10 +89,17 @@ class _UsersViewState extends State<UsersView> {
                             borderRadius: BorderRadius.circular(18.0),
                           ))),
                       child: const Text(
-                        'Edit',
+                        'Settings',
                         style: TextStyle(color: Colors.black, fontSize: 15),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              SettingsWidget()),
+                                    );
+                      },
                     )),
               ],
             ),
