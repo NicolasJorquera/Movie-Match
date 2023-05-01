@@ -4,17 +4,29 @@ import 'package:flutter_movie_ticket/src/core/constants/app_colors.dart';
 import 'settings/settings_widget.dart';
 
 class UsersView extends StatefulWidget {
-  const UsersView({
-    super.key,
-  });
+  List<dynamic> providers;
+  List<dynamic> platformsSelected;
+  Function setPlatformsSelected;
+  Function setProviders;
+  UsersView({super.key, required this.providers, required this.platformsSelected, required this.setPlatformsSelected, required this.setProviders});
 
   @override
-  State<UsersView> createState() => _UsersViewState();
+  State<UsersView> createState() => _UsersViewState(this.providers, this.platformsSelected, this.setPlatformsSelected, this.setProviders);
 }
 
 class _UsersViewState extends State<UsersView> {
   int selectedIndex = 0;
   int previousSelectedIndex = 0;
+  List<dynamic> platformsSelected;
+  Function setPlatformsSelected;
+  Function setProviders;
+  
+  _UsersViewState(this.providers, this.platformsSelected, this.setPlatformsSelected, this.setProviders);
+
+  List<dynamic> providers;
+
+
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -94,11 +106,15 @@ class _UsersViewState extends State<UsersView> {
                       ),
                       onPressed: () {
                         Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              SettingsWidget()),
-                                    );
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SettingsWidget(
+                                    providers: widget.providers,
+                                    platformsSelected: widget.platformsSelected,
+                                    setPlatformsSelected: widget.setPlatformsSelected,
+                                    setProviders:widget.setProviders ,
+                                  )),
+                        );
                       },
                     )),
               ],

@@ -5,16 +5,29 @@ import 'package:flutter_movie_ticket/src/core/constants/app_colors.dart';
 import '../../selectPlatform/selectPlatform_page.dart';
 
 class SettingsWidget extends StatefulWidget {
-  SettingsWidget({
-    super.key,
-  });
+  List<dynamic> providers;
+  List<dynamic> platformsSelected;
+  Function setPlatformsSelected;
+  Function setProviders;
+  SettingsWidget(
+      {super.key,
+      required this.providers,
+      required this.platformsSelected,
+      required this.setPlatformsSelected, required this.setProviders});
 
   @override
-  State<SettingsWidget> createState() => _SettingsWidgetState();
+  State<SettingsWidget> createState() => _SettingsWidgetState(
+      this.providers, this.platformsSelected, this.setPlatformsSelected, this.setProviders);
 }
 
 class _SettingsWidgetState extends State<SettingsWidget> {
   int count = 0;
+  List<dynamic> providers;
+  List<dynamic> platformsSelected;
+  Function setPlatformsSelected;
+  Function setProviders;
+  _SettingsWidgetState(
+      this.providers, this.platformsSelected, this.setPlatformsSelected, this.setProviders);
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +112,14 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => SelectPlatformView()),
+                                  builder: (context) => SelectPlatformView(
+                                        providers: widget.providers,
+                                        platformsSelected:
+                                            widget.platformsSelected,
+                                        setPlatformsSelected:
+                                            widget.setPlatformsSelected,
+                                        setProviders: () {},
+                                      )),
                             );
                           },
                         )),
