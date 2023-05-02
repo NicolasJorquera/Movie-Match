@@ -7,26 +7,46 @@ import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 
 class CreateWidget extends StatefulWidget {
+  List<dynamic> platformsSelected;
+  List<dynamic> providers;
   CreateWidget(
-      {super.key});
+      {super.key, required this.platformsSelected, required this.providers});
 
   @override
   State<CreateWidget> createState() =>
-      _CreateWidgetState();
+      _CreateWidgetState(this.platformsSelected, this.providers);
 }
 
 class _CreateWidgetState extends State<CreateWidget> {
+  static const url_image = 'https://image.tmdb.org/t/p/w500';
   int currentStep = 0;
-  Map sessionData = {
+  Map<String, dynamic> sessionData = {
     'Country': 'Chile',
-    'Platforms': [''],
-    'MovieOrSerie': 'Movie',
-    'Genres': ['']
+    'Platforms': [],
+    'MoviesOrSeries': 'Movies',
+    'Genres': []
   };
-  _CreateWidgetState();
+  List<dynamic> platformsSelected;
+  List<dynamic> providers;
+  List<dynamic> allProviders = [];
+  _CreateWidgetState(this.platformsSelected, this.providers);
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    setState(() {
+      allProviders = widget.providers + widget.platformsSelected;
+    });
+    setState(() {
+      allProviders.sort((a, b) => a['provider_name']
+          .toString()
+          .compareTo(b['provider_name'].toString()));
+    });
+
     return Theme(
         data: Theme.of(context).copyWith(
             colorScheme:
@@ -106,7 +126,7 @@ class _CreateWidgetState extends State<CreateWidget> {
             content: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Select your country ',
+                const Text('Select your country ',
                     style: TextStyle(
                       color: Colors.white,
                     )),
@@ -191,16 +211,41 @@ class _CreateWidgetState extends State<CreateWidget> {
             content: Container(
               padding: const EdgeInsets.only(top: 5),
               child: DropdownSearch<String>.multiSelection(
-                selectedItems: sessionData['Platforms'],
+                selectedItems: List<String>.from(sessionData['Platforms']),
                 dropdownBuilder: (context, selectedItems) {
                   return Wrap(
                     children: selectedItems
-                        .map((e) =>
-                            defaultItemMultiSelectionMode(e, selectedItems))
+                        .map((e) => defaultItemMultiSelectionMode(
+                            e, selectedItems, 'Platforms'))
                         .toList(),
                   );
                 },
                 popupProps: PopupPropsMultiSelection.menu(
+                    showSearchBox: true,
+                    searchDelay: Duration.zero,
+                    searchFieldProps: const TextFieldProps(
+                        style: TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                            label: Text(
+                              'Search...',
+                              style: TextStyle(color: Colors.white24),
+                            ),
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
+                            enabledBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                borderSide: BorderSide(
+                                    color: Colors.white24, width: 2)),
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                borderSide:
+                                    BorderSide(color: Colors.white24)))),
+                    onItemAdded: (selectedItems, addedItem) {
+                      setState(() {
+                        sessionData['Platforms'].add(addedItem);
+                      });
+                    },
                     selectionWidget: (context, item, isSelected) {
                       return Checkbox(
                         value: isSelected,
@@ -238,26 +283,8 @@ class _CreateWidgetState extends State<CreateWidget> {
                         border: OutlineInputBorder(
                             borderSide:
                                 BorderSide(color: Colors.white, width: 0.2)))),
-                items: const [
-                  "Netflix",
-                  "Disney Plus",
-                  "Movistar",
-                  'Prime Video',
-                  'HBO',
-                  "FOX",
-                  "Netflix",
-                  "Disney Plus",
-                  "Movistar",
-                  'Prime Video',
-                  'HBO',
-                  "FOX",
-                  "Netflix",
-                  "Disney Plus",
-                  "Movistar",
-                  'Prime Video',
-                  'HBO',
-                  "FOX",
-                ],
+                items: List<String>.from(
+                    allProviders.map((e) => e['provider_name'])),
               ),
             )),
         Step(
@@ -271,8 +298,9 @@ class _CreateWidgetState extends State<CreateWidget> {
               child: DropdownSearch<String>(
                 onChanged: (value) {
                   setState(() {
-                    sessionData['MovieOrSeries'] = value;
+                    sessionData['MoviesOrSeries'] = value;
                   });
+                  print(sessionData);
                 },
                 selectedItem: 'Movie',
                 popupProps: PopupProps.menu(
@@ -328,12 +356,22 @@ class _CreateWidgetState extends State<CreateWidget> {
                 dropdownBuilder: (context, selectedItems) {
                   return Wrap(
                     children: selectedItems
-                        .map((e) =>
-                            defaultItemMultiSelectionMode(e, selectedItems))
+                        .map((e) => defaultItemMultiSelectionMode(
+                            e, selectedItems, 'Genres'))
                         .toList(),
                   );
                 },
                 popupProps: PopupPropsMultiSelection.menu(
+                    onItemAdded: (selectedItems, addedItem) {
+                      setState(() {
+                        sessionData['Genres'].add(addedItem);
+                      });
+                    },
+                    onItemRemoved: (selectedItems, removedItem) {
+                      setState(() {
+                        sessionData['Genres'].remove(removedItem);
+                      });
+                    },
                     selectionWidget: (context, item, isSelected) {
                       return Checkbox(
                         value: isSelected,
@@ -470,39 +508,71 @@ class _CreateWidgetState extends State<CreateWidget> {
                             style: TextStyle(color: Colors.white),
                           ),
                           SizedBox(
-                              height: 40,
-                              width: 200,
-                              child: ListView.separated(
-                                  shrinkWrap: true,
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: (context, index) {
-                                    return Card(
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      shape: const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10))),
-                                      child: Image.asset(
-                                        'assets/logos/primelogo.png',
-                                        fit: BoxFit.cover,
-                                      ),
-                                    );
-                                  },
-                                  separatorBuilder: (context, index) {
-                                    return const SizedBox(
-                                      width: 0.1,
-                                    );
-                                  },
-                                  itemCount: 50)),
+                            height: 40,
+                            width: 250,
+                            child: Expanded(
+                                child: ListView.separated(
+                                    physics: BouncingScrollPhysics(),
+                                    scrollDirection: Axis.horizontal,
+                                    itemBuilder: (context, index) {
+                                      return Card(
+                                        color: Colors.transparent,
+                                        clipBehavior:
+                                            Clip.antiAliasWithSaveLayer,
+                                        shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10))),
+                                        child: Image.network(
+                                          sessionData['Platforms'].length == 0
+                                              ? url_image +
+                                                  allProviders[index]
+                                                      ['logo_path']
+                                              : url_image +
+                                                  allProviders.firstWhere(
+                                                      (element) =>
+                                                          element[
+                                                              'provider_name'] ==
+                                                          sessionData[
+                                                                  'Platforms'][
+                                                              index])['logo_path'],
+                                          fit: BoxFit.cover,
+                                        ),
+                                      );
+                                    },
+                                    separatorBuilder: (context, index) {
+                                      return const SizedBox(
+                                        width: 0.1,
+                                      );
+                                    },
+                                    itemCount:
+                                        sessionData['Platforms'].length == 0
+                                            ? allProviders.length
+                                            : sessionData['Platforms'].length)),
+                          )
                         ],
                       ),
                       const SizedBox(
                         height: 10,
                       ),
                       Text(
-                        sessionData['MovieOrSerie'] +
-                            's of ' +
-                            sessionData['Genres'].toString(),
-                        style: TextStyle(color: Colors.white),
+                        sessionData['Genres'].length == 0
+                            ? sessionData['MoviesOrSeries'].toString() +
+                                ' of ' +
+                                'all genres'
+                            : sessionData['Genres'].length == 1
+                                ? sessionData['MoviesOrSeries'].toString() +
+                                    ' of ' +
+                                    List<String>.from(sessionData['Genres'])[0]
+                                : sessionData['MoviesOrSeries'].toString() +
+                                    ' of ' +
+                                    List<String>.from(sessionData['Genres'])
+                                        .sublist(
+                                            0, sessionData['Genres'].length - 1)
+                                        .join(', ') +
+                                    ' and ' +
+                                    List<String>.from(sessionData['Genres'])
+                                        .last,
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ],
                   ),
@@ -512,14 +582,14 @@ class _CreateWidgetState extends State<CreateWidget> {
       ];
 
   Widget defaultItemMultiSelectionMode(
-      String item, List<String> selectedItems) {
+      String item, List<String> selectedItems, String field) {
     return Container(
       height: 32,
       padding: const EdgeInsets.only(left: 8, right: 1),
       margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 1),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: const Color.fromRGBO(180, 0, 0, 1),
+        color: Color.fromRGBO(120, 20, 20, 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -541,6 +611,15 @@ class _CreateWidgetState extends State<CreateWidget> {
               setState(() {
                 selectedItems.remove(item);
               });
+              if (field == 'Platforms') {
+                setState(() {
+                  sessionData['Platforms'].remove(item);
+                });
+              } else if (field == 'Genres') {
+                setState(() {
+                  sessionData['Genres'].remove(item);
+                });
+              }
             },
             child: const Icon(
               Icons.close_outlined,

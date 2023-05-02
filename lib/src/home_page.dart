@@ -37,7 +37,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final screens = [
       const HomeView(),
-      const CreateOrJoinWidget(),
+      CreateOrJoinWidget(
+        platformsSelected: platformsSelected,
+        providers: providers,
+      ),
       const SearchView(),
       UsersView(
         providers: providers,

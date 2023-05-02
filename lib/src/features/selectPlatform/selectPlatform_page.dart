@@ -116,13 +116,16 @@ class _SelectPlatformViewState extends State<SelectPlatformView> {
                                   left: 17,
                                   child: IconButton(
                                       onPressed: () {
-                                        if (!widget.providers.contains(widget.platformsSelected[index])) {
+                                        if (!widget.providers.contains(
+                                            widget.platformsSelected[index])) {
                                           setState(() {
-                                          widget.setProviders('add',
-                                              widget.platformsSelected[index]);
-                                        });
+                                            widget.setProviders(
+                                                'add',
+                                                widget
+                                                    .platformsSelected[index]);
+                                          });
                                         }
-                                        
+
                                         setState(() {
                                           setPlatformsSelected('remove',
                                               widget.platformsSelected[index]);

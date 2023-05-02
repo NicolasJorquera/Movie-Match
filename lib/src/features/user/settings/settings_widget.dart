@@ -118,7 +118,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                                             widget.platformsSelected,
                                         setPlatformsSelected:
                                             widget.setPlatformsSelected,
-                                        setProviders: () {},
+                                        setProviders: widget.setProviders,
                                       )),
                             );
                           },

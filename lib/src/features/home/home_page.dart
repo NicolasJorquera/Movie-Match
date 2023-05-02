@@ -58,11 +58,11 @@ class _HomeViewState extends State<HomeView> {
                 textAlign: TextAlign.left,
               )),
         ),
+        SizedBox(height: 5,),
         SizedBox(
             height: (MediaQuery.of(context).size.width * 0.4 * 3) / 2,
             child: ListView.builder(
               shrinkWrap: true,
-              physics: const ScrollPhysics(),
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.only(left: 12, right: 12),
               itemBuilder: (context, index) {

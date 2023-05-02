@@ -10,16 +10,22 @@ import 'widgets/createOrJoin/create_widget.dart';
 import 'widgets/createOrJoin/join_widget.dart';
 
 class CreateOrJoinWidget extends StatefulWidget {
-  const CreateOrJoinWidget({super.key});
+  List<dynamic> providers;
+  List<dynamic> platformsSelected;
+  CreateOrJoinWidget({super.key, required this.platformsSelected, required this.providers});
 
   @override
-  State<CreateOrJoinWidget> createState() => _CreateOrJoinWidgetState();
+  State<CreateOrJoinWidget> createState() =>
+      _CreateOrJoinWidgetState(this.platformsSelected, this.providers);
 }
 
 class _CreateOrJoinWidgetState extends State<CreateOrJoinWidget>
     with SingleTickerProviderStateMixin {
   int currentStep = 0;
   late final TabController _tabController;
+  List<dynamic> platformsSelected;
+  List<dynamic> providers;
+  _CreateOrJoinWidgetState(this.platformsSelected, this.providers);
 
   @override
   void initState() {
@@ -55,7 +61,10 @@ class _CreateOrJoinWidgetState extends State<CreateOrJoinWidget>
           child: TabBarView(
             controller: _tabController,
             children: [
-              CreateWidget(),
+              CreateWidget(
+                platformsSelected: widget.platformsSelected,
+                providers: widget.providers,
+              ),
               JoinWidget(),
             ],
           ),

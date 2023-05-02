@@ -8,12 +8,10 @@ import 'package:appinio_swiper/appinio_swiper.dart';
 import '../movieTinder_widget.dart';
 
 class JoinWidget extends StatefulWidget {
-  JoinWidget(
-      {super.key});
+  JoinWidget({super.key});
 
   @override
-  State<JoinWidget> createState() =>
-      _JoinWidgetState();
+  State<JoinWidget> createState() => _JoinWidgetState();
 }
 
 class _JoinWidgetState extends State<JoinWidget> {
@@ -45,9 +43,13 @@ class _JoinWidgetState extends State<JoinWidget> {
                         border: Border.all(color: Colors.white)),
                     child: const Padding(
                       padding: EdgeInsets.all(10),
-                      child: SelectableText(
-                        'Session ID',
-                        style: TextStyle(color: Colors.white),
+                      child: TextField(
+                        decoration:
+                            InputDecoration.collapsed(hintText: 'Username'),
+                        cursorColor: Colors.white,
+                        strutStyle: StrutStyle.disabled,
+                        textCapitalization: TextCapitalization.characters,
+                        style: TextStyle(color: Colors.white, fontSize: 30),
                         textAlign: TextAlign.center,
                       ),
                     ),

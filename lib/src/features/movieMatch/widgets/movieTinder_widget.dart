@@ -35,7 +35,7 @@ class _MovieTinderWidgetState extends State<MovieTinderWidget> {
                 ),
                 image: DecorationImage(
                   image: NetworkImage(movie),
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                 ),
               ),
             );

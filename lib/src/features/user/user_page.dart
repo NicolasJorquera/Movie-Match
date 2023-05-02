@@ -8,10 +8,16 @@ class UsersView extends StatefulWidget {
   List<dynamic> platformsSelected;
   Function setPlatformsSelected;
   Function setProviders;
-  UsersView({super.key, required this.providers, required this.platformsSelected, required this.setPlatformsSelected, required this.setProviders});
+  UsersView(
+      {super.key,
+      required this.providers,
+      required this.platformsSelected,
+      required this.setPlatformsSelected,
+      required this.setProviders});
 
   @override
-  State<UsersView> createState() => _UsersViewState(this.providers, this.platformsSelected, this.setPlatformsSelected, this.setProviders);
+  State<UsersView> createState() => _UsersViewState(this.providers,
+      this.platformsSelected, this.setPlatformsSelected, this.setProviders);
 }
 
 class _UsersViewState extends State<UsersView> {
@@ -20,12 +26,11 @@ class _UsersViewState extends State<UsersView> {
   List<dynamic> platformsSelected;
   Function setPlatformsSelected;
   Function setProviders;
-  
-  _UsersViewState(this.providers, this.platformsSelected, this.setPlatformsSelected, this.setProviders);
+
+  _UsersViewState(this.providers, this.platformsSelected,
+      this.setPlatformsSelected, this.setProviders);
 
   List<dynamic> providers;
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -111,8 +116,9 @@ class _UsersViewState extends State<UsersView> {
                               builder: (context) => SettingsWidget(
                                     providers: widget.providers,
                                     platformsSelected: widget.platformsSelected,
-                                    setPlatformsSelected: widget.setPlatformsSelected,
-                                    setProviders:widget.setProviders ,
+                                    setPlatformsSelected:
+                                        widget.setPlatformsSelected,
+                                    setProviders: widget.setProviders,
                                   )),
                         );
                       },
