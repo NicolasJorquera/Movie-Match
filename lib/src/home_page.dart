@@ -141,6 +141,12 @@ class _HomePageState extends State<HomePage> {
                                   child: Image.network(
                                     url_image +
                                         platformsSelected[index]['logo_path'],
+                                    loadingBuilder:
+                                        (context, child, loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return Container(
+                            color: Color.fromRGBO(50, 50, 50, 1),);
+                                    },
                                     fit: BoxFit.cover,
                                     color: providers.every((element) =>
                                                     element['enable'] ==

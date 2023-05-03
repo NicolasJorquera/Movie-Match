@@ -38,7 +38,17 @@ class _HomeViewState extends State<HomeView> {
               borderRadius: BorderRadius.circular(10),
               child: movies.isNotEmpty
                   ? Image.network(
-                      'https://image.tmdb.org/t/p/w500' + movies[index]['poster_path'],
+                      'https://image.tmdb.org/t/p/w500' +
+                          movies[index]['poster_path'],
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                            height:
+                                (MediaQuery.of(context).size.width * 0.4 * 3) /
+                                    2,
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            color: Color.fromRGBO(50, 50, 50, 1),);
+                      },
                       height: (MediaQuery.of(context).size.width * 0.4 * 3) / 2,
                       width: MediaQuery.of(context).size.width * 0.4,
                       fit: BoxFit.cover,
@@ -53,12 +63,14 @@ class _HomeViewState extends State<HomeView> {
           child: Align(
               alignment: Alignment.bottomLeft,
               child: Text(
-                genres.length>0? genres[index1]['name']:'',
+                genres.length > 0 ? genres[index1]['name'] : '',
                 style: const TextStyle(color: Colors.white, fontSize: 20),
                 textAlign: TextAlign.left,
               )),
         ),
-        SizedBox(height: 5,),
+        SizedBox(
+          height: 5,
+        ),
         SizedBox(
             height: (MediaQuery.of(context).size.width * 0.4 * 3) / 2,
             child: ListView.builder(
@@ -68,11 +80,19 @@ class _HomeViewState extends State<HomeView> {
               itemBuilder: (context, index) {
                 return index != genres[index1]['movies'].length - 1
                     ? Row(
-                        children: [buildCard(index, genres[index1]['movies']), const SizedBox(width: 5)],
+                        children: [
+                          buildCard(index, genres[index1]['movies']),
+                          const SizedBox(width: 5)
+                        ],
                       )
-                    : Row(children: [buildCard(index, genres[index1]['movies'])]);
+                    : Row(
+                        children: [buildCard(index, genres[index1]['movies'])]);
               },
-              itemCount: genres.length>0? genres[index1]['movies'] !=null? genres[index1]['movies'].length: 0 : 0,
+              itemCount: genres.length > 0
+                  ? genres[index1]['movies'] != null
+                      ? genres[index1]['movies'].length
+                      : 0
+                  : 0,
             ))
       ]);
 
