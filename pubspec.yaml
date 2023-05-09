@@ -17,6 +17,7 @@ dependencies:
   appinio_swiper: ^2.0.0
   http: ^0.13.5
   dropdown_search: ^5.0.6
+  url_launcher: ^6.1.11
 
 dev_dependencies:
   flutter_lints: ^1.0.0

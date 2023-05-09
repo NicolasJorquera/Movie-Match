@@ -1,8 +1,12 @@
 import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_ticket/src/core/constants/app_colors.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher_android/url_launcher_android.dart';
 
 import '../../selectPlatform/selectPlatform_page.dart';
+import 'account_widget.dart';
+import 'about_widget.dart';
 
 class SettingsWidget extends StatefulWidget {
   List<dynamic> providers;
@@ -13,11 +17,12 @@ class SettingsWidget extends StatefulWidget {
       {super.key,
       required this.providers,
       required this.platformsSelected,
-      required this.setPlatformsSelected, required this.setProviders});
+      required this.setPlatformsSelected,
+      required this.setProviders});
 
   @override
-  State<SettingsWidget> createState() => _SettingsWidgetState(
-      this.providers, this.platformsSelected, this.setPlatformsSelected, this.setProviders);
+  State<SettingsWidget> createState() => _SettingsWidgetState(this.providers,
+      this.platformsSelected, this.setPlatformsSelected, this.setProviders);
 }
 
 class _SettingsWidgetState extends State<SettingsWidget> {
@@ -26,8 +31,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
   List<dynamic> platformsSelected;
   Function setPlatformsSelected;
   Function setProviders;
-  _SettingsWidgetState(
-      this.providers, this.platformsSelected, this.setPlatformsSelected, this.setProviders);
+  _SettingsWidgetState(this.providers, this.platformsSelected,
+      this.setPlatformsSelected, this.setProviders);
 
   @override
   Widget build(BuildContext context) {
@@ -44,15 +49,15 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                         color: Colors.white,
                       ),
                       Text(
-                        'Settings',
+                        'User',
                         style: TextStyle(color: Colors.white, fontSize: 20),
                       )
                     ]),
                     const SizedBox(
-                      height: 30,
+                      height: 20,
                     ),
                     Card(
-                        shape: RoundedRectangleBorder(
+                        shape: const RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(20))),
                         color: Colors.white10,
@@ -77,13 +82,26 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                               ],
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AccountWidget(
+                                        providers: widget.providers,
+                                        platformsSelected:
+                                            widget.platformsSelected,
+                                        setPlatformsSelected:
+                                            widget.setPlatformsSelected,
+                                        setProviders: widget.setProviders,
+                                      )),
+                            );
+                          },
                         )),
                     const SizedBox(
                       height: 10,
                     ),
                     Card(
-                        shape: RoundedRectangleBorder(
+                        shape: const RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(20))),
                         color: Colors.white10,
@@ -127,7 +145,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                       height: 10,
                     ),
                     Card(
-                        shape: RoundedRectangleBorder(
+                        shape: const RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(20))),
                         color: Colors.white10,
@@ -152,13 +170,26 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                               ],
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AboutWidget(
+                                        providers: widget.providers,
+                                        platformsSelected:
+                                            widget.platformsSelected,
+                                        setPlatformsSelected:
+                                            widget.setPlatformsSelected,
+                                        setProviders: widget.setProviders,
+                                      )),
+                            );
+                          },
                         )),
                     const SizedBox(
                       height: 10,
                     ),
                     Card(
-                        shape: RoundedRectangleBorder(
+                        shape: const RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(20))),
                         color: Colors.white10,
@@ -183,14 +214,29 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                               ],
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () async {
+                            String email =
+                                Uri.encodeComponent("mail@fluttercampus.com");
+                            String subject =
+                                Uri.encodeComponent("Hello Flutter");
+                            String body = Uri.encodeComponent(
+                                "Hi! I'm Flutter Developer");
+                            print(subject); //output: Hello%20Flutter
+                            Uri mail = Uri.parse(
+                                "mailto:$email?subject=$subject&body=$body");
+                            if (await launchUrl(mail)) {
+                              //email app opened
+                            } else {
+                              //email app is not opened
+                            }
+                          },
                         )),
                     const SizedBox(
                       height: 10,
                     ),
                   ],
                 ),
-                Text(
+                const Text(
                   'Version 0.1',
                   style: TextStyle(color: Colors.white),
                 )
