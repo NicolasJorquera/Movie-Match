@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_ticket/src/core/constants/app_colors.dart';
+import 'package:share_plus/share_plus.dart';
 
 import 'settings/settings_widget.dart';
 
@@ -78,7 +79,9 @@ class _UsersViewState extends State<UsersView> {
                         'Share',
                         style: TextStyle(color: Colors.black, fontSize: 15),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Share.share('Check out my app Flixer in Google Play Store', subject: 'Look what I made!');
+                      },
                     )),
                 Container(
                   padding: const EdgeInsets.only(top: 120),

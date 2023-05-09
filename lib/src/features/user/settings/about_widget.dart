@@ -56,7 +56,7 @@ class _AboutWidgetState extends State<AboutWidget> {
                       children: const [
                         Text(
                           'FLIXER',
-                          style: TextStyle(color: Colors.white54, fontSize: 17),
+                          style: TextStyle(color: Color.fromRGBO(180, 0, 0, 1), fontSize: 17),
                         )
                       ],
                     ),
@@ -135,6 +135,9 @@ class _AboutWidgetState extends State<AboutWidget> {
                       thickness: 2,
                       color: Colors.white10,
                     ),
+                    const SizedBox(
+                      height: 5,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -163,6 +166,9 @@ class _AboutWidgetState extends State<AboutWidget> {
                     const Divider(
                       thickness: 2,
                       color: Colors.white10,
+                    ),
+                    const SizedBox(
+                      height: 5,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -193,6 +199,9 @@ class _AboutWidgetState extends State<AboutWidget> {
                       thickness: 2,
                       color: Colors.white10,
                     ),
+                    const SizedBox(
+                      height: 5,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -221,6 +230,9 @@ class _AboutWidgetState extends State<AboutWidget> {
                     const Divider(
                       thickness: 2,
                       color: Colors.white10,
+                    ),
+                    const SizedBox(
+                      height: 5,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

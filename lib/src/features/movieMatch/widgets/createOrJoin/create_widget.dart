@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ffi';
 import 'package:flutter_movie_ticket/src/features/movieMatch/widgets/movieTinder_widget.dart';
 import 'package:http/http.dart' as http;
+import 'package:share_plus/share_plus.dart';
 
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -469,7 +470,11 @@ class _CreateWidgetState extends State<CreateWidget> {
                           ),
                         ),
                         IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Share.share(
+                                  'Flixer Session ID: 13862',
+                                  subject: 'Look what I made!');
+                            },
                             icon: const Icon(
                               Icons.ios_share,
                               color: Color.fromRGBO(180, 0, 0, 1),
