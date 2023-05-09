@@ -37,21 +37,46 @@ class _HomeViewState extends State<HomeView> {
           ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: movies.isNotEmpty
-                  ? Image.network(
-                      'https://image.tmdb.org/t/p/w500' +
-                          movies[index]['poster_path'],
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Container(
-                            height:
-                                (MediaQuery.of(context).size.width * 0.4 * 3) /
-                                    2,
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            color: Color.fromRGBO(50, 50, 50, 1),);
-                      },
-                      height: (MediaQuery.of(context).size.width * 0.4 * 3) / 2,
-                      width: MediaQuery.of(context).size.width * 0.4,
-                      fit: BoxFit.cover,
+                  ? Stack(
+                      children: [
+                        Image.network(
+                          'https://image.tmdb.org/t/p/w500' +
+                              movies[index]['poster_path'],
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Container(
+                              height: (MediaQuery.of(context).size.width *
+                                      0.4 *
+                                      3) /
+                                  2,
+                              width: MediaQuery.of(context).size.width * 0.4,
+                              color: Color.fromRGBO(50, 50, 50, 1),
+                            );
+                          },
+                          height:
+                              (MediaQuery.of(context).size.width * 0.4 * 3) / 2,
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          fit: BoxFit.cover,
+                        ),
+                        Positioned(
+                            top: (MediaQuery.of(context).size.width * 0.4 * 3) /
+                                2.5,
+                            left: MediaQuery.of(context).size.width * 0.27,
+                            child: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    movies[index]['liked'] = !movies[index]['liked'];
+                                  });
+                                },
+                                icon: Icon(
+                                  movies[index]['liked']? Icons.favorite : Icons.favorite_border,
+                                  color: movies[index]['liked']? Color.fromRGBO(200, 0, 0, 1) : Colors.white,
+                                  shadows: <Shadow>[
+                                    Shadow(
+                                        color: Colors.black, blurRadius: 10.0)
+                                  ],
+                                )))
+                      ],
                     )
                   : null)
         ],
@@ -135,6 +160,11 @@ class _HomeViewState extends State<HomeView> {
       final body = response.body;
       final json = jsonDecode(body);
       final movs = json['results'];
+
+      for (var element in movs) {
+        element['liked'] = false;
+      }
+
       setState(() {
         genre['movies'] = movs;
       });

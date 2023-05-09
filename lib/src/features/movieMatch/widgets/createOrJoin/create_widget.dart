@@ -473,7 +473,7 @@ class _CreateWidgetState extends State<CreateWidget> {
                             onPressed: () {
                               Share.share(
                                   'Flixer Session ID: 13862',
-                                  subject: 'Look what I made!');
+                                  subject: 'Flixer Session ID');
                             },
                             icon: const Icon(
                               Icons.ios_share,
