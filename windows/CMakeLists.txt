@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
-project(flutter_movie_ticket LANGUAGES CXX)
+project(flixer LANGUAGES CXX)
 
-set(BINARY_NAME "flutter_movie_ticket")
+set(BINARY_NAME "flixer")
 
 cmake_policy(SET CMP0063 NEW)
 

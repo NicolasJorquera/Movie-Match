@@ -1,4 +1,4 @@
-package com.example.flutter_movie_ticket
+package com.example.flixer
 
 import io.flutter.embedding.android.FlutterActivity
 

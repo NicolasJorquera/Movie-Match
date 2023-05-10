@@ -92,80 +92,91 @@ class _SelectPlatformViewState extends State<SelectPlatformView> {
                 ),
                 SizedBox(
                     height: 50,
-                    child: ListView.separated(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return Stack(
-                            children: [
-                              Card(
-                                color: Colors.transparent,
-                                clipBehavior: Clip.antiAliasWithSaveLayer,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                child: Image.network(
-                                  url_image +
-                                      widget.platformsSelected[index]
-                                          ['logo_path'],
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              Positioned(
-                                  bottom: 17,
-                                  left: 17,
-                                  child: IconButton(
-                                      onPressed: () {
-                                        if (!widget.providers.contains(
-                                            widget.platformsSelected[index])) {
-                                          setState(() {
-                                            widget.setProviders(
-                                                'add',
-                                                widget
-                                                    .platformsSelected[index]);
-                                          });
-                                        }
+                    child: Theme(
+                        data: Theme.of(context).copyWith(
+                            colorScheme: const ColorScheme.light(
+                                primary: Color.fromRGBO(180, 0, 0, 1),
+                                secondary: Color.fromRGBO(180, 0, 0, 1))),
+                        child: ListView.separated(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) {
+                              return Stack(
+                                children: [
+                                  Card(
+                                    color: Colors.transparent,
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
+                                    child: Image.network(
+                                      url_image +
+                                          widget.platformsSelected[index]
+                                              ['logo_path'],
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  Positioned(
+                                      bottom: 17,
+                                      left: 17,
+                                      child: IconButton(
+                                          onPressed: () {
+                                            if (!widget.providers.contains(
+                                                widget.platformsSelected[
+                                                    index])) {
+                                              setState(() {
+                                                widget.setProviders(
+                                                    'add',
+                                                    widget.platformsSelected[
+                                                        index]);
+                                              });
+                                            }
 
-                                        setState(() {
-                                          setPlatformsSelected('remove',
-                                              widget.platformsSelected[index]);
-                                        });
-                                        setState(() {
-                                          searchProviders = widget.providers;
-                                        });
-                                        setState(() {
-                                          platformsToggle = List<bool>.generate(
-                                              searchProviders.length,
-                                              (index) => false);
-                                        });
+                                            setState(() {
+                                              setPlatformsSelected(
+                                                  'remove',
+                                                  widget.platformsSelected[
+                                                      index]);
+                                            });
+                                            setState(() {
+                                              searchProviders =
+                                                  widget.providers;
+                                            });
+                                            setState(() {
+                                              platformsToggle =
+                                                  List<bool>.generate(
+                                                      searchProviders.length,
+                                                      (index) => false);
+                                            });
 
-                                        setState(() {
-                                          searchProviders.sort((a, b) =>
-                                              a['provider_name']
-                                                  .toString()
-                                                  .compareTo(b['provider_name']
-                                                      .toString()));
-                                        });
-                                      },
-                                      icon: const Icon(
-                                        Icons.cancel,
-                                        color: Color.fromRGBO(180, 0, 0, 1),
-                                        shadows: <Shadow>[
-                                          Shadow(
-                                              color: Colors.black,
-                                              blurRadius: 15.0)
-                                        ],
-                                        size: 20,
-                                      )))
-                            ],
-                          );
-                        },
-                        separatorBuilder: (context, index) {
-                          return const SizedBox(
-                            width: 0.1,
-                          );
-                        },
-                        itemCount: widget.platformsSelected.length)),
+                                            setState(() {
+                                              searchProviders.sort((a, b) =>
+                                                  a['provider_name']
+                                                      .toString()
+                                                      .compareTo(
+                                                          b['provider_name']
+                                                              .toString()));
+                                            });
+                                          },
+                                          icon: const Icon(
+                                            Icons.cancel,
+                                            color: Color.fromRGBO(180, 0, 0, 1),
+                                            shadows: <Shadow>[
+                                              Shadow(
+                                                  color: Colors.black,
+                                                  blurRadius: 15.0)
+                                            ],
+                                            size: 20,
+                                          )))
+                                ],
+                              );
+                            },
+                            separatorBuilder: (context, index) {
+                              return const SizedBox(
+                                width: 0.1,
+                              );
+                            },
+                            itemCount: widget.platformsSelected.length))),
                 const SizedBox(
                   height: 20,
                 ),
@@ -290,85 +301,94 @@ class _SelectPlatformViewState extends State<SelectPlatformView> {
                 Expanded(
                     child: Padding(
                   padding: const EdgeInsets.only(left: 10, right: 10),
-                  child: ListView.separated(
-                      itemBuilder: (context, index) {
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
+                  child: Theme(
+                      data: Theme.of(context).copyWith(
+                          colorScheme: const ColorScheme.light(
+                              primary: Color.fromRGBO(180, 0, 0, 1),
+                              secondary: Color.fromRGBO(180, 0, 0, 1))),
+                      child: ListView.separated(
+                          itemBuilder: (context, index) {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Card(
-                                  color: Colors.transparent,
-                                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                                  shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10))),
-                                  child: SizedBox(
-                                    width: 40,
-                                    height: 40,
-                                    child: Image.network(
-                                      url_image +
-                                          searchProviders[index]['logo_path'],
-                                      fit: BoxFit.cover,
+                                Row(
+                                  children: [
+                                    Card(
+                                      color: Colors.transparent,
+                                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                                      shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                      child: SizedBox(
+                                        width: 40,
+                                        height: 40,
+                                        child: Image.network(
+                                          url_image +
+                                              searchProviders[index]
+                                                  ['logo_path'],
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      searchProviders[index]['provider_name'],
+                                      style:
+                                          const TextStyle(color: Colors.white),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  searchProviders[index]['provider_name'],
-                                  style: const TextStyle(color: Colors.white),
-                                ),
+                                TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        platformsToggle[index] =
+                                            !platformsToggle[index];
+                                      });
+                                      if (platformsToggle[index]) {
+                                        setState(() {
+                                          searchProviders[index]['enable'] =
+                                              true;
+                                        });
+                                        widget.setPlatformsSelected(
+                                            'add', searchProviders[index]);
+                                        // setState(() {
+                                        //   widget.platformsSelected
+                                        //       .add(searchProviders[index]);
+                                        // });
+                                        print(widget.platformsSelected);
+                                      } else {
+                                        setState(() {
+                                          searchProviders[index]['enable'] =
+                                              false;
+                                        });
+                                        widget.setPlatformsSelected(
+                                            'remove', searchProviders[index]);
+                                        // setState(() {
+                                        //   widget.platformsSelected
+                                        //       .remove(searchProviders[index]);
+                                        // });
+                                      }
+                                    },
+                                    child: platformsToggle[index]
+                                        ? const Icon(
+                                            Icons.check_box,
+                                            color: Colors.white,
+                                          )
+                                        : const Icon(
+                                            Icons.check_box_outline_blank,
+                                            color: Colors.white,
+                                          ))
                               ],
-                            ),
-                            TextButton(
-                                onPressed: () {
-                                  setState(() {
-                                    platformsToggle[index] =
-                                        !platformsToggle[index];
-                                  });
-                                  if (platformsToggle[index]) {
-                                    setState(() {
-                                      searchProviders[index]['enable'] = true;
-                                    });
-                                    widget.setPlatformsSelected(
-                                        'add', searchProviders[index]);
-                                    // setState(() {
-                                    //   widget.platformsSelected
-                                    //       .add(searchProviders[index]);
-                                    // });
-                                    print(widget.platformsSelected);
-                                  } else {
-                                    setState(() {
-                                      searchProviders[index]['enable'] = false;
-                                    });
-                                    widget.setPlatformsSelected(
-                                        'remove', searchProviders[index]);
-                                    // setState(() {
-                                    //   widget.platformsSelected
-                                    //       .remove(searchProviders[index]);
-                                    // });
-                                  }
-                                },
-                                child: platformsToggle[index]
-                                    ? const Icon(
-                                        Icons.check_box,
-                                        color: Colors.white,
-                                      )
-                                    : const Icon(
-                                        Icons.check_box_outline_blank,
-                                        color: Colors.white,
-                                      ))
-                          ],
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return const SizedBox(
-                          height: 10,
-                        );
-                      },
-                      itemCount: searchProviders.length),
+                            );
+                          },
+                          separatorBuilder: (context, index) {
+                            return const SizedBox(
+                              height: 10,
+                            );
+                          },
+                          itemCount: searchProviders.length)),
                 )),
               ],
             ),

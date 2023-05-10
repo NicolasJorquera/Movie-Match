@@ -8,6 +8,9 @@ class AppTheme {
 
   static ThemeData dark = ThemeData(
     primaryColor: const Color.fromRGBO(180, 0, 0, 1),
+    colorScheme: ColorScheme.fromSwatch(
+      accentColor: const Color.fromRGBO(180, 0, 0, 1), // but now it should be declared like this
+    ),
     appBarTheme: const AppBarTheme(
       elevation: 0,
       foregroundColor: Colors.white,

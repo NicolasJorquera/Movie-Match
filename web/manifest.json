@@ -1,6 +1,6 @@
 {
-    "name": "flutter_movie_ticket",
-    "short_name": "flutter_movie_ticket",
+    "name": "flixer",
+    "short_name": "flixer",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

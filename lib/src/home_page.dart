@@ -79,100 +79,119 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       Expanded(
                           child: ShaderMask(
-                        shaderCallback: (Rect rect) {
-                          return const LinearGradient(
-                            colors: [
-                              Colors.purple,
-                              Colors.transparent,
-                              Colors.transparent,
-                              Colors.purple
-                            ],
-                            stops: [
-                              0.0,
-                              0.0,
-                              0.95,
-                              1.0
-                            ], // 10% purple, 80% transparent, 10% purple
-                          ).createShader(rect);
-                        },
-                        blendMode: BlendMode.dstOut,
-                        child: ListView.separated(
-                            reverse: true,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  if (platformsSelected.every((element) =>
-                                          element['enable'] == true) &&
-                                      providers.every((element) =>
-                                          element['enable'] == true)) {
-                                    setState(() {
-                                      platformsSelected.forEach((element) {
-                                        element['enable'] = false;
-                                      });
-                                    });
-                                    setState(() {
-                                      providers.forEach((element) {
-                                        element['enable'] = false;
-                                      });
-                                    });
-                                  }
-                                  if (platformsSelected
-                                      .every((element) => element['enable'])) {
-                                    setState(() {
-                                      platformsSelected.forEach((element) {
-                                        element['enable'] = false;
-                                      });
-                                    });
-                                  }
-                                  setState(() {
-                                    platformsSelected[index]['enable'] =
-                                        !platformsSelected[index]['enable'];
-                                  });
-
-                                  print(platformsSelected);
-                                },
-                                child: Card(
-                                  color: Colors.transparent,
-                                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                                  shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10))),
-                                  child: Image.network(
-                                    url_image +
-                                        platformsSelected[index]['logo_path'],
-                                    loadingBuilder:
-                                        (context, child, loadingProgress) {
-                                      if (loadingProgress == null) return child;
-                                      return Container(
-                            color: Color.fromRGBO(50, 50, 50, 1),);
-                                    },
-                                    fit: BoxFit.cover,
-                                    color: providers.every((element) =>
-                                                    element['enable'] ==
-                                                    true) &&
-                                                platformsSelected.every(
-                                                    (element) =>
-                                                        element['enable'] ==
-                                                        true) ||
-                                            (platformsSelected.any((element) =>
-                                                    element['enable']) &&
+                              shaderCallback: (Rect rect) {
+                                return const LinearGradient(
+                                  colors: [
+                                    Colors.purple,
+                                    Colors.transparent,
+                                    Colors.transparent,
+                                    Colors.purple
+                                  ],
+                                  stops: [
+                                    0.0,
+                                    0.0,
+                                    0.95,
+                                    1.0
+                                  ], // 10% purple, 80% transparent, 10% purple
+                                ).createShader(rect);
+                              },
+                              blendMode: BlendMode.dstOut,
+                              child: Theme(
+                                data: Theme.of(context).copyWith(
+                                    colorScheme: const ColorScheme.light(
+                                        primary: Color.fromRGBO(180, 0, 0, 1),
+                                        secondary:
+                                            Color.fromRGBO(180, 0, 0, 1))),
+                                child: ListView.separated(
+                                    reverse: true,
+                                    scrollDirection: Axis.horizontal,
+                                    itemBuilder: (context, index) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          if (platformsSelected.every(
+                                                  (element) =>
+                                                      element['enable'] ==
+                                                      true) &&
+                                              providers.every((element) =>
+                                                  element['enable'] == true)) {
+                                            setState(() {
+                                              platformsSelected
+                                                  .forEach((element) {
+                                                element['enable'] = false;
+                                              });
+                                            });
+                                            setState(() {
+                                              providers.forEach((element) {
+                                                element['enable'] = false;
+                                              });
+                                            });
+                                          }
+                                          if (platformsSelected.every(
+                                              (element) => element['enable'])) {
+                                            setState(() {
+                                              platformsSelected
+                                                  .forEach((element) {
+                                                element['enable'] = false;
+                                              });
+                                            });
+                                          }
+                                          setState(() {
+                                            platformsSelected[index]['enable'] =
                                                 !platformsSelected[index]
-                                                    ['enable'])
-                                        ? const Color.fromRGBO(0, 0, 0, 0.5)
-                                        : Colors.transparent,
-                                    colorBlendMode: BlendMode.darken,
-                                  ),
-                                ),
-                              );
-                            },
-                            separatorBuilder: (context, index) {
-                              return const SizedBox(
-                                width: 1,
-                              );
-                            },
-                            itemCount: platformsSelected.length),
-                      )),
+                                                    ['enable'];
+                                          });
+
+                                          print(platformsSelected);
+                                        },
+                                        child: Card(
+                                          color: Colors.transparent,
+                                          clipBehavior:
+                                              Clip.antiAliasWithSaveLayer,
+                                          shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10))),
+                                          child: Image.network(
+                                            url_image +
+                                                platformsSelected[index]
+                                                    ['logo_path'],
+                                            loadingBuilder: (context, child,
+                                                loadingProgress) {
+                                              if (loadingProgress == null)
+                                                return child;
+                                              return Container(
+                                                color: Color.fromRGBO(
+                                                    50, 50, 50, 1),
+                                              );
+                                            },
+                                            fit: BoxFit.cover,
+                                            color: providers.every((element) =>
+                                                            element['enable'] ==
+                                                            true) &&
+                                                        platformsSelected.every(
+                                                            (element) =>
+                                                                element[
+                                                                    'enable'] ==
+                                                                true) ||
+                                                    (platformsSelected.any(
+                                                            (element) => element[
+                                                                'enable']) &&
+                                                        !platformsSelected[
+                                                            index]['enable'])
+                                                ? const Color.fromRGBO(
+                                                    0, 0, 0, 0.5)
+                                                : Colors.transparent,
+                                            colorBlendMode: BlendMode.darken,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    separatorBuilder: (context, index) {
+                                      return const SizedBox(
+                                        width: 1,
+                                      );
+                                    },
+                                    itemCount: platformsSelected.length),
+                              ))),
                       SizedBox(
                         height: 50,
                         width: 50,

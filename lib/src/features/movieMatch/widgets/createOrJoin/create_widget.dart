@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:ffi';
-import 'package:flutter_movie_ticket/src/features/movieMatch/widgets/movieTinder_widget.dart';
+import 'package:flixer/src/features/movieMatch/widgets/movieTinder_widget.dart';
 import 'package:http/http.dart' as http;
 import 'package:share_plus/share_plus.dart';
 
@@ -50,8 +50,9 @@ class _CreateWidgetState extends State<CreateWidget> {
 
     return Theme(
         data: Theme.of(context).copyWith(
-            colorScheme:
-                const ColorScheme.light(primary: Color.fromRGBO(180, 0, 0, 1))),
+            colorScheme: const ColorScheme.light(
+                primary: Color.fromRGBO(180, 0, 0, 1),
+                secondary: Color.fromRGBO(180, 0, 0, 1))),
         child: Stepper(
           type: StepperType.vertical,
           steps: getSteps(),
@@ -471,8 +472,7 @@ class _CreateWidgetState extends State<CreateWidget> {
                         ),
                         IconButton(
                             onPressed: () {
-                              Share.share(
-                                  'Flixer Session ID: 13862',
+                              Share.share('Flixer Session ID: 13862',
                                   subject: 'Flixer Session ID');
                             },
                             icon: const Icon(
@@ -516,43 +516,51 @@ class _CreateWidgetState extends State<CreateWidget> {
                             height: 40,
                             width: 250,
                             child: Expanded(
-                                child: ListView.separated(
-                                    physics: BouncingScrollPhysics(),
-                                    scrollDirection: Axis.horizontal,
-                                    itemBuilder: (context, index) {
-                                      return Card(
-                                        color: Colors.transparent,
-                                        clipBehavior:
-                                            Clip.antiAliasWithSaveLayer,
-                                        shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(10))),
-                                        child: Image.network(
-                                          sessionData['Platforms'].length == 0
-                                              ? url_image +
-                                                  allProviders[index]
-                                                      ['logo_path']
-                                              : url_image +
-                                                  allProviders.firstWhere(
-                                                      (element) =>
+                                child: Theme(
+                                    data: Theme.of(context).copyWith(
+                                        colorScheme: const ColorScheme.light(
+                                            primary:
+                                                Color.fromRGBO(180, 0, 0, 1),
+                                            secondary:
+                                                Color.fromRGBO(180, 0, 0, 1))),
+                                    child: ListView.separated(
+                                        physics: BouncingScrollPhysics(),
+                                        scrollDirection: Axis.horizontal,
+                                        itemBuilder: (context, index) {
+                                          return Card(
+                                            color: Colors.transparent,
+                                            clipBehavior:
+                                                Clip.antiAliasWithSaveLayer,
+                                            shape: const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(10))),
+                                            child: Image.network(
+                                              sessionData['Platforms'].length ==
+                                                      0
+                                                  ? url_image +
+                                                      allProviders[index]
+                                                          ['logo_path']
+                                                  : url_image +
+                                                      allProviders.firstWhere((element) =>
                                                           element[
                                                               'provider_name'] ==
                                                           sessionData[
                                                                   'Platforms'][
                                                               index])['logo_path'],
-                                          fit: BoxFit.cover,
-                                        ),
-                                      );
-                                    },
-                                    separatorBuilder: (context, index) {
-                                      return const SizedBox(
-                                        width: 0.1,
-                                      );
-                                    },
-                                    itemCount:
-                                        sessionData['Platforms'].length == 0
-                                            ? allProviders.length
-                                            : sessionData['Platforms'].length)),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          );
+                                        },
+                                        separatorBuilder: (context, index) {
+                                          return const SizedBox(
+                                            width: 0.1,
+                                          );
+                                        },
+                                        itemCount:
+                                            sessionData['Platforms'].length == 0
+                                                ? allProviders.length
+                                                : sessionData['Platforms']
+                                                    .length))),
                           )
                         ],
                       ),

@@ -1,6 +1,6 @@
 import 'dart:ffi';
 import 'package:flutter/material.dart';
-import 'package:flutter_movie_ticket/src/core/constants/app_colors.dart';
+import 'package:flixer/src/core/constants/app_colors.dart';
 
 import '../../selectPlatform/selectPlatform_page.dart';
 

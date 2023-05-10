@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:ffi';
-import 'package:flutter_movie_ticket/src/core/constants/app_colors.dart';
+import 'package:flixer/src/core/constants/app_colors.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';

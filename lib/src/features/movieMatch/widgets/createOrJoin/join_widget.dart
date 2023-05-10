@@ -97,27 +97,32 @@ class _JoinWidgetState extends State<JoinWidget> {
                   SizedBox(
                       height: 40,
                       width: 200,
-                      child: ListView.separated(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            return Card(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              child: Image.asset(
-                                'assets/logos/primelogo.png',
-                                fit: BoxFit.cover,
-                              ),
-                            );
-                          },
-                          separatorBuilder: (context, index) {
-                            return const SizedBox(
-                              width: 0.1,
-                            );
-                          },
-                          itemCount: 50)),
+                      child: Theme(
+                          data: Theme.of(context).copyWith(
+                              colorScheme: const ColorScheme.light(
+                                  primary: Color.fromRGBO(180, 0, 0, 1),
+                                  secondary: Color.fromRGBO(180, 0, 0, 1))),
+                          child: ListView.separated(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return Card(
+                                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10))),
+                                  child: Image.asset(
+                                    'assets/logos/primelogo.png',
+                                    fit: BoxFit.cover,
+                                  ),
+                                );
+                              },
+                              separatorBuilder: (context, index) {
+                                return const SizedBox(
+                                  width: 0.1,
+                                );
+                              },
+                              itemCount: 50))),
                 ],
               ),
               const SizedBox(
