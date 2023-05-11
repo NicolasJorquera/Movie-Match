@@ -54,6 +54,12 @@ class _CreateWidgetState extends State<CreateWidget> {
                 primary: Color.fromRGBO(180, 0, 0, 1),
                 secondary: Color.fromRGBO(180, 0, 0, 1))),
         child: Stepper(
+          connectorColor: MaterialStateProperty.resolveWith(
+              (states) => states.contains(MaterialState.selected)
+                  ? Color.fromRGBO(180, 0, 0, 1)
+                  : states.contains(MaterialState.disabled)
+                      ? Colors.transparent
+                      : Colors.white),
           type: StepperType.vertical,
           steps: getSteps(),
           currentStep: currentStep,
