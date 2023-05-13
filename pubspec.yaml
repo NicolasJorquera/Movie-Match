@@ -40,10 +40,11 @@ dev_dependencies:
 flutter_icons:
   android: 'launcher_icon'
   ios: true
-  image_path: 'assets/icon/flixer.png'
+  image_path: 'assets/icon/flixerLogo.png'
 
 flutter:
   assets:
+    - assets/icon/
     - assets/images/
     - assets/lotties/
     - assets/logos/

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flixer/src/core/constants/app_colors.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'settings/settings_widget.dart';
 
 class UsersView extends StatefulWidget {
+  dynamic userData;
   List<dynamic> providers;
   List<dynamic> platformsSelected;
   Function setPlatformsSelected;
@@ -14,14 +16,15 @@ class UsersView extends StatefulWidget {
       required this.providers,
       required this.platformsSelected,
       required this.setPlatformsSelected,
-      required this.setProviders});
+      required this.setProviders, required this.userData});
 
   @override
   State<UsersView> createState() => _UsersViewState(this.providers,
-      this.platformsSelected, this.setPlatformsSelected, this.setProviders);
+      this.platformsSelected, this.setPlatformsSelected, this.setProviders, this.userData);
 }
 
 class _UsersViewState extends State<UsersView> {
+  dynamic userData;
   int selectedIndex = 0;
   int previousSelectedIndex = 0;
   List<dynamic> platformsSelected;
@@ -29,12 +32,13 @@ class _UsersViewState extends State<UsersView> {
   Function setProviders;
 
   _UsersViewState(this.providers, this.platformsSelected,
-      this.setPlatformsSelected, this.setProviders);
+      this.setPlatformsSelected, this.setProviders, this.userData);
 
   List<dynamic> providers;
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser!;
     return Theme(
         data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
@@ -95,8 +99,8 @@ class _UsersViewState extends State<UsersView> {
                       padding: const EdgeInsets.only(top: 120),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(100.0),
-                        child: Image.asset(
-                          'assets/images/greta.jpg',
+                        child: Image.network(
+                          user.photoURL!,
                           height: 100,
                           width: 100,
                           fit: BoxFit.cover,
@@ -125,6 +129,7 @@ class _UsersViewState extends State<UsersView> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => SettingsWidget(
+                                    userData: widget.userData,
                                         providers: widget.providers,
                                         platformsSelected:
                                             widget.platformsSelected,

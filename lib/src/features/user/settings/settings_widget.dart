@@ -9,6 +9,7 @@ import 'account_widget.dart';
 import 'about_widget.dart';
 
 class SettingsWidget extends StatefulWidget {
+  dynamic userData;
   List<dynamic> providers;
   List<dynamic> platformsSelected;
   Function setPlatformsSelected;
@@ -18,21 +19,22 @@ class SettingsWidget extends StatefulWidget {
       required this.providers,
       required this.platformsSelected,
       required this.setPlatformsSelected,
-      required this.setProviders});
+      required this.setProviders, required this.userData});
 
   @override
   State<SettingsWidget> createState() => _SettingsWidgetState(this.providers,
-      this.platformsSelected, this.setPlatformsSelected, this.setProviders);
+      this.platformsSelected, this.setPlatformsSelected, this.setProviders, this.userData);
 }
 
 class _SettingsWidgetState extends State<SettingsWidget> {
+  dynamic userData;
   int count = 0;
   List<dynamic> providers;
   List<dynamic> platformsSelected;
   Function setPlatformsSelected;
   Function setProviders;
   _SettingsWidgetState(this.providers, this.platformsSelected,
-      this.setPlatformsSelected, this.setProviders);
+      this.setPlatformsSelected, this.setProviders, this.userData);
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +89,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => AccountWidget(
+                                    userData: widget.userData,
                                         providers: widget.providers,
                                         platformsSelected:
                                             widget.platformsSelected,

@@ -10,13 +10,15 @@ import 'features/user/user_page.dart';
 import 'features/selectPlatform/selectPlatform_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  dynamic userData = {};
+  HomePage({Key? key, required this.userData}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState(this.userData);
 }
 
 class _HomePageState extends State<HomePage> {
+  dynamic userData = {};
   static const url_image = 'https://image.tmdb.org/t/p/w500';
   int selectedIndex = 0;
   int previousSelectedIndex = 0;
@@ -25,24 +27,37 @@ class _HomePageState extends State<HomePage> {
   List<dynamic> movieProviders = [];
   List<dynamic> serieProviders = [];
   List<dynamic> providers = [];
+  List<dynamic> genres = [];
+  _HomePageState(userData);
 
   @override
   void initState() {
     super.initState();
     fetchMovieProviders();
     fetchSerieProviders();
+    fetchGenres();
+  }
+
+  @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final screens = [
-      const HomeView(),
+      HomeView(
+        genres: genres,
+      ),
       CreateOrJoinWidget(
         platformsSelected: platformsSelected,
         providers: providers,
       ),
       const SearchView(),
       UsersView(
+        userData: widget.userData,
         providers: providers,
         platformsSelected: platformsSelected,
         setPlatformsSelected: (mode, value) {
@@ -208,6 +223,7 @@ class _HomePageState extends State<HomePage> {
                               color: Colors.white,
                             ),
                             onPressed: () {
+                              print(widget.userData);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -390,7 +406,6 @@ class _HomePageState extends State<HomePage> {
         element['enable'] = false;
       });
     });
-
     for (var i = 0; i < 3; i++) {
       setState(() {
         platformsSelected.add(providers[i]);
@@ -399,6 +414,7 @@ class _HomePageState extends State<HomePage> {
         platformsSelected.last['enable'] = true;
       });
     }
+
     int offset = 0;
     for (var i = 0; i < 3; i++) {
       setState(() {
@@ -442,5 +458,55 @@ class _HomePageState extends State<HomePage> {
         element['enable'] = false;
       });
     });
+  }
+
+  void fetchGenres() async {
+    const api_url = 'https://api.themoviedb.org/3';
+    const api_Key = '36e984f2374fdfcbcea58dba752094dc';
+    const image_path = 'https://image.tmdb.org/t/p/original';
+    const url_image = 'https://image.tmdb.org/t/p/w500';
+
+    var url = api_url + '/genre/movie/list?api_key=' + api_Key;
+
+    final uri = Uri.parse(url);
+    final response = await http.get(uri);
+    final body = response.body;
+    final json = jsonDecode(body);
+    final gen = json['genres'];
+
+    setState(() {
+      genres = gen;
+    });
+
+    fetchMovies();
+  }
+
+  void fetchMovies() async {
+    for (var genre in genres) {
+      const api_url = 'https://api.themoviedb.org/3';
+      const api_Key = '36e984f2374fdfcbcea58dba752094dc';
+      const image_path = 'https://image.tmdb.org/t/p/original';
+      const url_image = 'https://image.tmdb.org/t/p/w500';
+
+      var url = api_url +
+          '/discover/movie?api_key=' +
+          api_Key +
+          '&sort_by=popularity.desc&with_genres=' +
+          genre['id'].toString();
+
+      final uri = Uri.parse(url);
+      final response = await http.get(uri);
+      final body = response.body;
+      final json = jsonDecode(body);
+      final movs = json['results'];
+
+      for (var element in movs) {
+        element['liked'] = false;
+      }
+
+      setState(() {
+        genre['movies'] = movs;
+      });
+    }
   }
 }

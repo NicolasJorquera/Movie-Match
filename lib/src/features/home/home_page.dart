@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -5,20 +6,30 @@ import 'package:http/http.dart' as http;
 import 'widget/movieInfo_widget.dart';
 
 class HomeView extends StatefulWidget {
-  const HomeView({super.key});
+  List<dynamic> genres = [];
+  HomeView({super.key, required this.genres});
 
   @override
-  State<HomeView> createState() => _HomeViewState();
+  State<HomeView> createState() => _HomeViewState(this.genres);
 }
 
 class _HomeViewState extends State<HomeView> {
   List<dynamic> genres = [];
 
-  @override
-  void initState() {
-    super.initState();
-    fetchGenres();
-  }
+  _HomeViewState(genres);
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   fetchGenres();
+  // }
+
+  // @override
+  // void setState(fn) {
+  //   if(mounted) {
+  //     super.setState(fn);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +45,18 @@ class _HomeViewState extends State<HomeView> {
             separatorBuilder: (context, index) {
               return const SizedBox(height: 0);
             },
-            itemCount: genres.length));
+            itemCount: widget.genres.length));
   }
 
   Widget buildCard(int index, List<dynamic> movies) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           GestureDetector(
+            // onDoubleTap: () {
+            //   setState(() {
+            //     movies[index]['liked'] = !movies[index]['liked'];
+            //   });
+            // },
             onTap: () {
               Navigator.push(
                 context,
@@ -113,7 +129,7 @@ class _HomeViewState extends State<HomeView> {
           child: Align(
               alignment: Alignment.bottomLeft,
               child: Text(
-                genres.isNotEmpty ? genres[index1]['name'] : '',
+                widget.genres.isNotEmpty ? widget.genres[index1]['name'] : '',
                 style: const TextStyle(color: Colors.white, fontSize: 20),
                 textAlign: TextAlign.left,
               )),
@@ -133,72 +149,22 @@ class _HomeViewState extends State<HomeView> {
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.only(left: 12, right: 12),
                   itemBuilder: (context, index) {
-                    return index != genres[index1]['movies'].length - 1
+                    return index != widget.genres[index1]['movies'].length - 1
                         ? Row(
                             children: [
-                              buildCard(index, genres[index1]['movies']),
+                              buildCard(index, widget.genres[index1]['movies']),
                               const SizedBox(width: 5)
                             ],
                           )
                         : Row(children: [
-                            buildCard(index, genres[index1]['movies'])
+                            buildCard(index, widget.genres[index1]['movies'])
                           ]);
                   },
-                  itemCount: genres.isNotEmpty
-                      ? genres[index1]['movies'] != null
-                          ? genres[index1]['movies'].length
+                  itemCount: widget.genres.isNotEmpty
+                      ? widget.genres[index1]['movies'] != null
+                          ? widget.genres[index1]['movies'].length
                           : 0
                       : 0,
                 )))
       ]);
-
-  void fetchGenres() async {
-    const api_url = 'https://api.themoviedb.org/3';
-    const api_Key = '36e984f2374fdfcbcea58dba752094dc';
-    const image_path = 'https://image.tmdb.org/t/p/original';
-    const url_image = 'https://image.tmdb.org/t/p/w500';
-
-    var url = api_url + '/genre/movie/list?api_key=' + api_Key;
-
-    final uri = Uri.parse(url);
-    final response = await http.get(uri);
-    final body = response.body;
-    final json = jsonDecode(body);
-    final gen = json['genres'];
-
-    setState(() {
-      genres = gen;
-    });
-
-    fetchMovies();
-  }
-
-  void fetchMovies() async {
-    for (var genre in genres) {
-      const api_url = 'https://api.themoviedb.org/3';
-      const api_Key = '36e984f2374fdfcbcea58dba752094dc';
-      const image_path = 'https://image.tmdb.org/t/p/original';
-      const url_image = 'https://image.tmdb.org/t/p/w500';
-
-      var url = api_url +
-          '/discover/movie?api_key=' +
-          api_Key +
-          '&sort_by=popularity.desc&with_genres=' +
-          genre['id'].toString();
-
-      final uri = Uri.parse(url);
-      final response = await http.get(uri);
-      final body = response.body;
-      final json = jsonDecode(body);
-      final movs = json['results'];
-
-      for (var element in movs) {
-        element['liked'] = false;
-      }
-
-      setState(() {
-        genre['movies'] = movs;
-      });
-    }
-  }
 }
