@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flixer/src/core/constants/app_colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -19,8 +18,8 @@ class UsersView extends StatefulWidget {
       required this.setProviders, required this.userData});
 
   @override
-  State<UsersView> createState() => _UsersViewState(this.providers,
-      this.platformsSelected, this.setPlatformsSelected, this.setProviders, this.userData);
+  State<UsersView> createState() => _UsersViewState(providers,
+      platformsSelected, setPlatformsSelected, setProviders, userData);
 }
 
 class _UsersViewState extends State<UsersView> {

@@ -1,8 +1,5 @@
-import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'widget/movieInfo_widget.dart';
 
 class HomeView extends StatefulWidget {
@@ -10,7 +7,7 @@ class HomeView extends StatefulWidget {
   HomeView({super.key, required this.genres});
 
   @override
-  State<HomeView> createState() => _HomeViewState(this.genres);
+  State<HomeView> createState() => _HomeViewState(genres);
 }
 
 class _HomeViewState extends State<HomeView> {

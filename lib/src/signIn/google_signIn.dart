@@ -39,12 +39,12 @@ class GoogleSignInProvider extends ChangeNotifier {
         await userRef.set({
           "userid": id,
           "name": googleUser.displayName!,
-          "email": googleUser.email!,
+          "email": googleUser.email,
         });
         setUserData({
           "userid": id,
           "name": googleUser.displayName!,
-          "email": googleUser.email!,
+          "email": googleUser.email,
         });
       } else {
         print('No data available.');

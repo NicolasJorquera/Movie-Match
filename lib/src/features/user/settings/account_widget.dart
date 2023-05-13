@@ -1,12 +1,9 @@
-import 'dart:ffi';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flixer/src/signIn/google_signIn.dart';
 import 'package:flutter/material.dart';
-import 'package:flixer/src/core/constants/app_colors.dart';
 import 'package:provider/provider.dart';
 
-import '../../selectPlatform/selectPlatform_page.dart';
 
 class AccountWidget extends StatefulWidget {
   dynamic userData;
@@ -24,11 +21,11 @@ class AccountWidget extends StatefulWidget {
 
   @override
   State<AccountWidget> createState() => _AccountWidgetState(
-      this.providers,
-      this.platformsSelected,
-      this.setPlatformsSelected,
-      this.setProviders,
-      this.userData);
+      providers,
+      platformsSelected,
+      setPlatformsSelected,
+      setProviders,
+      userData);
 }
 
 class _AccountWidgetState extends State<AccountWidget> {
@@ -386,7 +383,7 @@ class _AccountWidgetState extends State<AccountWidget> {
             ],
           ),
           Padding(
-            padding: EdgeInsets.only(bottom: 20),
+            padding: const EdgeInsets.only(bottom: 20),
             child: TextButton(
                 style: const ButtonStyle(
                     backgroundColor: MaterialStatePropertyAll(Colors.white24)),

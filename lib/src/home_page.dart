@@ -14,7 +14,7 @@ class HomePage extends StatefulWidget {
   HomePage({Key? key, required this.userData}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState(this.userData);
+  State<HomePage> createState() => _HomePageState(userData);
 }
 
 class _HomePageState extends State<HomePage> {
@@ -130,24 +130,22 @@ class _HomePageState extends State<HomePage> {
                                               providers.every((element) =>
                                                   element['enable'] == true)) {
                                             setState(() {
-                                              platformsSelected
-                                                  .forEach((element) {
+                                              for (var element in platformsSelected) {
                                                 element['enable'] = false;
-                                              });
+                                              }
                                             });
                                             setState(() {
-                                              providers.forEach((element) {
+                                              for (var element in providers) {
                                                 element['enable'] = false;
-                                              });
+                                              }
                                             });
                                           }
                                           if (platformsSelected.every(
                                               (element) => element['enable'])) {
                                             setState(() {
-                                              platformsSelected
-                                                  .forEach((element) {
+                                              for (var element in platformsSelected) {
                                                 element['enable'] = false;
-                                              });
+                                              }
                                             });
                                           }
                                           setState(() {
@@ -171,10 +169,11 @@ class _HomePageState extends State<HomePage> {
                                                     ['logo_path'],
                                             loadingBuilder: (context, child,
                                                 loadingProgress) {
-                                              if (loadingProgress == null)
+                                              if (loadingProgress == null) {
                                                 return child;
+                                              }
                                               return Container(
-                                                color: Color.fromRGBO(
+                                                color: const Color.fromRGBO(
                                                     50, 50, 50, 1),
                                               );
                                             },
@@ -287,22 +286,22 @@ class _HomePageState extends State<HomePage> {
                                     platformsSelected.every(
                                         (element) => element['enable'])) {
                                   setState(() {
-                                    providers.forEach((element) {
+                                    for (var element in providers) {
                                       element['enable'] = false;
-                                    });
+                                    }
                                   });
                                 } else {
                                   setState(() {
-                                    providers.forEach((element) {
+                                    for (var element in providers) {
                                       element['enable'] = true;
-                                    });
+                                    }
                                   });
                                 }
 
                                 setState(() {
-                                  platformsSelected.forEach((element) {
+                                  for (var element in platformsSelected) {
                                     element['enable'] = true;
-                                  });
+                                  }
                                 });
                               },
                               child: const Text(
@@ -402,9 +401,9 @@ class _HomePageState extends State<HomePage> {
     providers = movieProviders;
 
     setState(() {
-      providers.forEach((element) {
+      for (var element in providers) {
         element['enable'] = false;
-      });
+      }
     });
     for (var i = 0; i < 3; i++) {
       setState(() {
@@ -454,9 +453,9 @@ class _HomePageState extends State<HomePage> {
     // providers = movieProviders + serieProviders;
 
     setState(() {
-      providers.forEach((element) {
+      for (var element in providers) {
         element['enable'] = false;
-      });
+      }
     });
   }
 

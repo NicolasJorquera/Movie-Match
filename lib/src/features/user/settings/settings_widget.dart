@@ -1,8 +1,5 @@
-import 'dart:ffi';
 import 'package:flutter/material.dart';
-import 'package:flixer/src/core/constants/app_colors.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher_android/url_launcher_android.dart';
 
 import '../../selectPlatform/selectPlatform_page.dart';
 import 'account_widget.dart';
@@ -22,8 +19,8 @@ class SettingsWidget extends StatefulWidget {
       required this.setProviders, required this.userData});
 
   @override
-  State<SettingsWidget> createState() => _SettingsWidgetState(this.providers,
-      this.platformsSelected, this.setPlatformsSelected, this.setProviders, this.userData);
+  State<SettingsWidget> createState() => _SettingsWidgetState(providers,
+      platformsSelected, setPlatformsSelected, setProviders, userData);
 }
 
 class _SettingsWidgetState extends State<SettingsWidget> {
@@ -46,7 +43,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
               children: [
                 Column(
                   children: [
-                    Row(children: const [
+                    const Row(children: [
                       BackButton(
                         color: Colors.white,
                       ),
@@ -64,10 +61,10 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                                 BorderRadius.all(Radius.circular(20))),
                         color: Colors.white10,
                         child: TextButton(
-                          child: Padding(
-                            padding: const EdgeInsets.all(15),
+                          child: const Padding(
+                            padding: EdgeInsets.all(15),
                             child: Row(
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.person,
                                   size: 30,
@@ -109,10 +106,10 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                                 BorderRadius.all(Radius.circular(20))),
                         color: Colors.white10,
                         child: TextButton(
-                          child: Padding(
-                            padding: const EdgeInsets.all(15),
+                          child: const Padding(
+                            padding: EdgeInsets.all(15),
                             child: Row(
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.play_arrow_outlined,
                                   size: 30,
@@ -153,10 +150,10 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                                 BorderRadius.all(Radius.circular(20))),
                         color: Colors.white10,
                         child: TextButton(
-                          child: Padding(
-                            padding: const EdgeInsets.all(15),
+                          child: const Padding(
+                            padding: EdgeInsets.all(15),
                             child: Row(
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.question_mark,
                                   size: 30,
@@ -197,10 +194,10 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                                 BorderRadius.all(Radius.circular(20))),
                         color: Colors.white10,
                         child: TextButton(
-                          child: Padding(
-                            padding: const EdgeInsets.all(15),
+                          child: const Padding(
+                            padding: EdgeInsets.all(15),
                             child: Row(
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.mode_comment_outlined,
                                   size: 30,

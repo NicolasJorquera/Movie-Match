@@ -1,10 +1,5 @@
-import 'dart:convert';
-import 'dart:ffi';
-import 'package:flixer/src/core/constants/app_colors.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
-import 'package:appinio_swiper/appinio_swiper.dart';
 
 import 'widgets/createOrJoin/create_widget.dart';
 import 'widgets/createOrJoin/join_widget.dart';
@@ -16,7 +11,7 @@ class CreateOrJoinWidget extends StatefulWidget {
 
   @override
   State<CreateOrJoinWidget> createState() =>
-      _CreateOrJoinWidgetState(this.platformsSelected, this.providers);
+      _CreateOrJoinWidgetState(platformsSelected, providers);
 }
 
 class _CreateOrJoinWidgetState extends State<CreateOrJoinWidget>
@@ -41,7 +36,7 @@ class _CreateOrJoinWidgetState extends State<CreateOrJoinWidget>
           controller: _tabController,
           unselectedLabelColor: Colors.white,
           labelColor: Colors.white,
-          indicatorColor: Color.fromRGBO(180, 0, 0, 1),
+          indicatorColor: const Color.fromRGBO(180, 0, 0, 1),
           tabs: const [
             Tab(
               child: Text(
@@ -65,7 +60,7 @@ class _CreateOrJoinWidgetState extends State<CreateOrJoinWidget>
                 platformsSelected: widget.platformsSelected,
                 providers: widget.providers,
               ),
-              JoinWidget(),
+              const JoinWidget(),
             ],
           ),
         )

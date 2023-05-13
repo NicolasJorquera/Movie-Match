@@ -1,8 +1,5 @@
-import 'dart:ffi';
 import 'package:flutter/material.dart';
-import 'package:flixer/src/core/constants/app_colors.dart';
 
-import '../../selectPlatform/selectPlatform_page.dart';
 
 class AboutWidget extends StatefulWidget {
   List<dynamic> providers;
@@ -17,8 +14,8 @@ class AboutWidget extends StatefulWidget {
       required this.setProviders});
 
   @override
-  State<AboutWidget> createState() => _AboutWidgetState(this.providers,
-      this.platformsSelected, this.setPlatformsSelected, this.setProviders);
+  State<AboutWidget> createState() => _AboutWidgetState(providers,
+      platformsSelected, setPlatformsSelected, setProviders);
 }
 
 class _AboutWidgetState extends State<AboutWidget> {
@@ -32,15 +29,15 @@ class _AboutWidgetState extends State<AboutWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
         body: Padding(
-            padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
+            padding: EdgeInsets.only(top: 50, left: 20, right: 20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
                   children: [
-                    Row(children: const [
+                    Row(children: [
                       BackButton(
                         color: Colors.white,
                       ),
@@ -49,18 +46,18 @@ class _AboutWidgetState extends State<AboutWidget> {
                         style: TextStyle(color: Colors.white, fontSize: 20),
                       )
                     ]),
-                    const SizedBox(
+                    SizedBox(
                       height: 20,
                     ),
                     Row(
-                      children: const [
+                      children: [
                         Text(
                           'FLIXER',
                           style: TextStyle(color: Color.fromRGBO(180, 0, 0, 1), fontSize: 17),
                         )
                       ],
                     ),
-                    const SizedBox(
+                    SizedBox(
                       height: 25,
                     ),
                     Row(
@@ -72,11 +69,11 @@ class _AboutWidgetState extends State<AboutWidget> {
                         ),
                       ],
                     ),
-                    const Divider(
+                    Divider(
                       thickness: 2,
                       color: Colors.white10,
                     ),
-                    const SizedBox(
+                    SizedBox(
                       height: 5,
                     ),
                     Row(
@@ -88,22 +85,22 @@ class _AboutWidgetState extends State<AboutWidget> {
                         ),
                       ],
                     ),
-                    const Divider(
+                    Divider(
                       thickness: 2,
                       color: Colors.white10,
                     ),
-                    const SizedBox(
+                    SizedBox(
                       height: 30,
                     ),
                     Row(
-                      children: const [
+                      children: [
                         Text(
                           'FAQ',
                           style: TextStyle(color: Colors.white54, fontSize: 17),
                         )
                       ],
                     ),
-                    const SizedBox(
+                    SizedBox(
                       height: 25,
                     ),
                     Row(
@@ -115,11 +112,11 @@ class _AboutWidgetState extends State<AboutWidget> {
                         ),
                       ],
                     ),
-                    const Divider(
+                    Divider(
                       thickness: 2,
                       color: Colors.white10,
                     ),
-                    const SizedBox(
+                    SizedBox(
                       height: 5,
                     ),
                     Row(
@@ -131,11 +128,11 @@ class _AboutWidgetState extends State<AboutWidget> {
                         ),
                       ],
                     ),
-                    const Divider(
+                    Divider(
                       thickness: 2,
                       color: Colors.white10,
                     ),
-                    const SizedBox(
+                    SizedBox(
                       height: 5,
                     ),
                     Row(
@@ -147,11 +144,11 @@ class _AboutWidgetState extends State<AboutWidget> {
                         ),
                       ],
                     ),
-                    const Divider(
+                    Divider(
                       thickness: 2,
                       color: Colors.white10,
                     ),
-                    const SizedBox(
+                    SizedBox(
                       height: 5,
                     ),
                     Row(
@@ -163,11 +160,11 @@ class _AboutWidgetState extends State<AboutWidget> {
                         ),
                       ],
                     ),
-                    const Divider(
+                    Divider(
                       thickness: 2,
                       color: Colors.white10,
                     ),
-                    const SizedBox(
+                    SizedBox(
                       height: 5,
                     ),
                     Row(
@@ -179,11 +176,11 @@ class _AboutWidgetState extends State<AboutWidget> {
                         ),
                       ],
                     ),
-                    const Divider(
+                    Divider(
                       thickness: 2,
                       color: Colors.white10,
                     ),
-                    const SizedBox(
+                    SizedBox(
                       height: 5,
                     ),
                     Row(
@@ -195,11 +192,11 @@ class _AboutWidgetState extends State<AboutWidget> {
                         ),
                       ],
                     ),
-                    const Divider(
+                    Divider(
                       thickness: 2,
                       color: Colors.white10,
                     ),
-                    const SizedBox(
+                    SizedBox(
                       height: 5,
                     ),
                     Row(
@@ -211,11 +208,11 @@ class _AboutWidgetState extends State<AboutWidget> {
                         ),
                       ],
                     ),
-                    const Divider(
+                    Divider(
                       thickness: 2,
                       color: Colors.white10,
                     ),
-                    const SizedBox(
+                    SizedBox(
                       height: 5,
                     ),
                     Row(
@@ -227,11 +224,11 @@ class _AboutWidgetState extends State<AboutWidget> {
                         ),
                       ],
                     ),
-                    const Divider(
+                    Divider(
                       thickness: 2,
                       color: Colors.white10,
                     ),
-                    const SizedBox(
+                    SizedBox(
                       height: 5,
                     ),
                     Row(
@@ -243,11 +240,11 @@ class _AboutWidgetState extends State<AboutWidget> {
                         ),
                       ],
                     ),
-                    const Divider(
+                    Divider(
                       thickness: 2,
                       color: Colors.white10,
                     ),
-                    const SizedBox(
+                    SizedBox(
                       height: 5,
                     ),
                     Row(
@@ -259,7 +256,7 @@ class _AboutWidgetState extends State<AboutWidget> {
                         ),
                       ],
                     ),
-                    const Divider(
+                    Divider(
                       thickness: 2,
                       color: Colors.white10,
                     ),

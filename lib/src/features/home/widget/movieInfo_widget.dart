@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 
 class MovieInfoPage extends StatefulWidget {
   final dynamic movie;
-  MovieInfoPage({required this.movie});
+  const MovieInfoPage({super.key, required this.movie});
   @override
-  _MovieInfoPageState createState() => _MovieInfoPageState(this.movie);
+  _MovieInfoPageState createState() => _MovieInfoPageState(movie);
 }
 
 class _MovieInfoPageState extends State<MovieInfoPage> {
@@ -152,7 +151,7 @@ class _MovieInfoPageState extends State<MovieInfoPage> {
                   const SizedBox(
                     height: 10,
                   ),
-                  Text(
+                  const Text(
                     'Cast',
                     style: TextStyle(color: Colors.white),
                   ),
@@ -169,7 +168,7 @@ class _MovieInfoPageState extends State<MovieInfoPage> {
                           child: ListView.separated(
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
-                                return Card(
+                                return const Card(
                                   color: Colors.white24,
                                   child: SizedBox(
                                     height: 200,
@@ -193,7 +192,7 @@ class _MovieInfoPageState extends State<MovieInfoPage> {
                   const SizedBox(
                     height: 10,
                   ),
-                  Text(
+                  const Text(
                     'Related',
                     style: TextStyle(color: Colors.white),
                   ),
@@ -210,7 +209,7 @@ class _MovieInfoPageState extends State<MovieInfoPage> {
                           child: ListView.separated(
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
-                                return Card(
+                                return const Card(
                                   color: Colors.white24,
                                   child: SizedBox(
                                     height: 200,

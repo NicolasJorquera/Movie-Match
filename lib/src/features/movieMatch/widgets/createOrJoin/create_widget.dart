@@ -1,7 +1,4 @@
-import 'dart:convert';
-import 'dart:ffi';
 import 'package:flixer/src/features/movieMatch/widgets/movieTinder_widget.dart';
-import 'package:http/http.dart' as http;
 import 'package:share_plus/share_plus.dart';
 
 import 'package:flutter/material.dart';
@@ -15,7 +12,7 @@ class CreateWidget extends StatefulWidget {
 
   @override
   State<CreateWidget> createState() =>
-      _CreateWidgetState(this.platformsSelected, this.providers);
+      _CreateWidgetState(platformsSelected, providers);
 }
 
 class _CreateWidgetState extends State<CreateWidget> {
@@ -56,7 +53,7 @@ class _CreateWidgetState extends State<CreateWidget> {
         child: Stepper(
           connectorColor: MaterialStateProperty.resolveWith(
               (states) => states.contains(MaterialState.selected)
-                  ? Color.fromRGBO(180, 0, 0, 1)
+                  ? const Color.fromRGBO(180, 0, 0, 1)
                   : states.contains(MaterialState.disabled)
                       ? Colors.transparent
                       : Colors.white),
@@ -68,7 +65,7 @@ class _CreateWidgetState extends State<CreateWidget> {
             if (isLastStep) {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => MovieTinderWidget()),
+                MaterialPageRoute(builder: (context) => const MovieTinderWidget()),
               );
             } else {
               setState(() {
@@ -530,7 +527,7 @@ class _CreateWidgetState extends State<CreateWidget> {
                                             secondary:
                                                 Color.fromRGBO(180, 0, 0, 1))),
                                     child: ListView.separated(
-                                        physics: BouncingScrollPhysics(),
+                                        physics: const BouncingScrollPhysics(),
                                         scrollDirection: Axis.horizontal,
                                         itemBuilder: (context, index) {
                                           return Card(
@@ -608,7 +605,7 @@ class _CreateWidgetState extends State<CreateWidget> {
       margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 1),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: Color.fromRGBO(120, 20, 20, 1),
+        color: const Color.fromRGBO(120, 20, 20, 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

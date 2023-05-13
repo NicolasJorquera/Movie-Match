@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:appinio_swiper/appinio_swiper.dart';
 
 class MovieTinderWidget extends StatefulWidget {
-  MovieTinderWidget({super.key});
+  const MovieTinderWidget({super.key});
 
   @override
   State<MovieTinderWidget> createState() => _MovieTinderWidgetState();

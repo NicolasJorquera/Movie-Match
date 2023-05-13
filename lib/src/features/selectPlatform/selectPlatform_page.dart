@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class SelectPlatformView extends StatefulWidget {
   List<dynamic> providers;
@@ -15,10 +14,10 @@ class SelectPlatformView extends StatefulWidget {
   @override
   // ignore: no_logic_in_create_state
   State<SelectPlatformView> createState() => _SelectPlatformViewState(
-      this.providers,
-      this.platformsSelected,
-      this.setPlatformsSelected,
-      this.setProviders);
+      providers,
+      platformsSelected,
+      setPlatformsSelected,
+      setProviders);
 }
 
 class _SelectPlatformViewState extends State<SelectPlatformView> {
@@ -67,7 +66,7 @@ class _SelectPlatformViewState extends State<SelectPlatformView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(children: const [
+                const Row(children: [
                   BackButton(
                     color: Colors.white,
                   ),

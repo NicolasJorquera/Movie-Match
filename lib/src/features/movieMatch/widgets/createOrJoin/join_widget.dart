@@ -1,14 +1,10 @@
-import 'dart:convert';
-import 'dart:ffi';
-import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
-import 'package:appinio_swiper/appinio_swiper.dart';
 
 import '../movieTinder_widget.dart';
 
 class JoinWidget extends StatefulWidget {
-  JoinWidget({super.key});
+  const JoinWidget({super.key});
 
   @override
   State<JoinWidget> createState() => _JoinWidgetState();
@@ -149,7 +145,7 @@ class _JoinWidgetState extends State<JoinWidget> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => MovieTinderWidget()),
+                            builder: (context) => const MovieTinderWidget()),
                       );
                     },
                     child: const Text(

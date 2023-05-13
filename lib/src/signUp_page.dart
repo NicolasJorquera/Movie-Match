@@ -1,23 +1,15 @@
-import 'dart:convert';
 
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flixer/src/signIn/google_signIn.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
-import 'features/home/home_page.dart';
-import 'features/search/search_page.dart';
-import 'features/movieMatch/createOrJoin_widget.dart';
-import 'features/user/user_page.dart';
-import 'features/selectPlatform/selectPlatform_page.dart';
 
 class SignUpPage extends StatefulWidget {
   Function setUserData;
   SignUpPage({Key? key, required this.setUserData}) : super(key: key);
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState(this.setUserData);
+  State<SignUpPage> createState() => _SignUpPageState(setUserData);
 }
 
 class _SignUpPageState extends State<SignUpPage> {
