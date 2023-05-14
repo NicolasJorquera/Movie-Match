@@ -4,7 +4,6 @@ import 'package:flixer/src/signIn/google_signIn.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
 class AccountWidget extends StatefulWidget {
   dynamic userData;
   List<dynamic> providers;
@@ -20,12 +19,8 @@ class AccountWidget extends StatefulWidget {
       required this.userData});
 
   @override
-  State<AccountWidget> createState() => _AccountWidgetState(
-      providers,
-      platformsSelected,
-      setPlatformsSelected,
-      setProviders,
-      userData);
+  State<AccountWidget> createState() => _AccountWidgetState(providers,
+      platformsSelected, setPlatformsSelected, setProviders, userData);
 }
 
 class _AccountWidgetState extends State<AccountWidget> {
@@ -35,6 +30,7 @@ class _AccountWidgetState extends State<AccountWidget> {
   List<dynamic> platformsSelected;
   Function setPlatformsSelected;
   Function setProviders;
+  final user = FirebaseAuth.instance.currentUser!;
   _AccountWidgetState(this.providers, this.platformsSelected,
       this.setPlatformsSelected, this.setProviders, this.userData);
 
@@ -387,19 +383,49 @@ class _AccountWidgetState extends State<AccountWidget> {
             child: TextButton(
                 style: const ButtonStyle(
                     backgroundColor: MaterialStatePropertyAll(Colors.white24)),
-                onPressed: () {
+                onPressed: () async {
+                  final usersRef =
+                      await FirebaseDatabase.instance.ref("users/").get();
+                  if (usersRef.children.length > 1) {
+                    DataSnapshot userSnapshot = usersRef.children.firstWhere(
+                        (usr) => usr.child('email').value == user.email);
+                    if (userSnapshot.exists) {
+                      DatabaseReference userRef = FirebaseDatabase.instance.ref(
+                          "users/" +
+                              userSnapshot.child('userid').value.toString());
+                      userRef.remove();
+                    }
+                  }
+
                   final provider =
                       Provider.of<GoogleSignInProvider>(context, listen: false);
-                  provider.logout();
+                  if (provider.googleSignIn.currentUser != null) {
+                    await provider.googleSignIn.disconnect();
+                    await FirebaseAuth.instance.signOut();
+                  } else {
+                    await FirebaseAuth.instance.signOut();
+                  }
+                  // provider.logout();
                   Navigator.of(context).popUntil((route) => route.isFirst);
 
                   String str = widget.userData.toString();
 
-                  if (str != '{}') {
-                    DatabaseReference userRef = FirebaseDatabase.instance
-                        .ref("users/" + widget.userData['userid']);
-                    userRef.remove();
-                  }
+                  // if (str != '{}') {
+                  //   DatabaseReference userRef = FirebaseDatabase.instance
+                  //       .ref("users/" + widget.userData['userid']);
+                  //   userRef.remove();
+                  // } else {
+                  //   final usersRef =
+                  //       await FirebaseDatabase.instance.ref("users/").get();
+                  //   DataSnapshot userSnapshot = usersRef.children.firstWhere(
+                  //       (usr) => usr.child('email').value == user.email);
+                  //   if (userSnapshot.exists) {
+                  //     DatabaseReference userRef = FirebaseDatabase.instance.ref(
+                  //         "users/" +
+                  //             userSnapshot.child('userid').value.toString());
+                  //     userRef.remove();
+                  //   }
+                  // }
                 },
                 child: const Padding(
                     padding: EdgeInsets.all(5),

@@ -87,241 +87,289 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
         appBar: AppBar(
-          bottom: PreferredSize(
-              child: SizedBox(
-                  height: 50,
-                  child: Row(
-                    children: [
-                      Expanded(
-                          child: ShaderMask(
-                              shaderCallback: (Rect rect) {
-                                return const LinearGradient(
-                                  colors: [
-                                    Colors.purple,
-                                    Colors.transparent,
-                                    Colors.transparent,
-                                    Colors.purple
-                                  ],
-                                  stops: [
-                                    0.0,
-                                    0.0,
-                                    0.95,
-                                    1.0
-                                  ], // 10% purple, 80% transparent, 10% purple
-                                ).createShader(rect);
-                              },
-                              blendMode: BlendMode.dstOut,
-                              child: Theme(
-                                data: Theme.of(context).copyWith(
-                                    colorScheme: const ColorScheme.light(
-                                        primary: Color.fromRGBO(180, 0, 0, 1),
-                                        secondary:
-                                            Color.fromRGBO(180, 0, 0, 1))),
-                                child: ListView.separated(
-                                    reverse: true,
-                                    scrollDirection: Axis.horizontal,
-                                    itemBuilder: (context, index) {
-                                      return GestureDetector(
-                                        onTap: () {
-                                          if (platformsSelected.every(
-                                                  (element) =>
-                                                      element['enable'] ==
-                                                      true) &&
-                                              providers.every((element) =>
-                                                  element['enable'] == true)) {
-                                            setState(() {
-                                              for (var element in platformsSelected) {
-                                                element['enable'] = false;
-                                              }
-                                            });
-                                            setState(() {
-                                              for (var element in providers) {
-                                                element['enable'] = false;
-                                              }
-                                            });
-                                          }
-                                          if (platformsSelected.every(
-                                              (element) => element['enable'])) {
-                                            setState(() {
-                                              for (var element in platformsSelected) {
-                                                element['enable'] = false;
-                                              }
-                                            });
-                                          }
-                                          setState(() {
-                                            platformsSelected[index]['enable'] =
-                                                !platformsSelected[index]
-                                                    ['enable'];
-                                          });
-
-                                          print(platformsSelected);
-                                        },
-                                        child: Card(
-                                          color: Colors.transparent,
-                                          clipBehavior:
-                                              Clip.antiAliasWithSaveLayer,
-                                          shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(10))),
-                                          child: Image.network(
-                                            url_image +
-                                                platformsSelected[index]
-                                                    ['logo_path'],
-                                            loadingBuilder: (context, child,
-                                                loadingProgress) {
-                                              if (loadingProgress == null) {
-                                                return child;
-                                              }
-                                              return Container(
-                                                color: const Color.fromRGBO(
-                                                    50, 50, 50, 1),
-                                              );
-                                            },
-                                            fit: BoxFit.cover,
-                                            color: providers.every((element) =>
+          title: Row(
+            children: [
+              Image.asset(
+                'assets/icon/flixerLogo.png',
+                height: 45,
+                width: 45,
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              Text(
+                'FLIXER',
+                style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.w100),
+              )
+              
+            ],
+          ),
+        ),
+        body: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) {
+            return <Widget>[
+              SliverAppBar(
+                // pinned: true,
+                // floating: true,
+                // forceElevated: innerBoxIsScrolled,
+                bottom: PreferredSize(
+                    child: SizedBox(
+                        height: 50,
+                        child: Row(
+                          children: [
+                            Expanded(
+                                child: ShaderMask(
+                                    shaderCallback: (Rect rect) {
+                                      return const LinearGradient(
+                                        colors: [
+                                          Colors.purple,
+                                          Colors.transparent,
+                                          Colors.transparent,
+                                          Colors.purple
+                                        ],
+                                        stops: [
+                                          0.0,
+                                          0.0,
+                                          0.95,
+                                          1.0
+                                        ], // 10% purple, 80% transparent, 10% purple
+                                      ).createShader(rect);
+                                    },
+                                    blendMode: BlendMode.dstOut,
+                                    child: Theme(
+                                      data: Theme.of(context).copyWith(
+                                          colorScheme: const ColorScheme.light(
+                                              primary:
+                                                  Color.fromRGBO(180, 0, 0, 1),
+                                              secondary: Color.fromRGBO(
+                                                  180, 0, 0, 1))),
+                                      child: ListView.separated(
+                                          reverse: true,
+                                          scrollDirection: Axis.horizontal,
+                                          itemBuilder: (context, index) {
+                                            return GestureDetector(
+                                              onTap: () {
+                                                if (platformsSelected.every(
+                                                        (element) =>
                                                             element['enable'] ==
                                                             true) &&
-                                                        platformsSelected.every(
-                                                            (element) =>
-                                                                element[
-                                                                    'enable'] ==
-                                                                true) ||
-                                                    (platformsSelected.any(
-                                                            (element) => element[
-                                                                'enable']) &&
-                                                        !platformsSelected[
-                                                            index]['enable'])
-                                                ? const Color.fromRGBO(
-                                                    0, 0, 0, 0.5)
-                                                : Colors.transparent,
-                                            colorBlendMode: BlendMode.darken,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    separatorBuilder: (context, index) {
-                                      return const SizedBox(
-                                        width: 1,
-                                      );
-                                    },
-                                    itemCount: platformsSelected.length),
-                              ))),
-                      SizedBox(
-                        height: 50,
-                        width: 50,
-                        child: Card(
-                          color: Colors.white24,
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                          child: TextButton(
-                            child: const Icon(
-                              Icons.add,
-                              size: 15,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {
-                              print(widget.userData);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => SelectPlatformView(
-                                          providers: providers,
-                                          platformsSelected: platformsSelected,
-                                          setPlatformsSelected: (mode, value) {
-                                            if (mode == 'add') {
-                                              setState(() {
-                                                platformsSelected.add(value);
-                                              });
-                                            } else if (mode == 'remove') {
-                                              setState(() {
-                                                platformsSelected.remove(value);
-                                              });
-                                            }
-                                          },
-                                          setProviders: (mode, value) {
-                                            if (mode == 'add') {
-                                              setState(() {
-                                                providers.add(value);
-                                              });
-                                            } else if (mode == 'remove') {
-                                              setState(() {
-                                                providers.remove(value);
-                                              });
-                                            }
-                                          },
-                                        )),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 50,
-                        width: 50,
-                        child: Card(
-                            color: providers.every((element) =>
-                                        element['enable'] == true) &&
-                                    platformsSelected.every(
-                                        (element) => element['enable'] == true)
-                                ? const Color.fromRGBO(180, 0, 0, 1)
-                                : Colors.black,
-                            clipBehavior: Clip.antiAliasWithSaveLayer,
-                            shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                    color: providers.every((element) =>
-                                                element['enable'] == true) &&
-                                            platformsSelected.every((element) =>
-                                                element['enable'] == true)
-                                        ? const Color.fromRGBO(180, 0, 0, 1)
-                                        : Colors.white24,
-                                    width: 2),
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(10))),
-                            child: TextButton(
-                              onPressed: () {
-                                if (providers.every(
-                                        (element) => element['enable']) &&
-                                    platformsSelected.every(
-                                        (element) => element['enable'])) {
-                                  setState(() {
-                                    for (var element in providers) {
-                                      element['enable'] = false;
-                                    }
-                                  });
-                                } else {
-                                  setState(() {
-                                    for (var element in providers) {
-                                      element['enable'] = true;
-                                    }
-                                  });
-                                }
+                                                    providers.every((element) =>
+                                                        element['enable'] ==
+                                                        true)) {
+                                                  setState(() {
+                                                    for (var element
+                                                        in platformsSelected) {
+                                                      element['enable'] = false;
+                                                    }
+                                                  });
+                                                  setState(() {
+                                                    for (var element
+                                                        in providers) {
+                                                      element['enable'] = false;
+                                                    }
+                                                  });
+                                                }
+                                                if (platformsSelected.every(
+                                                    (element) =>
+                                                        element['enable'])) {
+                                                  setState(() {
+                                                    for (var element
+                                                        in platformsSelected) {
+                                                      element['enable'] = false;
+                                                    }
+                                                  });
+                                                }
+                                                setState(() {
+                                                  platformsSelected[index]
+                                                          ['enable'] =
+                                                      !platformsSelected[index]
+                                                          ['enable'];
+                                                });
 
-                                setState(() {
-                                  for (var element in platformsSelected) {
-                                    element['enable'] = true;
-                                  }
-                                });
-                              },
-                              child: const Text(
-                                'All',
-                                style: TextStyle(color: Colors.white),
+                                                print(platformsSelected);
+                                              },
+                                              child: Card(
+                                                color: Colors.transparent,
+                                                clipBehavior:
+                                                    Clip.antiAliasWithSaveLayer,
+                                                shape:
+                                                    const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    10))),
+                                                child: Image.network(
+                                                  url_image +
+                                                      platformsSelected[index]
+                                                          ['logo_path'],
+                                                  loadingBuilder: (context,
+                                                      child, loadingProgress) {
+                                                    if (loadingProgress ==
+                                                        null) {
+                                                      return child;
+                                                    }
+                                                    return Container(
+                                                      color:
+                                                          const Color.fromRGBO(
+                                                              50, 50, 50, 1),
+                                                    );
+                                                  },
+                                                  fit: BoxFit.cover,
+                                                  color: providers.every(
+                                                                  (element) =>
+                                                                      element['enable'] ==
+                                                                      true) &&
+                                                              platformsSelected
+                                                                  .every((element) =>
+                                                                      element['enable'] ==
+                                                                      true) ||
+                                                          (platformsSelected.any(
+                                                                  (element) =>
+                                                                      element[
+                                                                          'enable']) &&
+                                                              !platformsSelected[
+                                                                      index]
+                                                                  ['enable'])
+                                                      ? const Color.fromRGBO(
+                                                          0, 0, 0, 0.5)
+                                                      : Colors.transparent,
+                                                  colorBlendMode:
+                                                      BlendMode.darken,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          separatorBuilder: (context, index) {
+                                            return const SizedBox(
+                                              width: 1,
+                                            );
+                                          },
+                                          itemCount: platformsSelected.length),
+                                    ))),
+                            SizedBox(
+                              height: 50,
+                              width: 50,
+                              child: Card(
+                                color: Colors.white24,
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                                child: TextButton(
+                                  child: const Icon(
+                                    Icons.add,
+                                    size: 15,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    print(widget.userData);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              SelectPlatformView(
+                                                providers: providers,
+                                                platformsSelected:
+                                                    platformsSelected,
+                                                setPlatformsSelected:
+                                                    (mode, value) {
+                                                  if (mode == 'add') {
+                                                    setState(() {
+                                                      platformsSelected
+                                                          .add(value);
+                                                    });
+                                                  } else if (mode == 'remove') {
+                                                    setState(() {
+                                                      platformsSelected
+                                                          .remove(value);
+                                                    });
+                                                  }
+                                                },
+                                                setProviders: (mode, value) {
+                                                  if (mode == 'add') {
+                                                    setState(() {
+                                                      providers.add(value);
+                                                    });
+                                                  } else if (mode == 'remove') {
+                                                    setState(() {
+                                                      providers.remove(value);
+                                                    });
+                                                  }
+                                                },
+                                              )),
+                                    );
+                                  },
+                                ),
                               ),
-                            )),
-                      ),
-                      const SizedBox(
-                        width: 12,
-                      )
-                    ],
-                  )),
-              preferredSize: const Size.fromHeight(0)),
-        ),
-        body: Container(
-          padding: const EdgeInsets.only(top: 10),
-          child: IndexedStack(
-            index: selectedIndex,
-            children: screens,
+                            ),
+                            SizedBox(
+                              height: 50,
+                              width: 50,
+                              child: Card(
+                                  color: providers.every((element) =>
+                                              element['enable'] == true) &&
+                                          platformsSelected.every((element) =>
+                                              element['enable'] == true)
+                                      ? const Color.fromRGBO(180, 0, 0, 1)
+                                      : Colors.black,
+                                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                                  shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                          color: providers.every((element) =>
+                                                      element['enable'] ==
+                                                      true) &&
+                                                  platformsSelected
+                                                      .every((element) => element['enable'] == true)
+                                              ? const Color.fromRGBO(180, 0, 0, 1)
+                                              : Colors.white24,
+                                          width: 2),
+                                      borderRadius: const BorderRadius.all(Radius.circular(10))),
+                                  child: TextButton(
+                                    onPressed: () {
+                                      if (providers.every(
+                                              (element) => element['enable']) &&
+                                          platformsSelected.every(
+                                              (element) => element['enable'])) {
+                                        setState(() {
+                                          for (var element in providers) {
+                                            element['enable'] = false;
+                                          }
+                                        });
+                                      } else {
+                                        setState(() {
+                                          for (var element in providers) {
+                                            element['enable'] = true;
+                                          }
+                                        });
+                                      }
+
+                                      setState(() {
+                                        for (var element in platformsSelected) {
+                                          element['enable'] = true;
+                                        }
+                                      });
+                                    },
+                                    child: const Text(
+                                      'All',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  )),
+                            ),
+                            const SizedBox(
+                              width: 12,
+                            )
+                          ],
+                        )),
+                    preferredSize: const Size.fromHeight(0)),
+              )
+            ];
+          },
+          body: Container(
+            padding: const EdgeInsets.only(top: 10),
+            child: IndexedStack(
+              index: selectedIndex,
+              children: screens,
+            ),
           ),
         ),
         bottomNavigationBar: Theme(

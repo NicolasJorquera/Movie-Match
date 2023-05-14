@@ -53,6 +53,9 @@ class _SearchViewState extends State<SearchView> {
                           searchString = value;
                         });
                         fetchSearch();
+                        if (value == '') {
+                          fetchTrendingMovies();
+                        }
                       },
                     ))
                   ],
@@ -148,7 +151,7 @@ class _SearchViewState extends State<SearchView> {
                                                   !search[index]['liked'];
                                             });
                                           },
-                                          icon:  Icon(
+                                          icon: Icon(
                                             search[index]['liked']
                                                 ? Icons.favorite
                                                 : Icons.favorite_border,
@@ -203,7 +206,6 @@ class _SearchViewState extends State<SearchView> {
   }
 
   void fetchSearch() async {
-    https: //api.themoviedb.org/3/search/movie?api_key=###&query=the+avengers
     const api_url = 'https://api.themoviedb.org/3';
     const api_Key = '36e984f2374fdfcbcea58dba752094dc';
 
