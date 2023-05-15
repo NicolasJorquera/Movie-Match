@@ -3,6 +3,8 @@ import 'package:share_plus/share_plus.dart';
 
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class CreateWidget extends StatefulWidget {
   List<dynamic> platformsSelected;
@@ -24,6 +26,8 @@ class _CreateWidgetState extends State<CreateWidget> {
     'MoviesOrSeries': 'Movies',
     'Genres': []
   };
+  String sessionid = '';
+  final user = FirebaseAuth.instance.currentUser!;
   List<dynamic> platformsSelected;
   List<dynamic> providers;
   List<dynamic> allProviders = [];
@@ -60,14 +64,45 @@ class _CreateWidgetState extends State<CreateWidget> {
           type: StepperType.vertical,
           steps: getSteps(),
           currentStep: currentStep,
-          onStepContinue: () {
+          onStepContinue: () async {
             final isLastStep = currentStep == getSteps().length - 1;
             if (isLastStep) {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const MovieTinderWidget()),
+                MaterialPageRoute(
+                    builder: (context) => MovieTinderWidget(sessionID: sessionid,)),
               );
             } else {
+              final isPenultimateStep = currentStep == getSteps().length - 2;
+              if (isPenultimateStep) {
+                if (sessionid == '') {
+                  final usersRef =
+                      await FirebaseDatabase.instance.ref("users/").get();
+                  if (usersRef.children.length > 1) {
+                    DataSnapshot userSnapshot = usersRef.children.firstWhere(
+                        (usr) => usr.child('email').value == user.email);
+
+                    final sessionID = UniqueKey().hashCode;
+
+                    DatabaseReference sessionRef = FirebaseDatabase.instance
+                        .ref("matchSessions/" + sessionID.toString());
+
+                    await sessionRef.set({
+                      "sessionid": sessionID.toString(),
+                      "sessionData": sessionData,
+                      "sessionCreator": userSnapshot.key.toString()
+                    });
+
+                    sessionRef
+                        .child('users/' + userSnapshot.key.toString())
+                        .set(userSnapshot.key.toString());
+
+                    setState(() {
+                      sessionid = sessionID.toString();
+                    });
+                  }
+                }
+              }
               setState(() {
                 currentStep += 1;
               });
@@ -82,10 +117,36 @@ class _CreateWidgetState extends State<CreateWidget> {
               });
             }
           },
-          onStepTapped: (value) {
+          onStepTapped: (value) async {
             setState(() {
               currentStep = value;
             });
+            final isLastStep = currentStep == getSteps().length - 1;
+            if (isLastStep) {
+              if (sessionid == '') {
+                final usersRef =
+                    await FirebaseDatabase.instance.ref("users/").get();
+                if (usersRef.children.length > 1) {
+                  DataSnapshot userSnapshot = usersRef.children.firstWhere(
+                      (usr) => usr.child('email').value == user.email);
+
+                  final sessionID = UniqueKey().hashCode;
+
+                  DatabaseReference sessionRef = FirebaseDatabase.instance
+                      .ref("matchSessions/" + sessionID.toString());
+
+                  await sessionRef.set({
+                    "sessionid": sessionID.toString(),
+                    "sessionData": sessionData,
+                    "sessionCreator": userSnapshot.key.toString(),
+                    "users": [userSnapshot.key.toString()],
+                  });
+                  setState(() {
+                    sessionid = sessionID.toString();
+                  });
+                }
+              }
+            }
           },
           controlsBuilder: (context, details) {
             return Container(
@@ -305,7 +366,6 @@ class _CreateWidgetState extends State<CreateWidget> {
                   setState(() {
                     sessionData['MoviesOrSeries'] = value;
                   });
-                  print(sessionData);
                 },
                 selectedItem: 'Movie',
                 popupProps: PopupProps.menu(
@@ -463,11 +523,12 @@ class _CreateWidgetState extends State<CreateWidget> {
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(10)),
                                 border: Border.all(color: Colors.white)),
-                            child: const Padding(
-                              padding: EdgeInsets.all(10),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
                               child: SelectableText(
-                                'Session ID',
-                                style: TextStyle(color: Colors.white),
+                                sessionid != '' ? sessionid : 'Session ID',
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 18),
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -475,7 +536,7 @@ class _CreateWidgetState extends State<CreateWidget> {
                         ),
                         IconButton(
                             onPressed: () {
-                              Share.share('Flixer Session ID: 13862',
+                              Share.share('Flixer Session ID: ' + sessionid,
                                   subject: 'Flixer Session ID');
                             },
                             icon: const Icon(

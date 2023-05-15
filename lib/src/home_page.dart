@@ -94,10 +94,10 @@ class _HomePageState extends State<HomePage> {
                 height: 45,
                 width: 45,
               ),
-              SizedBox(
+              const SizedBox(
                 width: 5,
               ),
-              Text(
+              const Text(
                 'FLIXER',
                 style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.w100),
               )

@@ -27,40 +27,23 @@ class GoogleSignInProvider extends ChangeNotifier {
 
       final ref = FirebaseDatabase.instance.ref();
       final snapshot = await ref.child('users').get();
-      String id = (snapshot.children.isEmpty
-              ? 0
-              : int.parse(snapshot.children.last.key.toString()) + 1)
-          .toString();
 
       bool isEmailInDB = false;
-      snapshot.children.forEach((user) {
+      for (var user in snapshot.children) {
         String email = user.child('email').value.toString();
         if (email == googleUser.email) {
           isEmailInDB = true;
-          setUserData({
-            "userid": id,
-            "name": googleUser.displayName!,
-            "email": googleUser.email,
-          });
         }
-      });
-      print(isEmailInDB);
+      }
 
       if (snapshot.exists) {
         if (isEmailInDB) {
           //checks if email is already in database
           print('email is already in database');
         } else {
-          DatabaseReference userRef =
-              FirebaseDatabase.instance.ref("users/" + id);
+          DatabaseReference userRef = FirebaseDatabase.instance.ref("users/");
 
-          await userRef.set({
-            "userid": id,
-            "name": googleUser.displayName!,
-            "email": googleUser.email,
-          });
-          setUserData({
-            "userid": id,
+          userRef.push().set({
             "name": googleUser.displayName!,
             "email": googleUser.email,
           });

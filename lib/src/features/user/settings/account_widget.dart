@@ -392,7 +392,7 @@ class _AccountWidgetState extends State<AccountWidget> {
                     if (userSnapshot.exists) {
                       DatabaseReference userRef = FirebaseDatabase.instance.ref(
                           "users/" +
-                              userSnapshot.child('userid').value.toString());
+                              userSnapshot.key.toString());
                       userRef.remove();
                     }
                   }
@@ -408,7 +408,7 @@ class _AccountWidgetState extends State<AccountWidget> {
                   // provider.logout();
                   Navigator.of(context).popUntil((route) => route.isFirst);
 
-                  String str = widget.userData.toString();
+                  // String str = widget.userData.toString();
 
                   // if (str != '{}') {
                   //   DatabaseReference userRef = FirebaseDatabase.instance

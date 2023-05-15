@@ -1,18 +1,26 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:appinio_swiper/appinio_swiper.dart';
 
 class MovieTinderWidget extends StatefulWidget {
-  const MovieTinderWidget({super.key});
+  String sessionID = '';
+  MovieTinderWidget({super.key, required this.sessionID});
 
   @override
-  State<MovieTinderWidget> createState() => _MovieTinderWidgetState();
+  State<MovieTinderWidget> createState() =>
+      _MovieTinderWidgetState(this.sessionID);
 }
 
 class _MovieTinderWidgetState extends State<MovieTinderWidget> {
   List<dynamic> dayTrending = [];
+  String sessionID = '';
+  String image_path = 'https://image.tmdb.org/t/p/original';
+  final user = FirebaseAuth.instance.currentUser!;
+  _MovieTinderWidgetState(this.sessionID);
   @override
   void initState() {
     super.initState();
@@ -24,6 +32,26 @@ class _MovieTinderWidgetState extends State<MovieTinderWidget> {
     return Scaffold(
       body: SizedBox(
         child: AppinioSwiper(
+          onSwipe: (index, direction) async {
+            if (direction == AppinioSwiperDirection.right) {
+              final usersRef =
+                  await FirebaseDatabase.instance.ref("users/").get();
+
+              DataSnapshot userSnapshot = usersRef.children
+                  .firstWhere((usr) => usr.child('email').value == user.email);
+
+              DatabaseReference sessionMoviesLikedRef =
+                  FirebaseDatabase.instance.ref("matchSessions/" +
+                      sessionID.toString() +
+                      '/users/' +
+                      userSnapshot.key.toString() +
+                      '/moviesLiked');
+
+              sessionMoviesLikedRef
+                  .child(dayTrending[index]['id'].toString())
+                  .set(dayTrending[index]);
+            }
+          },
           onEnd: () => Navigator.pop(context),
           cardsCount: dayTrending.length,
           cardsBuilder: (BuildContext context, int index) {
@@ -34,7 +62,7 @@ class _MovieTinderWidgetState extends State<MovieTinderWidget> {
                   Radius.circular(10),
                 ),
                 image: DecorationImage(
-                  image: NetworkImage(movie),
+                  image: NetworkImage(image_path + movie['poster_path']),
                   fit: BoxFit.contain,
                 ),
               ),
@@ -59,10 +87,8 @@ class _MovieTinderWidgetState extends State<MovieTinderWidget> {
     final json = jsonDecode(body);
     final movs = json['results'];
 
-    for (var movie in movs) {
-      setState(() {
-        dayTrending.add(url_image + movie['poster_path']);
-      });
-    }
+    setState(() {
+      dayTrending = movs;
+    });
   }
 }

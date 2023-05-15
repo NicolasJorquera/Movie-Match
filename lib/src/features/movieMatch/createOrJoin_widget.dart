@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import 'widgets/createOrJoin/create_widget.dart';
@@ -7,7 +6,8 @@ import 'widgets/createOrJoin/join_widget.dart';
 class CreateOrJoinWidget extends StatefulWidget {
   List<dynamic> providers;
   List<dynamic> platformsSelected;
-  CreateOrJoinWidget({super.key, required this.platformsSelected, required this.providers});
+  CreateOrJoinWidget(
+      {super.key, required this.platformsSelected, required this.providers});
 
   @override
   State<CreateOrJoinWidget> createState() =>
@@ -60,7 +60,10 @@ class _CreateOrJoinWidgetState extends State<CreateOrJoinWidget>
                 platformsSelected: widget.platformsSelected,
                 providers: widget.providers,
               ),
-              const JoinWidget(),
+              JoinWidget(
+                platformsSelected: widget.platformsSelected,
+                providers: widget.providers,
+              ),
             ],
           ),
         )

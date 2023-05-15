@@ -1,27 +1,41 @@
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 import '../movieTinder_widget.dart';
 
 class JoinWidget extends StatefulWidget {
-  const JoinWidget({super.key});
+  List<dynamic> platformsSelected;
+  List<dynamic> providers;
+  JoinWidget(
+      {super.key, required this.platformsSelected, required this.providers});
 
   @override
-  State<JoinWidget> createState() => _JoinWidgetState();
+  State<JoinWidget> createState() =>
+      _JoinWidgetState(platformsSelected, providers);
 }
 
 class _JoinWidgetState extends State<JoinWidget> {
   int currentStep = 0;
-  Map sessionData = {
-    'Country': 'Chile',
-    'Platforms': [''],
-    'MovieOrSerie': 'Movie',
-    'Genres': ['']
-  };
-  _JoinWidgetState();
+  final user = FirebaseAuth.instance.currentUser!;
+  Map sessionData = {};
+  String sessionID = '';
+  static const url_image = 'https://image.tmdb.org/t/p/w500';
+  List<dynamic> allProviders = [];
+  List<dynamic> platformsSelected;
+  List<dynamic> providers;
+  _JoinWidgetState(this.platformsSelected, this.providers);
 
   @override
   Widget build(BuildContext context) {
+    setState(() {
+      allProviders = widget.providers + widget.platformsSelected;
+    });
+    setState(() {
+      allProviders.sort((a, b) => a['provider_name']
+          .toString()
+          .compareTo(b['provider_name'].toString()));
+    });
     return Container(
       padding: const EdgeInsets.all(30),
       child: Column(
@@ -37,15 +51,39 @@ class _JoinWidgetState extends State<JoinWidget> {
                         borderRadius:
                             const BorderRadius.all(Radius.circular(10)),
                         border: Border.all(color: Colors.white)),
-                    child: const Padding(
-                      padding: EdgeInsets.all(10),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
                       child: TextField(
-                        decoration:
-                            InputDecoration.collapsed(hintText: 'Username'),
+                        onChanged: (value) async {
+                          setState(() {
+                            sessionID = value;
+                          });
+
+                          DatabaseReference sessionRef = FirebaseDatabase
+                              .instance
+                              .ref("matchSessions/" + sessionID.toString());
+
+                          DataSnapshot sessionSnapshot = await sessionRef.get();
+
+                          if (sessionSnapshot.exists) {
+                            setState(() {
+                              sessionData = Map<dynamic, dynamic>.from(
+                                  sessionSnapshot.child('sessionData').value!
+                                      as Map);
+                            });
+                          } else {
+                            setState(() {
+                              sessionData = {};
+                            });
+                          }
+                        },
+                        decoration: const InputDecoration.collapsed(
+                            hintText: 'Username'),
                         cursorColor: Colors.white,
                         strutStyle: StrutStyle.disabled,
                         textCapitalization: TextCapitalization.characters,
-                        style: TextStyle(color: Colors.white, fontSize: 30),
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 30),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -63,75 +101,131 @@ class _JoinWidgetState extends State<JoinWidget> {
           const SizedBox(
             height: 10,
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Session data',
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  Text(
-                    'Country:  ' + sessionData['Country'],
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  const Text(
-                    'Platforms: ',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  SizedBox(
-                      height: 40,
-                      width: 200,
-                      child: Theme(
-                          data: Theme.of(context).copyWith(
-                              colorScheme: const ColorScheme.light(
-                                  primary: Color.fromRGBO(180, 0, 0, 1),
-                                  secondary: Color.fromRGBO(180, 0, 0, 1))),
-                          child: ListView.separated(
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (context, index) {
-                                return Card(
-                                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                                  shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10))),
-                                  child: Image.asset(
-                                    'assets/logos/primelogo.png',
-                                    fit: BoxFit.cover,
-                                  ),
-                                );
-                              },
-                              separatorBuilder: (context, index) {
-                                return const SizedBox(
-                                  width: 0.1,
-                                );
-                              },
-                              itemCount: 50))),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                sessionData['MovieOrSerie'] +
-                    's of ' +
-                    sessionData['Genres'].toString(),
-                style: const TextStyle(color: Colors.white),
-              ),
-            ],
-          ),
+          sessionData.isEmpty
+              ? const Text(
+                  'No session found!',
+                  style: TextStyle(color: Colors.white24, fontSize: 25),
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Session data',
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          'Country:  ' + sessionData['Country'],
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        const Text(
+                          'Platforms: ',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        SizedBox(
+                          height: 40,
+                          width: 250,
+                          child: Expanded(
+                              child: Theme(
+                                  data: Theme.of(context).copyWith(
+                                      colorScheme: const ColorScheme.light(
+                                          primary: Color.fromRGBO(180, 0, 0, 1),
+                                          secondary:
+                                              Color.fromRGBO(180, 0, 0, 1))),
+                                  child: ListView.separated(
+                                      physics: const BouncingScrollPhysics(),
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: (context, index) {
+                                        return Card(
+                                            color: Colors.transparent,
+                                            clipBehavior:
+                                                Clip.antiAliasWithSaveLayer,
+                                            shape: const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(10))),
+                                            child: sessionData['Platforms']
+                                                        .length ==
+                                                    0
+                                                ? Image.network(
+                                                    url_image +
+                                                        allProviders[index]
+                                                            ['logo_path'],
+                                                    fit: BoxFit.cover,
+                                                  )
+                                                : allProviders.firstWhere(
+                                                            (element) =>
+                                                                element[
+                                                                    'provider_name'] ==
+                                                                sessionData[
+                                                                        'Platforms']
+                                                                    [index],
+                                                            orElse: () =>
+                                                                null) !=
+                                                        null
+                                                    ? Image.network(
+                                                        url_image +
+                                                            allProviders.firstWhere((element) =>
+                                                                    element[
+                                                                        'provider_name'] ==
+                                                                    sessionData[
+                                                                            'Platforms']
+                                                                        [
+                                                                        index])[
+                                                                'logo_path'],
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                    : Container(
+                                                        color: Colors.white24,
+                                                      ));
+                                      },
+                                      separatorBuilder: (context, index) {
+                                        return const SizedBox(
+                                          width: 0.1,
+                                        );
+                                      },
+                                      itemCount:
+                                          sessionData['Platforms'].length == 0
+                                              ? allProviders.length
+                                              : sessionData['Platforms']
+                                                  .length))),
+                        )
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      sessionData['Genres'].length == 0
+                          ? sessionData['MoviesOrSeries'].toString() +
+                              ' of ' +
+                              'all genres'
+                          : sessionData['Genres'].length == 1
+                              ? sessionData['MoviesOrSeries'].toString() +
+                                  ' of ' +
+                                  List<String>.from(sessionData['Genres'])[0]
+                              : sessionData['MoviesOrSeries'].toString() +
+                                  ' of ' +
+                                  List<String>.from(sessionData['Genres'])
+                                      .sublist(
+                                          0, sessionData['Genres'].length - 1)
+                                      .join(', ') +
+                                  ' and ' +
+                                  List<String>.from(sessionData['Genres']).last,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
           Container(
             margin: const EdgeInsets.only(top: 50),
             child: Row(
@@ -141,12 +235,49 @@ class _JoinWidgetState extends State<JoinWidget> {
                     style: const ButtonStyle(
                         backgroundColor: MaterialStatePropertyAll(
                             Color.fromRGBO(180, 0, 0, 1))),
-                    onPressed: () {
+                    onPressed: () async {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const MovieTinderWidget()),
+                            builder: (context) => MovieTinderWidget(
+                                  sessionID: sessionID,
+                                )),
                       );
+
+                      final usersRef =
+                          await FirebaseDatabase.instance.ref("users/").get();
+                      if (usersRef.children.length > 1) {
+                        DataSnapshot userSnapshot = usersRef.children
+                            .firstWhere((usr) =>
+                                usr.child('email').value == user.email);
+
+                        DatabaseReference sessionRef = FirebaseDatabase.instance
+                            .ref("matchSessions/" + sessionID.toString());
+
+                        DataSnapshot sessionSnapshot = await sessionRef.get();
+                        bool userAlreadyInSession = false;
+                        Iterable<DataSnapshot> usersSession =
+                            sessionSnapshot.child('users').children;
+
+                        if (usersSession.length > 1) {
+                          usersSession.forEach((element) {
+                            if (element.value == userSnapshot.key.toString()) {
+                              userAlreadyInSession = true;
+                            }
+                          });
+                        } else {
+                          if (usersSession.first.value ==
+                              userSnapshot.key.toString()) {
+                            userAlreadyInSession = true;
+                          }
+                        }
+
+                        if (!userAlreadyInSession) {
+                          await sessionRef
+                              .child('users/' + userSnapshot.key.toString())
+                              .set(userSnapshot.key.toString());
+                        }
+                      }
                     },
                     child: const Text(
                       'Start',
