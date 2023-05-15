@@ -19,6 +19,7 @@ class _JoinWidgetState extends State<JoinWidget> {
   int currentStep = 0;
   final user = FirebaseAuth.instance.currentUser!;
   Map sessionData = {};
+  List flixers = [];
   String sessionID = '';
   static const url_image = 'https://image.tmdb.org/t/p/w500';
   List<dynamic> allProviders = [];
@@ -65,12 +66,34 @@ class _JoinWidgetState extends State<JoinWidget> {
 
                           DataSnapshot sessionSnapshot = await sessionRef.get();
 
-                          if (sessionSnapshot.exists) {
+                          if (sessionSnapshot.exists &&
+                              sessionSnapshot.key != 0) {
                             setState(() {
                               sessionData = Map<dynamic, dynamic>.from(
                                   sessionSnapshot.child('sessionData').value!
                                       as Map);
                             });
+                            DataSnapshot usersSessionSnapshot =
+                                await sessionRef.child("users/").get();
+
+                            DataSnapshot usersSnapshot = await FirebaseDatabase
+                                .instance
+                                .ref('/users')
+                                .get();
+
+                            usersSessionSnapshot.children.forEach(
+                              (user) {
+                                usersSnapshot.children.forEach((element) {
+                                  if (element.key == user.value!) {
+                                    setState(() {
+                                      flixers.add(Map<dynamic, dynamic>.from(
+                                          element.value as Map));
+                                    });
+                                    print(flixers);
+                                  }
+                                });
+                              },
+                            );
                           } else {
                             setState(() {
                               sessionData = {};
@@ -224,6 +247,29 @@ class _JoinWidgetState extends State<JoinWidget> {
                                   List<String>.from(sessionData['Genres']).last,
                       style: const TextStyle(color: Colors.white),
                     ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    SizedBox(
+                      height: 30,
+                      width: double.maxFinite,
+                      child: ListView.separated(
+                          itemBuilder: (context, index) {
+                            return Card(
+                              color: Colors.black,
+                              child: Text(
+                                flixers[index]['name'],
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            );
+                          },
+                          separatorBuilder: (context, index) {
+                            return const SizedBox(
+                              width: 10,
+                            );
+                          },
+                          itemCount: flixers.length),
+                    )
                   ],
                 ),
           Container(
@@ -236,43 +282,59 @@ class _JoinWidgetState extends State<JoinWidget> {
                         backgroundColor: MaterialStatePropertyAll(
                             Color.fromRGBO(180, 0, 0, 1))),
                     onPressed: () async {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MovieTinderWidget(
-                                  sessionID: sessionID,
-                                )),
-                      );
+                      DatabaseReference sessionRef = FirebaseDatabase.instance
+                          .ref("matchSessions/" + sessionID.toString());
 
+                      DataSnapshot sessionSnapshot = await sessionRef.get();
+
+                      if (sessionSnapshot.child('sessionStatus').value ==
+                          'matching') {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MovieTinderWidget(
+                                    sessionID: sessionID,
+                                  )),
+                        );
+                      }
+                    },
+                    child: const Text(
+                      'Start',
+                      style: TextStyle(color: Colors.white),
+                    )),
+                ElevatedButton(
+                    style: ButtonStyle(
+                        shape: MaterialStateProperty.all(
+                            const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5)),
+                                side: BorderSide(
+                                    color: Color.fromRGBO(180, 0, 0, 1)))),
+                        backgroundColor:
+                            const MaterialStatePropertyAll(Colors.black)),
+                    onPressed: () async {
                       final usersRef =
                           await FirebaseDatabase.instance.ref("users/").get();
-                      if (usersRef.children.length > 1) {
-                        DataSnapshot userSnapshot = usersRef.children
-                            .firstWhere((usr) =>
-                                usr.child('email').value == user.email);
+                      DataSnapshot userSnapshot = usersRef.children.firstWhere(
+                          (usr) => usr.child('email').value == user.email);
 
-                        DatabaseReference sessionRef = FirebaseDatabase.instance
-                            .ref("matchSessions/" + sessionID.toString());
+                      DatabaseReference sessionRef = FirebaseDatabase.instance
+                          .ref("matchSessions/" + sessionID.toString());
 
-                        DataSnapshot sessionSnapshot = await sessionRef.get();
-                        bool userAlreadyInSession = false;
-                        Iterable<DataSnapshot> usersSession =
-                            sessionSnapshot.child('users').children;
+                      DataSnapshot sessionSnapshot = await sessionRef.get();
+                      bool userAlreadyInSession = false;
+                      Iterable<DataSnapshot> usersSession =
+                          sessionSnapshot.child('users').children;
 
-                        if (usersSession.length > 1) {
-                          usersSession.forEach((element) {
-                            if (element.value == userSnapshot.key.toString()) {
-                              userAlreadyInSession = true;
-                            }
-                          });
-                        } else {
-                          if (usersSession.first.value ==
-                              userSnapshot.key.toString()) {
-                            userAlreadyInSession = true;
-                          }
+                      usersSession.forEach((element) {
+                        if (element.value == userSnapshot.key.toString()) {
+                          userAlreadyInSession = true;
                         }
+                      });
 
-                        if (!userAlreadyInSession) {
+                      if (!userAlreadyInSession) {
+                        if (sessionSnapshot.child('sessionStatus').value ==
+                            'setUp') {
                           await sessionRef
                               .child('users/' + userSnapshot.key.toString())
                               .set(userSnapshot.key.toString());
@@ -280,7 +342,7 @@ class _JoinWidgetState extends State<JoinWidget> {
                       }
                     },
                     child: const Text(
-                      'Start',
+                      'Join',
                       style: TextStyle(color: Colors.white),
                     )),
               ],

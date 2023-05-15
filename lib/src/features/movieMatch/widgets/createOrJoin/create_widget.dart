@@ -70,8 +70,15 @@ class _CreateWidgetState extends State<CreateWidget> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => MovieTinderWidget(sessionID: sessionid,)),
+                    builder: (context) => MovieTinderWidget(
+                          sessionID: sessionid,
+                        )),
               );
+
+              DatabaseReference sessionRef =
+                  FirebaseDatabase.instance.ref("matchSessions/" + sessionid);
+
+              sessionRef.child('sessionStatus').set('matching');
             } else {
               final isPenultimateStep = currentStep == getSteps().length - 2;
               if (isPenultimateStep) {
@@ -90,11 +97,12 @@ class _CreateWidgetState extends State<CreateWidget> {
                     await sessionRef.set({
                       "sessionid": sessionID.toString(),
                       "sessionData": sessionData,
-                      "sessionCreator": userSnapshot.key.toString()
+                      "sessionCreator": userSnapshot.key.toString(),
+                      'sessionStatus': 'setUp'
                     });
 
                     sessionRef
-                        .child('users/' + userSnapshot.key.toString())
+                        .child('flixers/' + userSnapshot.key.toString())
                         .set(userSnapshot.key.toString());
 
                     setState(() {
@@ -139,8 +147,13 @@ class _CreateWidgetState extends State<CreateWidget> {
                     "sessionid": sessionID.toString(),
                     "sessionData": sessionData,
                     "sessionCreator": userSnapshot.key.toString(),
-                    "users": [userSnapshot.key.toString()],
+                    'sessionStatus': 'setUp'
                   });
+
+                  sessionRef
+                      .child('flixers/' + userSnapshot.key.toString())
+                      .set(userSnapshot.key.toString());
+
                   setState(() {
                     sessionid = sessionID.toString();
                   });
