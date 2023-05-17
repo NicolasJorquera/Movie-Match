@@ -52,15 +52,17 @@ class DefaultFirebaseOptions {
     messagingSenderId: '510414475078',
     projectId: 'flixer-fd9d5',
     authDomain: 'flixer-fd9d5.firebaseapp.com',
+    databaseURL: 'https://flixer-fd9d5-default-rtdb.firebaseio.com',
     storageBucket: 'flixer-fd9d5.appspot.com',
     measurementId: 'G-6TVNSGGFWL',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBldcESdzAUzFyLgOVVPCZZdMN1fPaVobA',
-    appId: '1:510414475078:android:aef179688b192624fddf47',
+    appId: '1:510414475078:android:523db834839ac5cafddf47',
     messagingSenderId: '510414475078',
     projectId: 'flixer-fd9d5',
+    databaseURL: 'https://flixer-fd9d5-default-rtdb.firebaseio.com',
     storageBucket: 'flixer-fd9d5.appspot.com',
   );
 
@@ -69,7 +71,9 @@ class DefaultFirebaseOptions {
     appId: '1:510414475078:ios:2fc971a28b87e280fddf47',
     messagingSenderId: '510414475078',
     projectId: 'flixer-fd9d5',
+    databaseURL: 'https://flixer-fd9d5-default-rtdb.firebaseio.com',
     storageBucket: 'flixer-fd9d5.appspot.com',
+    androidClientId: '510414475078-36ji9pjs77sttbn79gbqaijn5vauho5v.apps.googleusercontent.com',
     iosClientId: '510414475078-di7l6b2hq25t40rcuha7e3be45prg96s.apps.googleusercontent.com',
     iosBundleId: 'com.example.flutterMovieMatchUSM',
   );

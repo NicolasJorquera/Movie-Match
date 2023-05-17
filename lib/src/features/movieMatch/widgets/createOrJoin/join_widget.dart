@@ -81,9 +81,8 @@ class _JoinWidgetState extends State<JoinWidget> {
                                 .ref('/users')
                                 .get();
 
-                            usersSessionSnapshot.children.forEach(
-                              (user) {
-                                usersSnapshot.children.forEach((element) {
+                            for (var user in usersSessionSnapshot.children) {
+                                for (var element in usersSnapshot.children) {
                                   if (element.key == user.value!) {
                                     setState(() {
                                       flixers.add(Map<dynamic, dynamic>.from(
@@ -91,9 +90,8 @@ class _JoinWidgetState extends State<JoinWidget> {
                                     });
                                     print(flixers);
                                   }
-                                });
-                              },
-                            );
+                                }
+                              }
                           } else {
                             setState(() {
                               sessionData = {};
@@ -259,7 +257,7 @@ class _JoinWidgetState extends State<JoinWidget> {
                               color: Colors.black,
                               child: Text(
                                 flixers[index]['name'],
-                                style: TextStyle(color: Colors.white),
+                                style: const TextStyle(color: Colors.white),
                               ),
                             );
                           },
@@ -326,11 +324,11 @@ class _JoinWidgetState extends State<JoinWidget> {
                       Iterable<DataSnapshot> usersSession =
                           sessionSnapshot.child('users').children;
 
-                      usersSession.forEach((element) {
+                      for (var element in usersSession) {
                         if (element.value == userSnapshot.key.toString()) {
                           userAlreadyInSession = true;
                         }
-                      });
+                      }
 
                       if (!userAlreadyInSession) {
                         if (sessionSnapshot.child('sessionStatus').value ==

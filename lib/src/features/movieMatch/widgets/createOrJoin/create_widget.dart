@@ -49,18 +49,13 @@ class _CreateWidgetState extends State<CreateWidget> {
           .compareTo(b['provider_name'].toString()));
     });
 
-    return Theme(
-        data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-                primary: Color.fromRGBO(180, 0, 0, 1),
-                secondary: Color.fromRGBO(180, 0, 0, 1))),
-        child: Stepper(
-          connectorColor: MaterialStateProperty.resolveWith(
-              (states) => states.contains(MaterialState.selected)
-                  ? const Color.fromRGBO(180, 0, 0, 1)
-                  : states.contains(MaterialState.disabled)
-                      ? Colors.transparent
-                      : Colors.white),
+    return Stepper(
+          // connectorColor: MaterialStateProperty.resolveWith(
+          //     (states) => states.contains(MaterialState.selected)
+          //         ? const Color.fromRGBO(180, 0, 0, 1)
+          //         : states.contains(MaterialState.disabled)
+          //             ? Colors.transparent
+          //             : Colors.white),
           type: StepperType.vertical,
           steps: getSteps(),
           currentStep: currentStep,
@@ -168,6 +163,9 @@ class _CreateWidgetState extends State<CreateWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
+                    style: const ButtonStyle(
+                          backgroundColor:
+                              MaterialStatePropertyAll(Color.fromRGBO(180, 0, 0, 1)),),
                       onPressed: details.onStepContinue,
                       child: Text(
                         currentStep == getSteps().length - 1
@@ -192,7 +190,7 @@ class _CreateWidgetState extends State<CreateWidget> {
               ),
             );
           },
-        ));
+        );
   }
 
   List<Step> getSteps() => [

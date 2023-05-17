@@ -1,0 +1,99 @@
+{
+  "project_info": {
+    "project_number": "510414475078",
+    "firebase_url": "https://flixer-fd9d5-default-rtdb.firebaseio.com",
+    "project_id": "flixer-fd9d5",
+    "storage_bucket": "flixer-fd9d5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:510414475078:android:523db834839ac5cafddf47",
+        "android_client_info": {
+          "package_name": "com.app.flixer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "510414475078-ubhr98jk4os9tpafdj4uted959j47ani.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBldcESdzAUzFyLgOVVPCZZdMN1fPaVobA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "510414475078-ubhr98jk4os9tpafdj4uted959j47ani.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "510414475078-di7l6b2hq25t40rcuha7e3be45prg96s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.flutterMovieMatchUSM"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:510414475078:android:aef179688b192624fddf47",
+        "android_client_info": {
+          "package_name": "com.nicolas.flixer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "510414475078-36ji9pjs77sttbn79gbqaijn5vauho5v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nicolas.flixer",
+            "certificate_hash": "ec6e8adda62e1c81c7df514b72d738ab6898db3b"
+          }
+        },
+        {
+          "client_id": "510414475078-3ln5khn8qcvqrgemg5b79l5onid8q6gl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nicolas.flixer",
+            "certificate_hash": "0a045ce4a3052bad63494d5c6d78befa157f58a2"
+          }
+        },
+        {
+          "client_id": "510414475078-ubhr98jk4os9tpafdj4uted959j47ani.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBldcESdzAUzFyLgOVVPCZZdMN1fPaVobA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "510414475078-ubhr98jk4os9tpafdj4uted959j47ani.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "510414475078-di7l6b2hq25t40rcuha7e3be45prg96s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.flutterMovieMatchUSM"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

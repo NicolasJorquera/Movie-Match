@@ -1,4 +1,4 @@
-package com.example.flixer
+package com.app.flixer
 
 import io.flutter.embedding.android.FlutterActivity
 

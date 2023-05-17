@@ -12,7 +12,7 @@ class MovieTinderWidget extends StatefulWidget {
 
   @override
   State<MovieTinderWidget> createState() =>
-      _MovieTinderWidgetState(this.sessionID);
+      _MovieTinderWidgetState(sessionID);
 }
 
 class _MovieTinderWidgetState extends State<MovieTinderWidget> {
