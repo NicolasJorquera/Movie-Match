@@ -52,11 +52,14 @@ class _HomePageState extends State<HomePage> {
         genres: genres,
       ),
       CreateOrJoinWidget(
-        platformsSelected: platformsSelected,
-        providers: providers,
-      ),
+          platformsSelected: platformsSelected,
+          providers: providers,
+          genres: genres),
       const SearchView(),
       UsersView(
+        fetchMovies: (){
+          fetchMovies();
+        },
         userData: widget.userData,
         providers: providers,
         platformsSelected: platformsSelected,
@@ -99,9 +102,11 @@ class _HomePageState extends State<HomePage> {
               ),
               const Text(
                 'FLIXER',
-                style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.w100),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 40,
+                    fontWeight: FontWeight.w100),
               )
-              
             ],
           ),
         ),
@@ -186,7 +191,7 @@ class _HomePageState extends State<HomePage> {
                                                           ['enable'];
                                                 });
 
-                                                print(platformsSelected);
+                                                fetchMovies();
                                               },
                                               child: Card(
                                                 color: Colors.transparent,
@@ -262,12 +267,14 @@ class _HomePageState extends State<HomePage> {
                                     color: Colors.white,
                                   ),
                                   onPressed: () {
-                                    print(widget.userData);
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               SelectPlatformView(
+                                                fetchMovies: () {
+                                                  fetchMovies();
+                                                },
                                                 providers: providers,
                                                 platformsSelected:
                                                     platformsSelected,
@@ -348,6 +355,7 @@ class _HomePageState extends State<HomePage> {
                                           element['enable'] = true;
                                         }
                                       });
+                                      fetchMovies();
                                     },
                                     child: const Text(
                                       'All',
@@ -535,11 +543,30 @@ class _HomePageState extends State<HomePage> {
       const image_path = 'https://image.tmdb.org/t/p/original';
       const url_image = 'https://image.tmdb.org/t/p/w500';
 
+      List platformsSelectedIds = [];
+
+      if (platformsSelected.length > 0) {
+        platformsSelected.forEach((element) {
+          if (element['enable'] == true) {
+            platformsSelectedIds.add(element['provider_id']);
+          }
+        });
+      }
+
       var url = api_url +
           '/discover/movie?api_key=' +
           api_Key +
           '&sort_by=popularity.desc&with_genres=' +
-          genre['id'].toString();
+          genre['id'].toString() +
+          '&watch_region=CL' +
+          '&with_watch_providers=' +
+          (platformsSelectedIds.isNotEmpty
+              ? platformsSelectedIds
+                  .toString()
+                  .replaceAll('[', '')
+                  .replaceAll(']', '')
+                  .replaceAll(',', '|')
+              : '');
 
       final uri = Uri.parse(url);
       final response = await http.get(uri);

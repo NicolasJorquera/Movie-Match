@@ -11,16 +11,18 @@ class SettingsWidget extends StatefulWidget {
   List<dynamic> platformsSelected;
   Function setPlatformsSelected;
   Function setProviders;
+  Function fetchMovies;
   SettingsWidget(
       {super.key,
       required this.providers,
       required this.platformsSelected,
       required this.setPlatformsSelected,
-      required this.setProviders, required this.userData});
+      required this.setProviders,
+      required this.userData, required this.fetchMovies});
 
   @override
   State<SettingsWidget> createState() => _SettingsWidgetState(providers,
-      platformsSelected, setPlatformsSelected, setProviders, userData);
+      platformsSelected, setPlatformsSelected, setProviders, userData, fetchMovies);
 }
 
 class _SettingsWidgetState extends State<SettingsWidget> {
@@ -30,8 +32,9 @@ class _SettingsWidgetState extends State<SettingsWidget> {
   List<dynamic> platformsSelected;
   Function setPlatformsSelected;
   Function setProviders;
+  Function fetchMovies;
   _SettingsWidgetState(this.providers, this.platformsSelected,
-      this.setPlatformsSelected, this.setProviders, this.userData);
+      this.setPlatformsSelected, this.setProviders, this.userData, this.fetchMovies);
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +89,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => AccountWidget(
-                                    userData: widget.userData,
+                                        userData: widget.userData,
                                         providers: widget.providers,
                                         platformsSelected:
                                             widget.platformsSelected,
@@ -136,6 +139,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                                             widget.platformsSelected,
                                         setPlatformsSelected:
                                             widget.setPlatformsSelected,
+                                            fetchMovies: widget.fetchMovies,
                                         setProviders: widget.setProviders,
                                       )),
                             );

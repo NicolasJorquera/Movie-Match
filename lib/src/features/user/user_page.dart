@@ -10,16 +10,17 @@ class UsersView extends StatefulWidget {
   List<dynamic> platformsSelected;
   Function setPlatformsSelected;
   Function setProviders;
+  Function fetchMovies;
   UsersView(
       {super.key,
       required this.providers,
       required this.platformsSelected,
       required this.setPlatformsSelected,
-      required this.setProviders, required this.userData});
+      required this.setProviders, required this.userData, required this.fetchMovies});
 
   @override
   State<UsersView> createState() => _UsersViewState(providers,
-      platformsSelected, setPlatformsSelected, setProviders, userData);
+      platformsSelected, setPlatformsSelected, setProviders, userData, fetchMovies);
 }
 
 class _UsersViewState extends State<UsersView> {
@@ -29,9 +30,10 @@ class _UsersViewState extends State<UsersView> {
   List<dynamic> platformsSelected;
   Function setPlatformsSelected;
   Function setProviders;
+  Function fetchMovies;
 
   _UsersViewState(this.providers, this.platformsSelected,
-      this.setPlatformsSelected, this.setProviders, this.userData);
+      this.setPlatformsSelected, this.setProviders, this.userData, this.fetchMovies);
 
   List<dynamic> providers;
 
@@ -128,6 +130,7 @@ class _UsersViewState extends State<UsersView> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => SettingsWidget(
+                                    fetchMovies: widget.fetchMovies,
                                     userData: widget.userData,
                                         providers: widget.providers,
                                         platformsSelected:

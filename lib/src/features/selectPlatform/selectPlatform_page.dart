@@ -5,19 +5,18 @@ class SelectPlatformView extends StatefulWidget {
   List<dynamic> platformsSelected;
   Function setPlatformsSelected;
   Function setProviders;
+  Function fetchMovies;
   SelectPlatformView(
       {super.key,
       required this.providers,
       required this.platformsSelected,
       required this.setPlatformsSelected,
-      required this.setProviders});
+      required this.setProviders,
+      required this.fetchMovies});
   @override
   // ignore: no_logic_in_create_state
-  State<SelectPlatformView> createState() => _SelectPlatformViewState(
-      providers,
-      platformsSelected,
-      setPlatformsSelected,
-      setProviders);
+  State<SelectPlatformView> createState() => _SelectPlatformViewState(providers,
+      platformsSelected, setPlatformsSelected, setProviders, fetchMovies);
 }
 
 class _SelectPlatformViewState extends State<SelectPlatformView> {
@@ -25,10 +24,11 @@ class _SelectPlatformViewState extends State<SelectPlatformView> {
   bool isSearching = false;
   List<dynamic> providers = [];
   _SelectPlatformViewState(this.providers, this.platformsSelected,
-      this.setPlatformsSelected, this.setProviders);
+      this.setPlatformsSelected, this.setProviders, this.fetchMovies);
   List<bool> platformsToggle = [];
   List<dynamic> searchProviders = [];
   List<dynamic> platformsSelected = [];
+  Function fetchMovies;
   Function setPlatformsSelected;
   Function setProviders;
 
@@ -57,6 +57,7 @@ class _SelectPlatformViewState extends State<SelectPlatformView> {
               offset++;
             }
           }
+          widget.fetchMovies;
 
           return true;
         },

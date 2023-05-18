@@ -6,21 +6,23 @@ import 'widgets/createOrJoin/join_widget.dart';
 class CreateOrJoinWidget extends StatefulWidget {
   List<dynamic> providers;
   List<dynamic> platformsSelected;
+  List<dynamic> genres = [];
   CreateOrJoinWidget(
-      {super.key, required this.platformsSelected, required this.providers});
+      {super.key, required this.platformsSelected, required this.providers, required this.genres});
 
   @override
   State<CreateOrJoinWidget> createState() =>
-      _CreateOrJoinWidgetState(platformsSelected, providers);
+      _CreateOrJoinWidgetState(platformsSelected, providers, genres);
 }
 
 class _CreateOrJoinWidgetState extends State<CreateOrJoinWidget>
     with SingleTickerProviderStateMixin {
   int currentStep = 0;
+  List<dynamic> genres = [];
   late final TabController _tabController;
   List<dynamic> platformsSelected;
   List<dynamic> providers;
-  _CreateOrJoinWidgetState(this.platformsSelected, this.providers);
+  _CreateOrJoinWidgetState(this.platformsSelected, this.providers, this.genres);
 
   @override
   void initState() {
@@ -59,6 +61,7 @@ class _CreateOrJoinWidgetState extends State<CreateOrJoinWidget>
               CreateWidget(
                 platformsSelected: widget.platformsSelected,
                 providers: widget.providers,
+                genres: widget.genres,
               ),
               JoinWidget(
                 platformsSelected: widget.platformsSelected,

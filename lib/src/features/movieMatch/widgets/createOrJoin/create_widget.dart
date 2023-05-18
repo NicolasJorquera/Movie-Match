@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flixer/src/features/movieMatch/widgets/movieTinder_widget.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -8,13 +11,17 @@ import 'package:firebase_database/firebase_database.dart';
 
 class CreateWidget extends StatefulWidget {
   List<dynamic> platformsSelected;
+  List<dynamic> genres = [];
   List<dynamic> providers;
   CreateWidget(
-      {super.key, required this.platformsSelected, required this.providers});
+      {super.key,
+      required this.platformsSelected,
+      required this.providers,
+      required this.genres});
 
   @override
   State<CreateWidget> createState() =>
-      _CreateWidgetState(platformsSelected, providers);
+      _CreateWidgetState(platformsSelected, providers, genres);
 }
 
 class _CreateWidgetState extends State<CreateWidget> {
@@ -26,16 +33,26 @@ class _CreateWidgetState extends State<CreateWidget> {
     'MoviesOrSeries': 'Movies',
     'Genres': []
   };
+  List<bool> selections = [false, true, false];
   String sessionid = '';
   final user = FirebaseAuth.instance.currentUser!;
+  List<dynamic> genres;
+  List<dynamic> countries = [];
   List<dynamic> platformsSelected;
   List<dynamic> providers;
   List<dynamic> allProviders = [];
-  _CreateWidgetState(this.platformsSelected, this.providers);
+  _CreateWidgetState(this.platformsSelected, this.providers, this.genres);
 
   @override
   void initState() {
     super.initState();
+    fetchCountries();
+    // setState(() {
+    //   sessionData['Platforms'] = ['All platforms'];
+    // });
+    // setState(() {
+    //   sessionData['Genres'] = ['All genres'];
+    // });
   }
 
   @override
@@ -49,7 +66,12 @@ class _CreateWidgetState extends State<CreateWidget> {
           .compareTo(b['provider_name'].toString()));
     });
 
-    return Stepper(
+    return Theme(
+        data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+                primary: Color.fromRGBO(180, 0, 0, 1),
+                secondary: Color.fromRGBO(180, 0, 0, 1))),
+        child: Stepper(
           // connectorColor: MaterialStateProperty.resolveWith(
           //     (states) => states.contains(MaterialState.selected)
           //         ? const Color.fromRGBO(180, 0, 0, 1)
@@ -163,9 +185,10 @@ class _CreateWidgetState extends State<CreateWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
-                    style: const ButtonStyle(
-                          backgroundColor:
-                              MaterialStatePropertyAll(Color.fromRGBO(180, 0, 0, 1)),),
+                      style: const ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(
+                            Color.fromRGBO(180, 0, 0, 1)),
+                      ),
                       onPressed: details.onStepContinue,
                       child: Text(
                         currentStep == getSteps().length - 1
@@ -190,7 +213,7 @@ class _CreateWidgetState extends State<CreateWidget> {
               ),
             );
           },
-        );
+        ));
   }
 
   List<Step> getSteps() => [
@@ -210,74 +233,71 @@ class _CreateWidgetState extends State<CreateWidget> {
                 Container(
                   padding: const EdgeInsets.only(top: 15),
                   child: DropdownSearch<String>(
-                    onChanged: (value) {
-                      setState(() {
-                        sessionData['Country'] = value;
-                      });
-                    },
-                    selectedItem: 'Chile',
-                    popupProps: PopupProps.menu(
-                        // showSearchBox: true,
-
-                        itemBuilder: (context, item, isSelected) {
-                          return Padding(
-                              padding: const EdgeInsets.all(15),
-                              child: Text(
-                                item,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ));
-                        },
-                        // searchFieldProps: const TextFieldProps(
-                        //     style: TextStyle(color: Colors.white),
-                        //     cursorColor: Colors.white,
-                        //     decoration: InputDecoration(
-                        //         labelStyle: TextStyle(color: Colors.white))),
-                        menuProps: MenuProps(
-                            backgroundColor: Colors.black,
-                            shape:
-                                Border.all(width: 0.2, color: Colors.white))),
-                    dropdownDecoratorProps: const DropDownDecoratorProps(
-                        baseStyle: TextStyle(color: Colors.white),
-                        dropdownSearchDecoration: InputDecoration(
-                            floatingLabelStyle:
-                                TextStyle(color: Color.fromRGBO(180, 0, 0, 1)),
-                            label: Text('Country'),
-                            suffixIconColor: Colors.white,
-                            labelStyle: TextStyle(color: Colors.white),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Colors.white, width: 0.2)),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Colors.white, width: 0.2)),
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Colors.white, width: 0.2)))),
-                    items: const [
-                      "Brazil",
-                      "Italia",
-                      "Tunisia",
-                      'Canada',
-                      'Chile',
-                      "Brazil",
-                      "Italia",
-                      "Tunisia",
-                      'Canada',
-                      'Chile',
-                      "Brazil",
-                      "Italia",
-                      "Tunisia",
-                      'Canada',
-                      'Chile',
-                      "Brazil",
-                      "Italia",
-                      "Tunisia",
-                      'Canada',
-                      'Chile'
-                    ],
-                  ),
+                      onChanged: (value) {
+                        setState(() {
+                          sessionData['Country'] = value;
+                        });
+                      },
+                      selectedItem: 'Chile',
+                      popupProps: PopupProps.menu(
+                          searchDelay: Duration.zero,
+                          showSearchBox: true,
+                          searchFieldProps: const TextFieldProps(
+                              style: TextStyle(color: Colors.white),
+                              decoration: InputDecoration(
+                                  label: Text(
+                                    'Search...',
+                                    style: TextStyle(color: Colors.white24),
+                                  ),
+                                  floatingLabelBehavior:
+                                      FloatingLabelBehavior.never,
+                                  enabledBorder: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10)),
+                                      borderSide: BorderSide(
+                                          color: Colors.white24, width: 2)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10)),
+                                      borderSide:
+                                          BorderSide(color: Colors.white24)))),
+                          itemBuilder: (context, item, isSelected) {
+                            return Padding(
+                                padding: const EdgeInsets.all(15),
+                                child: Text(
+                                  item,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ));
+                          },
+                          // searchFieldProps: const TextFieldProps(
+                          //     style: TextStyle(color: Colors.white),
+                          //     cursorColor: Colors.white,
+                          //     decoration: InputDecoration(
+                          //         labelStyle: TextStyle(color: Colors.white))),
+                          menuProps: MenuProps(
+                              backgroundColor: Colors.black,
+                              shape:
+                                  Border.all(width: 0.2, color: Colors.white))),
+                      dropdownDecoratorProps: const DropDownDecoratorProps(
+                          baseStyle: TextStyle(color: Colors.white),
+                          dropdownSearchDecoration: InputDecoration(
+                              floatingLabelStyle: TextStyle(
+                                  color: Color.fromRGBO(180, 0, 0, 1)),
+                              label: Text('Country'),
+                              suffixIconColor: Colors.white,
+                              labelStyle: TextStyle(color: Colors.white),
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.white, width: 0.2)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.white, width: 0.2)),
+                              border: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.white, width: 0.2)))),
+                      items: List<String>.from(countries.map((e) => e['native_name']))),
                 )
               ],
             )),
@@ -322,6 +342,26 @@ class _CreateWidgetState extends State<CreateWidget> {
                       setState(() {
                         sessionData['Platforms'].add(addedItem);
                       });
+                      // String allPlat =
+                      //     List<String>.from(sessionData['Platforms'])
+                      //         .firstWhere(
+                      //             (element) => element == 'All platforms',
+                      //             orElse: () => 'null');
+                      // if (allPlat != 'null') {
+                      //   setState(() {
+                      //     sessionData['Platforms'].remove('All platforms');
+                      //   });
+                      // }
+                    },
+                    onItemRemoved: (selectedItems, removedItem) {
+                      setState(() {
+                        sessionData['Platforms'].remove(removedItem);
+                      });
+                      // if (List<String>.from(sessionData['platforms']).isEmpty) {
+                      //   // setState(() {
+                      //   //   sessionData['Platforms'].add('All platforms');
+                      //   // });
+                      // }
                     },
                     selectionWidget: (context, item, isSelected) {
                       return Checkbox(
@@ -371,58 +411,54 @@ class _CreateWidgetState extends State<CreateWidget> {
               style: TextStyle(color: Colors.white),
             ),
             content: Container(
-              padding: const EdgeInsets.only(top: 5),
-              child: DropdownSearch<String>(
-                onChanged: (value) {
-                  setState(() {
-                    sessionData['MoviesOrSeries'] = value;
-                  });
-                },
-                selectedItem: 'Movie',
-                popupProps: PopupProps.menu(
-                    // showSearchBox: true,
-
-                    itemBuilder: (context, item, isSelected) {
-                      return Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: Text(
-                            item,
-                            style: const TextStyle(
-                              color: Colors.white,
-                            ),
-                          ));
-                    },
-                    // searchFieldProps: const TextFieldProps(
-                    //     style: TextStyle(color: Colors.white),
-                    //     cursorColor: Colors.white,
-                    //     decoration: InputDecoration(
-                    //         labelStyle: TextStyle(color: Colors.white))),
-                    menuProps: MenuProps(
-                        backgroundColor: Colors.black,
-                        shape: Border.all(width: 0.2, color: Colors.white))),
-                dropdownDecoratorProps: const DropDownDecoratorProps(
-                    baseStyle: TextStyle(color: Colors.white),
-                    dropdownSearchDecoration: InputDecoration(
-                        floatingLabelStyle:
-                            TextStyle(color: Color.fromRGBO(180, 0, 0, 1)),
-                        label: Text('Country'),
-                        suffixIconColor: Colors.white,
-                        labelStyle: TextStyle(color: Colors.white),
-                        enabledBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.white, width: 0.2)),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.white, width: 0.2)),
-                        border: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.white, width: 0.2)))),
-                items: const [
-                  "Movies",
-                  "Series",
-                ],
-              ),
-            )),
+                padding: const EdgeInsets.only(top: 5),
+                child: ToggleButtons(
+                  borderRadius: BorderRadius.circular(10),
+                  borderColor: Colors.white,
+                  selectedBorderColor: const Color.fromRGBO(180, 0, 0, 1),
+                  selectedColor: Colors.white,
+                  color: Colors.white,
+                  fillColor: const Color.fromRGBO(180, 0, 0, 1),
+                  onPressed: (index) {
+                    setState(() {
+                      selections[index] = !selections[index];
+                      selections = List.generate(3, (_) => false);
+                      selections[index] = true;
+                    });
+                    if (index == 0) {
+                      setState(() {
+                        sessionData['MoviesOrSeries'] = 'Movies';
+                      });
+                    } else if (index == 1) {
+                      setState(() {
+                        sessionData['MoviesOrSeries'] = 'Movies and Series';
+                      });
+                    } else if (index == 2) {
+                      setState(() {
+                        sessionData['MoviesOrSeries'] = 'Series';
+                      });
+                    }
+                  },
+                  isSelected: selections,
+                  children: const [
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text(
+                        'Movies',
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text('Movies and Series'),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text(
+                        'Series',
+                      ),
+                    )
+                  ],
+                ))),
         Step(
             isActive: currentStep >= 3,
             title: const Text('Genres', style: TextStyle(color: Colors.white)),
@@ -490,37 +526,15 @@ class _CreateWidgetState extends State<CreateWidget> {
                         border: OutlineInputBorder(
                             borderSide:
                                 BorderSide(color: Colors.white, width: 0.2)))),
-                items: const [
-                  "Action",
-                  "Adventure",
-                  "Fiction",
-                  'Anime',
-                  'Cartoon',
-                  "Drama",
-                  "Romance",
-                  "Action",
-                  "Adventure",
-                  "Fiction",
-                  'Anime',
-                  'Cartoon',
-                  "Drama",
-                  "Romance",
-                  "Action",
-                  "Adventure",
-                  "Fiction",
-                  'Anime',
-                  'Cartoon',
-                  "Drama",
-                  "Romance",
-                ],
+                items: List<String>.from(widget.genres.map((e) => e['name'])),
               ),
             )),
         Step(
-          isActive: currentStep >= 4,
-          title:
-              const Text('Share Link', style: TextStyle(color: Colors.white)),
-          content: Container(
-              padding: const EdgeInsets.all(0),
+            isActive: currentStep >= 4,
+            title:
+                const Text('Share Link', style: TextStyle(color: Colors.white)),
+            content: SizedBox(
+              height: 200,
               child: Column(
                 children: [
                   Padding(
@@ -588,55 +602,69 @@ class _CreateWidgetState extends State<CreateWidget> {
                             style: TextStyle(color: Colors.white),
                           ),
                           SizedBox(
-                            height: 40,
-                            width: 250,
-                            child: Expanded(
-                                child: Theme(
-                                    data: Theme.of(context).copyWith(
-                                        colorScheme: const ColorScheme.light(
-                                            primary:
-                                                Color.fromRGBO(180, 0, 0, 1),
-                                            secondary:
-                                                Color.fromRGBO(180, 0, 0, 1))),
-                                    child: ListView.separated(
-                                        physics: const BouncingScrollPhysics(),
-                                        scrollDirection: Axis.horizontal,
-                                        itemBuilder: (context, index) {
-                                          return Card(
+                              height: 40,
+                              width: 250,
+                              child: Theme(
+                                  data: Theme.of(context).copyWith(
+                                      colorScheme: const ColorScheme.light(
+                                          primary: Color.fromRGBO(180, 0, 0, 1),
+                                          secondary:
+                                              Color.fromRGBO(180, 0, 0, 1))),
+                                  child: ListView.separated(
+                                      physics: const BouncingScrollPhysics(),
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: (context, index) {
+                                        return Card(
                                             color: Colors.transparent,
                                             clipBehavior:
                                                 Clip.antiAliasWithSaveLayer,
                                             shape: const RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.all(
                                                     Radius.circular(10))),
-                                            child: Image.network(
-                                              sessionData['Platforms'].length ==
-                                                      0
-                                                  ? url_image +
-                                                      allProviders[index]
-                                                          ['logo_path']
-                                                  : url_image +
-                                                      allProviders.firstWhere((element) =>
-                                                          element[
-                                                              'provider_name'] ==
-                                                          sessionData[
-                                                                  'Platforms'][
-                                                              index])['logo_path'],
-                                              fit: BoxFit.cover,
-                                            ),
-                                          );
-                                        },
-                                        separatorBuilder: (context, index) {
-                                          return const SizedBox(
-                                            width: 0.1,
-                                          );
-                                        },
-                                        itemCount:
-                                            sessionData['Platforms'].length == 0
-                                                ? allProviders.length
-                                                : sessionData['Platforms']
-                                                    .length))),
-                          )
+                                            child: allProviders.length > 0 &&
+                                                    sessionData['Platforms']
+                                                            .length >
+                                                        0
+                                                ? Image.network(
+                                                    sessionData['Platforms']
+                                                                .length ==
+                                                            0
+                                                        ? url_image +
+                                                            allProviders[index]
+                                                                ['logo_path']
+                                                        : url_image +
+                                                            allProviders.firstWhere(
+                                                                (element) =>
+                                                                    element[
+                                                                        'provider_name'] ==
+                                                                    sessionData[
+                                                                            'Platforms']
+                                                                        [index],
+                                                                orElse: () =>
+                                                                    null)['logo_path'],
+                                                    fit: BoxFit.cover,
+                                                  )
+                                                : const Card(
+                                                    color: Colors.red,
+                                                    clipBehavior: Clip
+                                                        .antiAliasWithSaveLayer,
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    10))),
+                                                  ));
+                                      },
+                                      separatorBuilder: (context, index) {
+                                        return const SizedBox(
+                                          width: 0.1,
+                                        );
+                                      },
+                                      itemCount:
+                                          sessionData['Platforms'].length == 0
+                                              ? allProviders.length
+                                              : sessionData['Platforms']
+                                                  .length))),
                         ],
                       ),
                       const SizedBox(
@@ -665,9 +693,25 @@ class _CreateWidgetState extends State<CreateWidget> {
                     ],
                   ),
                 ],
-              )),
-        )
+              ),
+            ))
       ];
+
+  void fetchCountries() async {
+    const api_url = 'https://api.themoviedb.org/3';
+    const api_Key = '36e984f2374fdfcbcea58dba752094dc';
+
+    var url = api_url + '/configuration/countries?api_key=' + api_Key;
+
+    final uri = Uri.parse(url);
+    final response = await http.get(uri);
+    final body = response.body;
+    final ctr = jsonDecode(body);
+
+    setState(() {
+      countries = ctr;
+    });
+  }
 
   Widget defaultItemMultiSelectionMode(
       String item, List<String> selectedItems, String field) {
@@ -707,6 +751,11 @@ class _CreateWidgetState extends State<CreateWidget> {
                 setState(() {
                   sessionData['Genres'].remove(item);
                 });
+              }
+              if (sessionData['Platforms'].length == 0) {
+                // setState(() {
+                //   sessionData['Platforms'].add('All platforms');
+                // });
               }
             },
             child: const Icon(
