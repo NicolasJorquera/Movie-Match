@@ -212,7 +212,7 @@ class _JoinWidgetState extends State<JoinWidget> {
                                                           fit: BoxFit.cover,
                                                         )
                                                       : Container(
-                                                          color: Colors.white24,
+                                                          color: Colors.red,
                                                         ));
                                         },
                                         separatorBuilder: (context, index) {

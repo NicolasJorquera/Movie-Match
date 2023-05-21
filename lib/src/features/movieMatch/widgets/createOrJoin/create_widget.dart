@@ -31,7 +31,7 @@ class _CreateWidgetState extends State<CreateWidget> {
   Map<String, dynamic> sessionData = {
     'Country': 'Chile',
     'Platforms': [],
-    'MoviesOrSeries': 'Movies',
+    'MoviesOrSeries': 'Movies and Series',
     'Genres': []
   };
   List<bool> selections = [false, true, false];
@@ -141,42 +141,52 @@ class _CreateWidgetState extends State<CreateWidget> {
             } else {
               final isPenultimateStep = currentStep == getSteps().length - 2;
               if (isPenultimateStep) {
+                final usersRef =
+                    await FirebaseDatabase.instance.ref("users/").get();
+                DataSnapshot userSnapshot = usersRef.children.firstWhere(
+                    (usr) => usr.child('email').value == user.email);
+                DatabaseReference sessionRef = FirebaseDatabase.instance
+                    .ref("matchSessions/" + sessionid.toString());
                 if (sessionid == '') {
-                  final usersRef =
-                      await FirebaseDatabase.instance.ref("users/").get();
-                  if (usersRef.children.length > 1) {
-                    DataSnapshot userSnapshot = usersRef.children.firstWhere(
-                        (usr) => usr.child('email').value == user.email);
+                  final sessionID = UniqueKey().hashCode;
 
-                    final sessionID = UniqueKey().hashCode;
+                  DatabaseReference sessionRef = FirebaseDatabase.instance
+                      .ref("matchSessions/" + sessionID.toString());
 
-                    DatabaseReference sessionRef = FirebaseDatabase.instance
-                        .ref("matchSessions/" + sessionID.toString());
+                  await sessionRef.set({
+                    "sessionid": sessionID.toString(),
+                    "sessionData": sessionData,
+                    "sessionCreator": userSnapshot.key.toString(),
+                    'sessionStatus': 'setUp'
+                  });
 
-                    await sessionRef.set({
-                      "sessionid": sessionID.toString(),
-                      "sessionData": sessionData,
-                      "sessionCreator": userSnapshot.key.toString(),
-                      'sessionStatus': 'setUp'
-                    });
+                  sessionRef
+                      .child('flixers/' + userSnapshot.key.toString())
+                      .set(userSnapshot.key.toString());
 
-                    sessionRef
-                        .child('flixers/' + userSnapshot.key.toString())
-                        .set(userSnapshot.key.toString());
+                  setState(() {
+                    sessionid = sessionID.toString();
+                  });
 
-                    setState(() {
-                      sessionid = sessionID.toString();
-                    });
-
-                    for (var element in usersRef.children) {
-                      if (element.key == userSnapshot.key.toString()) {
-                        setState(() {
-                          flixers.add(
-                              Map<dynamic, dynamic>.from(element.value as Map));
-                        });
-                      }
+                  for (var element in usersRef.children) {
+                    if (element.key == userSnapshot.key.toString()) {
+                      setState(() {
+                        flixers.add(
+                            Map<dynamic, dynamic>.from(element.value as Map));
+                      });
                     }
                   }
+                } else {
+                  await sessionRef.set({
+                    "sessionid": sessionid.toString(),
+                    "sessionData": sessionData,
+                    "sessionCreator": userSnapshot.key.toString(),
+                    'sessionStatus': 'setUp',
+                    'flixers': flixers
+                  });
+                  sessionRef
+                      .child('flixers/' + userSnapshot.key.toString())
+                      .set(userSnapshot.key.toString());
                 }
                 _incrementCounter();
               }
@@ -200,45 +210,53 @@ class _CreateWidgetState extends State<CreateWidget> {
             });
             final isLastStep = currentStep == getSteps().length - 1;
             if (isLastStep) {
+              final usersRef =
+                  await FirebaseDatabase.instance.ref("users/").get();
+              DataSnapshot userSnapshot = usersRef.children
+                  .firstWhere((usr) => usr.child('email').value == user.email);
+              DatabaseReference sessionRef = FirebaseDatabase.instance
+                  .ref("matchSessions/" + sessionid.toString());
               if (sessionid == '') {
-                final usersRef =
-                    await FirebaseDatabase.instance.ref("users/").get();
-                if (usersRef.children.length > 1) {
-                  DataSnapshot userSnapshot = usersRef.children.firstWhere(
-                      (usr) => usr.child('email').value == user.email);
+                final sessionID = UniqueKey().hashCode;
+                DatabaseReference sessionRef = FirebaseDatabase.instance
+                    .ref("matchSessions/" + sessionID.toString());
 
-                  final sessionID = UniqueKey().hashCode;
+                await sessionRef.set({
+                  "sessionid": sessionID.toString(),
+                  "sessionData": sessionData,
+                  "sessionCreator": userSnapshot.key.toString(),
+                  'sessionStatus': 'setUp'
+                });
 
-                  DatabaseReference sessionRef = FirebaseDatabase.instance
-                      .ref("matchSessions/" + sessionID.toString());
+                sessionRef
+                    .child('flixers/' + userSnapshot.key.toString())
+                    .set(userSnapshot.key.toString());
 
-                  await sessionRef.set({
-                    "sessionid": sessionID.toString(),
-                    "sessionData": sessionData,
-                    "sessionCreator": userSnapshot.key.toString(),
-                    'sessionStatus': 'setUp'
-                  });
+                setState(() {
+                  sessionid = sessionID.toString();
+                });
 
-                  sessionRef
-                      .child('flixers/' + userSnapshot.key.toString())
-                      .set(userSnapshot.key.toString());
-
-                  setState(() {
-                    sessionid = sessionID.toString();
-                  });
-
-                  for (var element in usersRef.children) {
-                    //add creator to flixers
-                    if (element.key == userSnapshot.key.toString()) {
-                      setState(() {
-                        flixers.add(
-                            Map<dynamic, dynamic>.from(element.value as Map));
-                      });
-                    }
+                for (var element in usersRef.children) {
+                  //add creator to flixers
+                  if (element.key == userSnapshot.key.toString()) {
+                    setState(() {
+                      flixers.add(
+                          Map<dynamic, dynamic>.from(element.value as Map));
+                    });
                   }
                 }
-                _incrementCounter();
+              } else {
+                await sessionRef.set({
+                  "sessionid": sessionid.toString(),
+                  "sessionData": sessionData,
+                  "sessionCreator": userSnapshot.key.toString(),
+                  'sessionStatus': 'setUp'
+                });
+                sessionRef
+                    .child('flixers/' + userSnapshot.key.toString())
+                    .set(userSnapshot.key.toString());
               }
+              _incrementCounter();
             }
           },
           controlsBuilder: (context, details) {
@@ -699,7 +717,7 @@ class _CreateWidgetState extends State<CreateWidget> {
                               style: const TextStyle(color: Colors.white),
                             ),
                             const SizedBox(
-                              height: 40,
+                              height: 20,
                             ),
                             Text(
                               'Flixers:',
@@ -709,7 +727,7 @@ class _CreateWidgetState extends State<CreateWidget> {
                               height: 10,
                             ),
                             SizedBox(
-                              height: 100,
+                              height: 45,
                               width: 400,
                               child: ListView.separated(
                                   scrollDirection: Axis.horizontal,
