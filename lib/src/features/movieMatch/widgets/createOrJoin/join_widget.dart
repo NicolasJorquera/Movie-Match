@@ -343,6 +343,42 @@ class _JoinWidgetState extends State<JoinWidget> {
                                       sessionID: sessionID,
                                     )),
                           );
+                        } else {
+                          return showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  shape: const RoundedRectangleBorder(
+                                      side: BorderSide(
+                                        width: 2.5,
+                                        color: Color.fromRGBO(100, 100, 100, 1),
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10))),
+                                  backgroundColor: Colors.black,
+                                  title: const Text(
+                                    'Session has not started yet',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  content: const Text(
+                                    'Wait for the session creator to start the session',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text(
+                                          'Ok',
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                              color:
+                                                  Color.fromRGBO(180, 0, 0, 1)),
+                                        ))
+                                  ],
+                                );
+                              });
                         }
                       },
                       child: const Text(

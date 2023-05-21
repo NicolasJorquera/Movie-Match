@@ -59,6 +59,13 @@ class _CreateWidgetState extends State<CreateWidget> {
     // });
   }
 
+  @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+
   void _incrementCounter() {
 // Timer.periodic will execute the code which is in the callback,
 // in this case, we are increasing the sec state every second,
@@ -76,9 +83,14 @@ class _CreateWidgetState extends State<CreateWidget> {
       for (var user in usersSessionSnapshot.children) {
         for (var element in usersSnapshot.children) {
           if (element.key == user.value!) {
-            setState(() {
-              flixers.add(Map<dynamic, dynamic>.from(element.value as Map));
-            });
+            dynamic flixerAlreadyExist = flixers.firstWhere(
+                (flixer) => flixer['email'] == element.child('email').value,
+                orElse: () => null);
+            if (flixerAlreadyExist == null) {
+              setState(() {
+                flixers.add(Map<dynamic, dynamic>.from(element.value as Map));
+              });
+            }
           }
         }
       }
@@ -155,6 +167,15 @@ class _CreateWidgetState extends State<CreateWidget> {
                     setState(() {
                       sessionid = sessionID.toString();
                     });
+
+                    for (var element in usersRef.children) {
+                      if (element.key == userSnapshot.key.toString()) {
+                        setState(() {
+                          flixers.add(
+                              Map<dynamic, dynamic>.from(element.value as Map));
+                        });
+                      }
+                    }
                   }
                 }
                 _incrementCounter();
@@ -205,6 +226,16 @@ class _CreateWidgetState extends State<CreateWidget> {
                   setState(() {
                     sessionid = sessionID.toString();
                   });
+
+                  for (var element in usersRef.children) {
+                    //add creator to flixers
+                    if (element.key == userSnapshot.key.toString()) {
+                      setState(() {
+                        flixers.add(
+                            Map<dynamic, dynamic>.from(element.value as Map));
+                      });
+                    }
+                  }
                 }
                 _incrementCounter();
               }
@@ -290,7 +321,13 @@ class _CreateWidgetState extends State<CreateWidget> {
                                 borderSide:
                                     BorderSide(color: Colors.white24)))),
                     onItemAdded: (selectedItems, addedItem) {
-                      selectedItems.remove('All platforms');
+                      setState(() {
+                        selectedItems.remove('All platforms');
+                      });
+
+                      setState(() {
+                        sessionData['Platforms'].add(addedItem);
+                      });
                     },
                     onItemRemoved: (selectedItems, removedItem) {
                       if (selectedItems.isEmpty) {
@@ -422,6 +459,9 @@ class _CreateWidgetState extends State<CreateWidget> {
                     onItemAdded: (selectedItems, addedItem) {
                       setState(() {
                         selectedItems.remove('All genres');
+                      });
+                      setState(() {
+                        sessionData['Genres'].add(addedItem);
                       });
                     },
                     onItemRemoved: (selectedItems, removedItem) {
@@ -672,56 +712,19 @@ class _CreateWidgetState extends State<CreateWidget> {
                               height: 100,
                               width: 400,
                               child: ListView.separated(
+                                  scrollDirection: Axis.horizontal,
                                   itemBuilder: (context, index) {
-                                    if (index % 2 == 0) {
-                                      return Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Card(
-                                            color: Colors.white24,
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(10.0),
-                                              child: Text(
-                                                flixers[index]['name'],
-                                                style: const TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                            ),
-                                          ),
-                                          flixers.asMap().containsKey(index + 1)
-                                              ? Card(
-                                                  color: Colors.white24,
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            10.0),
-                                                    child: Text(
-                                                      flixers[index + 1]
-                                                          ['name'],
-                                                      style: const TextStyle(
-                                                          color: Colors.white),
-                                                    ),
-                                                  ),
-                                                )
-                                              : Card(
-                                                  color: Colors.transparent,
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            10.0),
-                                                    child: Text(
-                                                      flixers[index]['name'],
-                                                      style: const TextStyle(
-                                                          color: Colors
-                                                              .transparent),
-                                                    ),
-                                                  ),
-                                                ),
-                                        ],
-                                      );
-                                    }
+                                    return Card(
+                                      color: Colors.white24,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Text(
+                                          flixers[index]['name'],
+                                          style: const TextStyle(
+                                              color: Colors.white),
+                                        ),
+                                      ),
+                                    );
                                   },
                                   separatorBuilder: (context, index) {
                                     return const SizedBox(
