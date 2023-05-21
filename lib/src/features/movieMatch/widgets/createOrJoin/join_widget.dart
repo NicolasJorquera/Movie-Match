@@ -37,51 +37,54 @@ class _JoinWidgetState extends State<JoinWidget> {
           .toString()
           .compareTo(b['provider_name'].toString()));
     });
-    return Container(
-      padding: const EdgeInsets.all(30),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10, left: 50, right: 50),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(10)),
-                        border: Border.all(color: Colors.white)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: TextField(
-                        onChanged: (value) async {
-                          setState(() {
-                            sessionID = value;
-                          });
-
-                          DatabaseReference sessionRef = FirebaseDatabase
-                              .instance
-                              .ref("matchSessions/" + sessionID.toString());
-
-                          DataSnapshot sessionSnapshot = await sessionRef.get();
-
-                          if (sessionSnapshot.exists &&
-                              sessionSnapshot.key != 0) {
+    return SizedBox(
+      height: MediaQuery.of(context).size.height,
+      child: Padding(
+        padding: const EdgeInsets.all(30.0),
+        child: ListView(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10, left: 50, right: 50),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          border: Border.all(color: Colors.white)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: TextField(
+                          onChanged: (value) async {
                             setState(() {
-                              sessionData = Map<dynamic, dynamic>.from(
-                                  sessionSnapshot.child('sessionData').value!
-                                      as Map);
+                              sessionID = value;
                             });
-                            DataSnapshot usersSessionSnapshot =
-                                await sessionRef.child("users/").get();
 
-                            DataSnapshot usersSnapshot = await FirebaseDatabase
+                            DatabaseReference sessionRef = FirebaseDatabase
                                 .instance
-                                .ref('/users')
-                                .get();
+                                .ref("matchSessions/" + sessionID.toString());
 
-                            for (var user in usersSessionSnapshot.children) {
+                            DataSnapshot sessionSnapshot =
+                                await sessionRef.get();
+
+                            if (sessionSnapshot.exists &&
+                                sessionSnapshot.key != 0) {
+                              setState(() {
+                                sessionData = Map<dynamic, dynamic>.from(
+                                    sessionSnapshot.child('sessionData').value!
+                                        as Map);
+                              });
+                              DataSnapshot usersSessionSnapshot =
+                                  await sessionRef.child("flixers/").get();
+
+                              DataSnapshot usersSnapshot =
+                                  await FirebaseDatabase.instance
+                                      .ref('/users')
+                                      .get();
+
+                              for (var user in usersSessionSnapshot.children) {
                                 for (var element in usersSnapshot.children) {
                                   if (element.key == user.value!) {
                                     setState(() {
@@ -92,281 +95,327 @@ class _JoinWidgetState extends State<JoinWidget> {
                                   }
                                 }
                               }
-                          } else {
-                            setState(() {
-                              sessionData = {};
-                            });
-                          }
-                        },
-                        decoration: const InputDecoration.collapsed(
-                            hintText: 'Username'),
-                        cursorColor: Colors.white,
-                        strutStyle: StrutStyle.disabled,
-                        textCapitalization: TextCapitalization.characters,
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 30),
-                        textAlign: TextAlign.center,
+                            } else {
+                              setState(() {
+                                sessionData = {};
+                              });
+                            }
+                          },
+                          decoration: const InputDecoration.collapsed(
+                              hintText: 'Username'),
+                          cursorColor: Colors.white,
+                          strutStyle: StrutStyle.disabled,
+                          textCapitalization: TextCapitalization.characters,
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 30),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                // IconButton(
-                //     onPressed: () {},
-                //     icon: const Icon(
-                //       Icons.ios_share,
-                //       color: Color.fromRGBO(180, 0, 0, 1),
-                //     ))
-              ],
+                  // IconButton(
+                  //     onPressed: () {},
+                  //     icon: const Icon(
+                  //       Icons.ios_share,
+                  //       color: Color.fromRGBO(180, 0, 0, 1),
+                  //     ))
+                ],
+              ),
             ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          sessionData.isEmpty
-              ? const Text(
-                  'No session found!',
-                  style: TextStyle(color: Colors.white24, fontSize: 25),
-                )
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Session data',
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          'Country:  ' + sessionData['Country'],
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        const Text(
-                          'Platforms: ',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        SizedBox(
-                          height: 40,
-                          width: 250,
-                          child: Expanded(
-                              child: Theme(
-                                  data: Theme.of(context).copyWith(
-                                      colorScheme: const ColorScheme.light(
-                                          primary: Color.fromRGBO(180, 0, 0, 1),
-                                          secondary:
-                                              Color.fromRGBO(180, 0, 0, 1))),
-                                  child: ListView.separated(
-                                      physics: const BouncingScrollPhysics(),
-                                      scrollDirection: Axis.horizontal,
-                                      itemBuilder: (context, index) {
-                                        return Card(
+            const SizedBox(
+              height: 10,
+            ),
+            sessionData.isEmpty
+                ? const Text(
+                    'No session found!',
+                    style: TextStyle(color: Colors.white24, fontSize: 25),
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Session data',
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            'Country:  ' + sessionData['Country'],
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          const Text(
+                            'Platforms: ',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          SizedBox(
+                            height: 40,
+                            width: 250,
+                            child: Expanded(
+                                child: Theme(
+                                    data: Theme.of(context).copyWith(
+                                        colorScheme: const ColorScheme.light(
+                                            primary:
+                                                Color.fromRGBO(180, 0, 0, 1),
+                                            secondary:
+                                                Color.fromRGBO(180, 0, 0, 1))),
+                                    child: ListView.separated(
+                                        physics: const BouncingScrollPhysics(),
+                                        scrollDirection: Axis.horizontal,
+                                        itemBuilder: (context, index) {
+                                          return Card(
+                                              color: Colors.transparent,
+                                              clipBehavior:
+                                                  Clip.antiAliasWithSaveLayer,
+                                              shape:
+                                                  const RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  10))),
+                                              child: !sessionData
+                                                      .containsKey('Platforms')
+                                                  ? Image.network(
+                                                      url_image +
+                                                          allProviders[index]
+                                                              ['logo_path'],
+                                                      fit: BoxFit.cover,
+                                                    )
+                                                  : allProviders.firstWhere(
+                                                              (element) =>
+                                                                  element[
+                                                                      'provider_name'] ==
+                                                                  sessionData[
+                                                                          'Platforms']
+                                                                      [index],
+                                                              orElse: () =>
+                                                                  null) !=
+                                                          null
+                                                      ? Image.network(
+                                                          url_image +
+                                                              allProviders.firstWhere((element) =>
+                                                                  element[
+                                                                      'provider_name'] ==
+                                                                  sessionData[
+                                                                          'Platforms']
+                                                                      [
+                                                                      index])['logo_path'],
+                                                          fit: BoxFit.cover,
+                                                        )
+                                                      : Container(
+                                                          color: Colors.white24,
+                                                        ));
+                                        },
+                                        separatorBuilder: (context, index) {
+                                          return const SizedBox(
+                                            width: 0.1,
+                                          );
+                                        },
+                                        itemCount: sessionData
+                                                .containsKey('Platforms')
+                                            ? sessionData['Platforms'].length
+                                            : allProviders.length))),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        !sessionData.containsKey('Genres')
+                            ? sessionData['MoviesOrSeries'].toString() +
+                                ' of ' +
+                                'all genres'
+                            : sessionData['Genres'].length == 1
+                                ? sessionData['MoviesOrSeries'].toString() +
+                                    ' of ' +
+                                    List<String>.from(sessionData['Genres'])[0]
+                                : sessionData['MoviesOrSeries'].toString() +
+                                    ' of ' +
+                                    List<String>.from(sessionData['Genres'])
+                                        .sublist(
+                                            0, sessionData['Genres'].length - 1)
+                                        .join(', ') +
+                                    ' and ' +
+                                    List<String>.from(sessionData['Genres'])
+                                        .last,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      const SizedBox(
+                        height: 40,
+                      ),
+                      Text(
+                        'Flixers:',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        height: 100,
+                        width: 400,
+                        child: ListView.separated(
+                            itemBuilder: (context, index) {
+                              if (index % 2 == 0) {
+                                return Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Card(
+                                      color: Colors.white24,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Text(
+                                          flixers[index]['name'],
+                                          style: const TextStyle(
+                                              color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                    flixers.asMap().containsKey(index + 1)
+                                        ? Card(
+                                            color: Colors.white24,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(10.0),
+                                              child: Text(
+                                                flixers[index + 1]['name'],
+                                                style: const TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                          )
+                                        : Card(
                                             color: Colors.transparent,
-                                            clipBehavior:
-                                                Clip.antiAliasWithSaveLayer,
-                                            shape: const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10))),
-                                            child: sessionData['Platforms']
-                                                        .length ==
-                                                    0
-                                                ? Image.network(
-                                                    url_image +
-                                                        allProviders[index]
-                                                            ['logo_path'],
-                                                    fit: BoxFit.cover,
-                                                  )
-                                                : allProviders.firstWhere(
-                                                            (element) =>
-                                                                element[
-                                                                    'provider_name'] ==
-                                                                sessionData[
-                                                                        'Platforms']
-                                                                    [index],
-                                                            orElse: () =>
-                                                                null) !=
-                                                        null
-                                                    ? Image.network(
-                                                        url_image +
-                                                            allProviders.firstWhere((element) =>
-                                                                    element[
-                                                                        'provider_name'] ==
-                                                                    sessionData[
-                                                                            'Platforms']
-                                                                        [
-                                                                        index])[
-                                                                'logo_path'],
-                                                        fit: BoxFit.cover,
-                                                      )
-                                                    : Container(
-                                                        color: Colors.white24,
-                                                      ));
-                                      },
-                                      separatorBuilder: (context, index) {
-                                        return const SizedBox(
-                                          width: 0.1,
-                                        );
-                                      },
-                                      itemCount:
-                                          sessionData['Platforms'].length == 0
-                                              ? allProviders.length
-                                              : sessionData['Platforms']
-                                                  .length))),
-                        )
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      sessionData['Genres'].length == 0
-                          ? sessionData['MoviesOrSeries'].toString() +
-                              ' of ' +
-                              'all genres'
-                          : sessionData['Genres'].length == 1
-                              ? sessionData['MoviesOrSeries'].toString() +
-                                  ' of ' +
-                                  List<String>.from(sessionData['Genres'])[0]
-                              : sessionData['MoviesOrSeries'].toString() +
-                                  ' of ' +
-                                  List<String>.from(sessionData['Genres'])
-                                      .sublist(
-                                          0, sessionData['Genres'].length - 1)
-                                      .join(', ') +
-                                  ' and ' +
-                                  List<String>.from(sessionData['Genres']).last,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      height: 30,
-                      width: double.maxFinite,
-                      child: ListView.separated(
-                          itemBuilder: (context, index) {
-                            return Card(
-                              color: Colors.black,
-                              child: Text(
-                                flixers[index]['name'],
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                            );
-                          },
-                          separatorBuilder: (context, index) {
-                            return const SizedBox(
-                              width: 10,
-                            );
-                          },
-                          itemCount: flixers.length),
-                    )
-                  ],
-                ),
-          Container(
-            margin: const EdgeInsets.only(top: 50),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                    style: const ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll(
-                            Color.fromRGBO(180, 0, 0, 1))),
-                    onPressed: () async {
-                      DatabaseReference sessionRef = FirebaseDatabase.instance
-                          .ref("matchSessions/" + sessionID.toString());
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(10.0),
+                                              child: Text(
+                                                flixers[index]['name'],
+                                                style: const TextStyle(
+                                                    color: Colors.transparent),
+                                              ),
+                                            ),
+                                          ),
+                                  ],
+                                );
+                              }
+                            },
+                            separatorBuilder: (context, index) {
+                              return const SizedBox(
+                                width: 10,
+                              );
+                            },
+                            itemCount: flixers.length),
+                      )
+                    ],
+                  ),
+            Container(
+              margin: const EdgeInsets.only(top: 50),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                      style: const ButtonStyle(
+                          backgroundColor: MaterialStatePropertyAll(
+                              Color.fromRGBO(180, 0, 0, 1))),
+                      onPressed: () async {
+                        DatabaseReference sessionRef = FirebaseDatabase.instance
+                            .ref("matchSessions/" + sessionID.toString());
 
-                      DataSnapshot sessionSnapshot = await sessionRef.get();
+                        DataSnapshot sessionSnapshot = await sessionRef.get();
 
-                      if (sessionSnapshot.child('sessionStatus').value ==
-                          'matching') {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => MovieTinderWidget(
-                                    sessionID: sessionID,
-                                  )),
-                        );
-                      }
-                    },
-                    child: const Text(
-                      'Start',
-                      style: TextStyle(color: Colors.white),
-                    )),
-                ElevatedButton(
-                    style: ButtonStyle(
-                        shape: MaterialStateProperty.all(
-                            const RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5)),
-                                side: BorderSide(
-                                    color: Color.fromRGBO(180, 0, 0, 1)))),
-                        backgroundColor:
-                            const MaterialStatePropertyAll(Colors.black)),
-                    onPressed: () async {
-                      final usersRef =
-                          await FirebaseDatabase.instance.ref("users/").get();
-                      DataSnapshot userSnapshot = usersRef.children.firstWhere(
-                          (usr) => usr.child('email').value == user.email);
-
-                      DatabaseReference sessionRef = FirebaseDatabase.instance
-                          .ref("matchSessions/" + sessionID.toString());
-
-                      DataSnapshot sessionSnapshot = await sessionRef.get();
-                      bool userAlreadyInSession = false;
-                      Iterable<DataSnapshot> usersSession =
-                          sessionSnapshot.child('users').children;
-
-                      for (var element in usersSession) {
-                        if (element.value == userSnapshot.key.toString()) {
-                          userAlreadyInSession = true;
-                        }
-                      }
-
-                      if (!userAlreadyInSession) {
                         if (sessionSnapshot.child('sessionStatus').value ==
-                            'setUp') {
-                          await sessionRef
-                              .child('users/' + userSnapshot.key.toString())
-                              .set(userSnapshot.key.toString());
+                            'matching') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MovieTinderWidget(
+                                      sessionID: sessionID,
+                                    )),
+                          );
                         }
-                      }
-                    },
-                    child: const Text(
-                      'Join',
-                      style: TextStyle(color: Colors.white),
-                    )),
-              ],
-            ),
-          )
-        ],
+                      },
+                      child: const Text(
+                        'Start',
+                        style: TextStyle(color: Colors.white),
+                      )),
+                  ElevatedButton(
+                      style: ButtonStyle(
+                          shape: MaterialStateProperty.all(
+                              const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5)),
+                                  side: BorderSide(
+                                      color: Color.fromRGBO(180, 0, 0, 1)))),
+                          backgroundColor:
+                              const MaterialStatePropertyAll(Colors.black)),
+                      onPressed: () async {
+                        final usersRef =
+                            await FirebaseDatabase.instance.ref("users/").get();
+                        DataSnapshot userSnapshot = usersRef.children
+                            .firstWhere((usr) =>
+                                usr.child('email').value == user.email);
+
+                        DatabaseReference sessionRef = FirebaseDatabase.instance
+                            .ref("matchSessions/" + sessionID.toString());
+
+                        DataSnapshot sessionSnapshot = await sessionRef.get();
+                        bool userAlreadyInSession = false;
+                        Iterable<DataSnapshot> usersSession =
+                            sessionSnapshot.child('flixers').children;
+
+                        for (var element in usersSession) {
+                          if (element.value == userSnapshot.key.toString()) {
+                            userAlreadyInSession = true;
+                          }
+                        }
+
+                        if (!userAlreadyInSession) {
+                          if (sessionSnapshot.child('sessionStatus').value ==
+                              'setUp') {
+                            await sessionRef
+                                .child('flixers/' + userSnapshot.key.toString())
+                                .set(userSnapshot.key.toString());
+                          }
+                        }
+
+                        DataSnapshot usersSessionSnapshot =
+                            await sessionRef.child("flixers/").get();
+
+                        DataSnapshot usersSnapshot =
+                            await FirebaseDatabase.instance.ref('/users').get();
+
+                        for (var user in usersSessionSnapshot.children) {
+                          for (var element in usersSnapshot.children) {
+                            if (element.key == user.value!) {
+                              setState(() {
+                                flixers.add(Map<dynamic, dynamic>.from(
+                                    element.value as Map));
+                              });
+                            }
+                          }
+                        }
+                      },
+                      child: const Text(
+                        'Join',
+                        style: TextStyle(color: Colors.white),
+                      )),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
-
-  List<Step> getSteps() => [
-        Step(
-            isActive: currentStep >= 0,
-            title: const Text(
-              'Platforms',
-              style: TextStyle(color: Colors.white),
-            ),
-            content: Container()),
-        Step(
-            isActive: currentStep >= 1,
-            title: const Text('Genres', style: TextStyle(color: Colors.white)),
-            content: Container()),
-        Step(
-            isActive: currentStep >= 2,
-            title:
-                const Text('Other step', style: TextStyle(color: Colors.white)),
-            content: Container()),
-      ];
 }

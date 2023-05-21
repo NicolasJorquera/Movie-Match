@@ -41,399 +41,403 @@ class _AccountWidgetState extends State<AccountWidget> {
     return Scaffold(
         body: Padding(
       padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: ListView(
         children: [
           Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Row(children: [
-                BackButton(
-                  color: Colors.white,
-                ),
-                Text(
-                  'Settings',
-                  style: TextStyle(color: Colors.white, fontSize: 20),
-                )
-              ]),
-              const SizedBox(
-                height: 20,
-              ),
-              const Row(
+              Column(
                 children: [
-                  Text(
-                    'USER INFORMATION',
-                    style: TextStyle(color: Colors.white54, fontSize: 17),
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                  const Row(children: [
+                    BackButton(
+                      color: Colors.white,
+                    ),
+                    Text(
+                      'Settings',
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    )
+                  ]),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   const Row(
                     children: [
-                      Icon(
-                        Icons.person,
-                        color: Color.fromRGBO(180, 0, 0, 1),
-                        size: 30,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
                       Text(
-                        'Username',
-                        style: TextStyle(color: Colors.white, fontSize: 15),
+                        'USER INFORMATION',
+                        style: TextStyle(color: Colors.white54, fontSize: 17),
                       )
                     ],
                   ),
+                  const SizedBox(
+                    height: 30,
+                  ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        user.displayName!,
-                        style: const TextStyle(color: Colors.white54),
+                      const Row(
+                        children: [
+                          Icon(
+                            Icons.person,
+                            color: Color.fromRGBO(180, 0, 0, 1),
+                            size: 30,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            'Username',
+                            style: TextStyle(color: Colors.white, fontSize: 15),
+                          )
+                        ],
                       ),
-                      const SizedBox(
-                        width: 10,
-                      )
-                    ],
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              const Divider(
-                thickness: 2,
-                color: Colors.white10,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.photo,
-                        color: Color.fromRGBO(180, 0, 0, 1),
-                        size: 30,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        'Profile picture',
-                        style: TextStyle(color: Colors.white, fontSize: 15),
+                      Row(
+                        children: [
+                          Text(
+                            user.displayName!,
+                            style: const TextStyle(color: Colors.white54),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          )
+                        ],
                       )
                     ],
                   ),
-                  Row(
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Divider(
+                    thickness: 2,
+                    color: Colors.white10,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(
-                        Icons.edit,
-                        color: Color.fromRGBO(180, 0, 0, 1),
-                        size: 20,
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.photo,
+                            color: Color.fromRGBO(180, 0, 0, 1),
+                            size: 30,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            'Profile picture',
+                            style: TextStyle(color: Colors.white, fontSize: 15),
+                          )
+                        ],
                       ),
-                      SizedBox(
-                        width: 10,
-                      )
-                    ],
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              const Divider(
-                thickness: 2,
-                color: Colors.white10,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.photo_camera_back,
-                        color: Color.fromRGBO(180, 0, 0, 1),
-                        size: 30,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        'Cover picture',
-                        style: TextStyle(color: Colors.white, fontSize: 15),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.edit,
+                            color: Color.fromRGBO(180, 0, 0, 1),
+                            size: 20,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          )
+                        ],
                       )
                     ],
                   ),
-                  Row(
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Divider(
+                    thickness: 2,
+                    color: Colors.white10,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(
-                        Icons.edit,
-                        color: Color.fromRGBO(180, 0, 0, 1),
-                        size: 20,
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.photo_camera_back,
+                            color: Color.fromRGBO(180, 0, 0, 1),
+                            size: 30,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            'Cover picture',
+                            style: TextStyle(color: Colors.white, fontSize: 15),
+                          )
+                        ],
                       ),
-                      SizedBox(
-                        width: 10,
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.edit,
+                            color: Color.fromRGBO(180, 0, 0, 1),
+                            size: 20,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          )
+                        ],
                       )
                     ],
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              const Divider(
-                thickness: 2,
-                color: Colors.white10,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Divider(
+                    thickness: 2,
+                    color: Colors.white10,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Row(
+                        children: [
+                          Icon(
+                            Icons.mail,
+                            color: Color.fromRGBO(180, 0, 0, 1),
+                            size: 30,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            'Email',
+                            style: TextStyle(color: Colors.white, fontSize: 15),
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            user.email!,
+                            style: const TextStyle(color: Colors.white54),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Divider(
+                    thickness: 2,
+                    color: Colors.white10,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.pin_drop,
+                            color: Color.fromRGBO(180, 0, 0, 1),
+                            size: 30,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            'Country',
+                            style: TextStyle(color: Colors.white, fontSize: 15),
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            'country',
+                            style: TextStyle(color: Colors.white54),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Divider(
+                    thickness: 2,
+                    color: Colors.white10,
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
                   const Row(
                     children: [
-                      Icon(
-                        Icons.mail,
-                        color: Color.fromRGBO(180, 0, 0, 1),
-                        size: 30,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
                       Text(
-                        'Email',
-                        style: TextStyle(color: Colors.white, fontSize: 15),
+                        'PREFERENCES',
+                        style: TextStyle(color: Colors.white54, fontSize: 17),
                       )
                     ],
                   ),
-                  Row(
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        user.email!,
-                        style: const TextStyle(color: Colors.white54),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.language,
+                            color: Color.fromRGBO(180, 0, 0, 1),
+                            size: 30,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            'Language',
+                            style: TextStyle(color: Colors.white, fontSize: 15),
+                          )
+                        ],
                       ),
-                      const SizedBox(
-                        width: 10,
-                      )
-                    ],
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              const Divider(
-                thickness: 2,
-                color: Colors.white10,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.pin_drop,
-                        color: Color.fromRGBO(180, 0, 0, 1),
-                        size: 30,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        'Country',
-                        style: TextStyle(color: Colors.white, fontSize: 15),
+                      Row(
+                        children: [
+                          Text(
+                            'language',
+                            style: TextStyle(color: Colors.white54),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          )
+                        ],
                       )
                     ],
                   ),
-                  Row(
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Divider(
+                    thickness: 2,
+                    color: Colors.white10,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'country',
-                        style: TextStyle(color: Colors.white54),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.settings,
+                            color: Color.fromRGBO(180, 0, 0, 1),
+                            size: 30,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            'Preference 2',
+                            style: TextStyle(color: Colors.white, fontSize: 15),
+                          )
+                        ],
                       ),
-                      SizedBox(
-                        width: 10,
-                      )
-                    ],
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              const Divider(
-                thickness: 2,
-                color: Colors.white10,
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              const Row(
-                children: [
-                  Text(
-                    'PREFERENCES',
-                    style: TextStyle(color: Colors.white54, fontSize: 17),
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.language,
-                        color: Color.fromRGBO(180, 0, 0, 1),
-                        size: 30,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        'Language',
-                        style: TextStyle(color: Colors.white, fontSize: 15),
+                      Row(
+                        children: [
+                          Text(
+                            'preference',
+                            style: TextStyle(color: Colors.white54),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          )
+                        ],
                       )
                     ],
                   ),
-                  Row(
-                    children: [
-                      Text(
-                        'language',
-                        style: TextStyle(color: Colors.white54),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      )
-                    ],
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              const Divider(
-                thickness: 2,
-                color: Colors.white10,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.settings,
-                        color: Color.fromRGBO(180, 0, 0, 1),
-                        size: 30,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        'Preference 2',
-                        style: TextStyle(color: Colors.white, fontSize: 15),
-                      )
-                    ],
+                  const SizedBox(
+                    height: 10,
                   ),
-                  Row(
-                    children: [
-                      Text(
-                        'preference',
-                        style: TextStyle(color: Colors.white54),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      )
-                    ],
-                  )
+                  const Divider(
+                    thickness: 2,
+                    color: Colors.white10,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
                 ],
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              const Divider(
-                thickness: 2,
-                color: Colors.white10,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: TextButton(
+                    style: const ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(Colors.white24)),
+                    onPressed: () async {
+                      final usersRef =
+                          await FirebaseDatabase.instance.ref("users/").get();
+                      if (usersRef.children.length > 1) {
+                        DataSnapshot userSnapshot = usersRef.children.firstWhere(
+                            (usr) => usr.child('email').value == user.email);
+                        if (userSnapshot.exists) {
+                          DatabaseReference userRef = FirebaseDatabase.instance.ref(
+                              "users/" +
+                                  userSnapshot.key.toString());
+                          userRef.remove();
+                        }
+                      }
+
+                      final provider =
+                          Provider.of<GoogleSignInProvider>(context, listen: false);
+                      if (provider.googleSignIn.currentUser != null) {
+                        await provider.googleSignIn.disconnect();
+                        await FirebaseAuth.instance.signOut();
+                      } else {
+                        await FirebaseAuth.instance.signOut();
+                      }
+                      // provider.logout();
+                      Navigator.of(context).popUntil((route) => route.isFirst);
+
+                      // String str = widget.userData.toString();
+
+                      // if (str != '{}') {
+                      //   DatabaseReference userRef = FirebaseDatabase.instance
+                      //       .ref("users/" + widget.userData['userid']);
+                      //   userRef.remove();
+                      // } else {
+                      //   final usersRef =
+                      //       await FirebaseDatabase.instance.ref("users/").get();
+                      //   DataSnapshot userSnapshot = usersRef.children.firstWhere(
+                      //       (usr) => usr.child('email').value == user.email);
+                      //   if (userSnapshot.exists) {
+                      //     DatabaseReference userRef = FirebaseDatabase.instance.ref(
+                      //         "users/" +
+                      //             userSnapshot.child('userid').value.toString());
+                      //     userRef.remove();
+                      //   }
+                      // }
+                    },
+                    child: const Padding(
+                        padding: EdgeInsets.all(5),
+                        child: Text(
+                          'Sign out',
+                          style: TextStyle(color: Colors.white, fontSize: 17),
+                        ))),
+              )
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 20),
-            child: TextButton(
-                style: const ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(Colors.white24)),
-                onPressed: () async {
-                  final usersRef =
-                      await FirebaseDatabase.instance.ref("users/").get();
-                  if (usersRef.children.length > 1) {
-                    DataSnapshot userSnapshot = usersRef.children.firstWhere(
-                        (usr) => usr.child('email').value == user.email);
-                    if (userSnapshot.exists) {
-                      DatabaseReference userRef = FirebaseDatabase.instance.ref(
-                          "users/" +
-                              userSnapshot.key.toString());
-                      userRef.remove();
-                    }
-                  }
-
-                  final provider =
-                      Provider.of<GoogleSignInProvider>(context, listen: false);
-                  if (provider.googleSignIn.currentUser != null) {
-                    await provider.googleSignIn.disconnect();
-                    await FirebaseAuth.instance.signOut();
-                  } else {
-                    await FirebaseAuth.instance.signOut();
-                  }
-                  // provider.logout();
-                  Navigator.of(context).popUntil((route) => route.isFirst);
-
-                  // String str = widget.userData.toString();
-
-                  // if (str != '{}') {
-                  //   DatabaseReference userRef = FirebaseDatabase.instance
-                  //       .ref("users/" + widget.userData['userid']);
-                  //   userRef.remove();
-                  // } else {
-                  //   final usersRef =
-                  //       await FirebaseDatabase.instance.ref("users/").get();
-                  //   DataSnapshot userSnapshot = usersRef.children.firstWhere(
-                  //       (usr) => usr.child('email').value == user.email);
-                  //   if (userSnapshot.exists) {
-                  //     DatabaseReference userRef = FirebaseDatabase.instance.ref(
-                  //         "users/" +
-                  //             userSnapshot.child('userid').value.toString());
-                  //     userRef.remove();
-                  //   }
-                  // }
-                },
-                child: const Padding(
-                    padding: EdgeInsets.all(5),
-                    child: Text(
-                      'Sign out',
-                      style: TextStyle(color: Colors.white, fontSize: 17),
-                    ))),
-          )
         ],
       ),
     ));

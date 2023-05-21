@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
           genres: genres),
       const SearchView(),
       UsersView(
-        fetchMovies: (){
+        fetchMovies: () {
           fetchMovies();
         },
         userData: widget.userData,
@@ -89,6 +89,7 @@ class _HomePageState extends State<HomePage> {
     ];
 
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Row(
             children: [

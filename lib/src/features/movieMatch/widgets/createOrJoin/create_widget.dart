@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flixer/src/features/movieMatch/widgets/movieTinder_widget.dart';
@@ -36,6 +37,7 @@ class _CreateWidgetState extends State<CreateWidget> {
   List<bool> selections = [false, true, false];
   String sessionid = '';
   final user = FirebaseAuth.instance.currentUser!;
+  List flixers = [];
   List<dynamic> genres;
   List<dynamic> countries = [];
   List<dynamic> platformsSelected;
@@ -43,16 +45,44 @@ class _CreateWidgetState extends State<CreateWidget> {
   List<dynamic> allProviders = [];
   _CreateWidgetState(this.platformsSelected, this.providers, this.genres);
 
+  int sec = 0;
+
   @override
   void initState() {
     super.initState();
     fetchCountries();
     // setState(() {
-    //   sessionData['Platforms'] = ['All platforms'];
+    //   sessionData['Platforms'] = platformsSelected.map((e) => e['provider_name'] as String).toList();
     // });
     // setState(() {
     //   sessionData['Genres'] = ['All genres'];
     // });
+  }
+
+  void _incrementCounter() {
+// Timer.periodic will execute the code which is in the callback,
+// in this case, we are increasing the sec state every second,
+// As you want to execute it every minute, put Duration(seconds: 60)
+
+    Timer.periodic(Duration(seconds: 10), (timer) async {
+      DatabaseReference sessionRef = FirebaseDatabase.instance
+          .ref("matchSessions/" + sessionid.toString());
+      DataSnapshot usersSessionSnapshot =
+          await sessionRef.child("flixers/").get();
+
+      DataSnapshot usersSnapshot =
+          await FirebaseDatabase.instance.ref('/users').get();
+
+      for (var user in usersSessionSnapshot.children) {
+        for (var element in usersSnapshot.children) {
+          if (element.key == user.value!) {
+            setState(() {
+              flixers.add(Map<dynamic, dynamic>.from(element.value as Map));
+            });
+          }
+        }
+      }
+    });
   }
 
   @override
@@ -127,6 +157,7 @@ class _CreateWidgetState extends State<CreateWidget> {
                     });
                   }
                 }
+                _incrementCounter();
               }
               setState(() {
                 currentStep += 1;
@@ -175,6 +206,7 @@ class _CreateWidgetState extends State<CreateWidget> {
                     sessionid = sessionID.toString();
                   });
                 }
+                _incrementCounter();
               }
             }
           },
@@ -219,96 +251,15 @@ class _CreateWidgetState extends State<CreateWidget> {
   List<Step> getSteps() => [
         Step(
             isActive: currentStep >= 0,
-            title: const Text(
-              'Country',
-              style: TextStyle(color: Colors.white),
-            ),
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Select your country ',
-                    style: TextStyle(
-                      color: Colors.white,
-                    )),
-                Container(
-                  padding: const EdgeInsets.only(top: 15),
-                  child: DropdownSearch<String>(
-                      onChanged: (value) {
-                        setState(() {
-                          sessionData['Country'] = value;
-                        });
-                      },
-                      selectedItem: 'Chile',
-                      popupProps: PopupProps.menu(
-                          searchDelay: Duration.zero,
-                          showSearchBox: true,
-                          searchFieldProps: const TextFieldProps(
-                              style: TextStyle(color: Colors.white),
-                              decoration: InputDecoration(
-                                  label: Text(
-                                    'Search...',
-                                    style: TextStyle(color: Colors.white24),
-                                  ),
-                                  floatingLabelBehavior:
-                                      FloatingLabelBehavior.never,
-                                  enabledBorder: OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(10)),
-                                      borderSide: BorderSide(
-                                          color: Colors.white24, width: 2)),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(10)),
-                                      borderSide:
-                                          BorderSide(color: Colors.white24)))),
-                          itemBuilder: (context, item, isSelected) {
-                            return Padding(
-                                padding: const EdgeInsets.all(15),
-                                child: Text(
-                                  item,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                  ),
-                                ));
-                          },
-                          // searchFieldProps: const TextFieldProps(
-                          //     style: TextStyle(color: Colors.white),
-                          //     cursorColor: Colors.white,
-                          //     decoration: InputDecoration(
-                          //         labelStyle: TextStyle(color: Colors.white))),
-                          menuProps: MenuProps(
-                              backgroundColor: Colors.black,
-                              shape:
-                                  Border.all(width: 0.2, color: Colors.white))),
-                      dropdownDecoratorProps: const DropDownDecoratorProps(
-                          baseStyle: TextStyle(color: Colors.white),
-                          dropdownSearchDecoration: InputDecoration(
-                              floatingLabelStyle: TextStyle(
-                                  color: Color.fromRGBO(180, 0, 0, 1)),
-                              label: Text('Country'),
-                              suffixIconColor: Colors.white,
-                              labelStyle: TextStyle(color: Colors.white),
-                              enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.white, width: 0.2)),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.white, width: 0.2)),
-                              border: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.white, width: 0.2)))),
-                      items: List<String>.from(countries.map((e) => e['native_name']))),
-                )
-              ],
-            )),
-        Step(
-            isActive: currentStep >= 1,
             title:
                 const Text('Platforms', style: TextStyle(color: Colors.white)),
             content: Container(
               padding: const EdgeInsets.only(top: 5),
               child: DropdownSearch<String>.multiSelection(
-                selectedItems: List<String>.from(sessionData['Platforms']),
+                selectedItems:
+                    List<String>.from(sessionData['Platforms']).isEmpty
+                        ? ['All platforms']
+                        : List<String>.from(sessionData['Platforms']),
                 dropdownBuilder: (context, selectedItems) {
                   return Wrap(
                     children: selectedItems
@@ -339,21 +290,12 @@ class _CreateWidgetState extends State<CreateWidget> {
                                 borderSide:
                                     BorderSide(color: Colors.white24)))),
                     onItemAdded: (selectedItems, addedItem) {
-                      setState(() {
-                        sessionData['Platforms'].add(addedItem);
-                      });
-                      // String allPlat =
-                      //     List<String>.from(sessionData['Platforms'])
-                      //         .firstWhere(
-                      //             (element) => element == 'All platforms',
-                      //             orElse: () => 'null');
-                      // if (allPlat != 'null') {
-                      //   setState(() {
-                      //     sessionData['Platforms'].remove('All platforms');
-                      //   });
-                      // }
+                      selectedItems.remove('All platforms');
                     },
                     onItemRemoved: (selectedItems, removedItem) {
+                      if (selectedItems.isEmpty) {
+                        selectedItems.add('All platforms');
+                      }
                       setState(() {
                         sessionData['Platforms'].remove(removedItem);
                       });
@@ -405,7 +347,7 @@ class _CreateWidgetState extends State<CreateWidget> {
               ),
             )),
         Step(
-            isActive: currentStep >= 2,
+            isActive: currentStep >= 1,
             title: const Text(
               'Movies or Series',
               style: TextStyle(color: Colors.white),
@@ -460,11 +402,14 @@ class _CreateWidgetState extends State<CreateWidget> {
                   ],
                 ))),
         Step(
-            isActive: currentStep >= 3,
+            isActive: currentStep >= 2,
             title: const Text('Genres', style: TextStyle(color: Colors.white)),
             content: Container(
               padding: const EdgeInsets.only(top: 5),
               child: DropdownSearch<String>.multiSelection(
+                selectedItems: List<String>.from(sessionData['Genres']).isEmpty
+                    ? ['All genres']
+                    : List<String>.from(sessionData['Genres']),
                 dropdownBuilder: (context, selectedItems) {
                   return Wrap(
                     children: selectedItems
@@ -476,10 +421,13 @@ class _CreateWidgetState extends State<CreateWidget> {
                 popupProps: PopupPropsMultiSelection.menu(
                     onItemAdded: (selectedItems, addedItem) {
                       setState(() {
-                        sessionData['Genres'].add(addedItem);
+                        selectedItems.remove('All genres');
                       });
                     },
                     onItemRemoved: (selectedItems, removedItem) {
+                      if (selectedItems.isEmpty) {
+                        selectedItems.add('All genres');
+                      }
                       setState(() {
                         sessionData['Genres'].remove(removedItem);
                       });
@@ -530,171 +478,264 @@ class _CreateWidgetState extends State<CreateWidget> {
               ),
             )),
         Step(
-            isActive: currentStep >= 4,
+            isActive: currentStep == 3,
             title:
                 const Text('Share Link', style: TextStyle(color: Colors.white)),
             content: SizedBox(
-              height: 200,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                height: 300,
+                child: ListView(
+                  children: [
+                    Column(
                       children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(10)),
-                                border: Border.all(color: Colors.white)),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: SelectableText(
-                                sessionid != '' ? sessionid : 'Session ID',
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 18),
-                                textAlign: TextAlign.center,
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10)),
+                                      border: Border.all(color: Colors.white)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: SelectableText(
+                                      sessionid != ''
+                                          ? sessionid
+                                          : 'Session ID',
+                                      style: const TextStyle(
+                                          color: Colors.white, fontSize: 18),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
+                              IconButton(
+                                  onPressed: () {
+                                    Share.share(
+                                        'Flixer Session ID: ' + sessionid,
+                                        subject: 'Flixer Session ID');
+                                  },
+                                  icon: const Icon(
+                                    Icons.ios_share,
+                                    color: Color.fromRGBO(180, 0, 0, 1),
+                                  ))
+                            ],
                           ),
                         ),
-                        IconButton(
-                            onPressed: () {
-                              Share.share('Flixer Session ID: ' + sessionid,
-                                  subject: 'Flixer Session ID');
-                            },
-                            icon: const Icon(
-                              Icons.ios_share,
-                              color: Color.fromRGBO(180, 0, 0, 1),
-                            ))
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Session data',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  'Country:  ' + sessionData['Country'],
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                const Text(
+                                  'Platforms: ',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                SizedBox(
+                                    height: 40,
+                                    width: 250,
+                                    child: Theme(
+                                        data: Theme.of(context).copyWith(
+                                            colorScheme:
+                                                const ColorScheme.light(
+                                                    primary: Color.fromRGBO(
+                                                        180, 0, 0, 1),
+                                                    secondary: Color.fromRGBO(
+                                                        180, 0, 0, 1))),
+                                        child: ListView.separated(
+                                            physics:
+                                                const BouncingScrollPhysics(),
+                                            scrollDirection: Axis.horizontal,
+                                            itemBuilder: (context, index) {
+                                              return Card(
+                                                  color: Colors.transparent,
+                                                  clipBehavior: Clip
+                                                      .antiAliasWithSaveLayer,
+                                                  shape:
+                                                      const RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          10))),
+                                                  child: allProviders.length > 0
+                                                      ? Image.network(
+                                                          sessionData['Platforms']
+                                                                      .length ==
+                                                                  0
+                                                              ? url_image +
+                                                                  allProviders[
+                                                                          index]
+                                                                      [
+                                                                      'logo_path']
+                                                              : url_image +
+                                                                  allProviders.firstWhere(
+                                                                      (element) =>
+                                                                          element[
+                                                                              'provider_name'] ==
+                                                                          sessionData['Platforms']
+                                                                              [
+                                                                              index],
+                                                                      orElse: () =>
+                                                                          null)['logo_path'],
+                                                          fit: BoxFit.cover,
+                                                        )
+                                                      : const Card(
+                                                          color: Colors.red,
+                                                          clipBehavior: Clip
+                                                              .antiAliasWithSaveLayer,
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          10))),
+                                                        ));
+                                            },
+                                            separatorBuilder: (context, index) {
+                                              return const SizedBox(
+                                                width: 0.1,
+                                              );
+                                            },
+                                            itemCount: sessionData['Platforms']
+                                                        .length ==
+                                                    0
+                                                ? allProviders.length
+                                                : sessionData['Platforms']
+                                                    .length))),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              sessionData['Genres'].length == 0
+                                  ? sessionData['MoviesOrSeries'].toString() +
+                                      ' of ' +
+                                      'all genres'
+                                  : sessionData['Genres'].length == 1
+                                      ? sessionData['MoviesOrSeries']
+                                              .toString() +
+                                          ' of ' +
+                                          List<String>.from(
+                                              sessionData['Genres'])[0]
+                                      : sessionData['MoviesOrSeries']
+                                              .toString() +
+                                          ' of ' +
+                                          List<String>.from(
+                                                  sessionData['Genres'])
+                                              .sublist(
+                                                  0,
+                                                  sessionData['Genres'].length -
+                                                      1)
+                                              .join(', ') +
+                                          ' and ' +
+                                          List<String>.from(
+                                                  sessionData['Genres'])
+                                              .last,
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            const SizedBox(
+                              height: 40,
+                            ),
+                            Text(
+                              'Flixers:',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            SizedBox(
+                              height: 100,
+                              width: 400,
+                              child: ListView.separated(
+                                  itemBuilder: (context, index) {
+                                    if (index % 2 == 0) {
+                                      return Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Card(
+                                            color: Colors.white24,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(10.0),
+                                              child: Text(
+                                                flixers[index]['name'],
+                                                style: const TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                          ),
+                                          flixers.asMap().containsKey(index + 1)
+                                              ? Card(
+                                                  color: Colors.white24,
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            10.0),
+                                                    child: Text(
+                                                      flixers[index + 1]
+                                                          ['name'],
+                                                      style: const TextStyle(
+                                                          color: Colors.white),
+                                                    ),
+                                                  ),
+                                                )
+                                              : Card(
+                                                  color: Colors.transparent,
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            10.0),
+                                                    child: Text(
+                                                      flixers[index]['name'],
+                                                      style: const TextStyle(
+                                                          color: Colors
+                                                              .transparent),
+                                                    ),
+                                                  ),
+                                                ),
+                                        ],
+                                      );
+                                    }
+                                  },
+                                  separatorBuilder: (context, index) {
+                                    return const SizedBox(
+                                      width: 10,
+                                    );
+                                  },
+                                  itemCount: flixers.length),
+                            )
+                          ],
+                        ),
                       ],
                     ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Session data',
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            'Country:  ' + sessionData['Country'],
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        children: [
-                          const Text(
-                            'Platforms: ',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          SizedBox(
-                              height: 40,
-                              width: 250,
-                              child: Theme(
-                                  data: Theme.of(context).copyWith(
-                                      colorScheme: const ColorScheme.light(
-                                          primary: Color.fromRGBO(180, 0, 0, 1),
-                                          secondary:
-                                              Color.fromRGBO(180, 0, 0, 1))),
-                                  child: ListView.separated(
-                                      physics: const BouncingScrollPhysics(),
-                                      scrollDirection: Axis.horizontal,
-                                      itemBuilder: (context, index) {
-                                        return Card(
-                                            color: Colors.transparent,
-                                            clipBehavior:
-                                                Clip.antiAliasWithSaveLayer,
-                                            shape: const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10))),
-                                            child: allProviders.length > 0 &&
-                                                    sessionData['Platforms']
-                                                            .length >
-                                                        0
-                                                ? Image.network(
-                                                    sessionData['Platforms']
-                                                                .length ==
-                                                            0
-                                                        ? url_image +
-                                                            allProviders[index]
-                                                                ['logo_path']
-                                                        : url_image +
-                                                            allProviders.firstWhere(
-                                                                (element) =>
-                                                                    element[
-                                                                        'provider_name'] ==
-                                                                    sessionData[
-                                                                            'Platforms']
-                                                                        [index],
-                                                                orElse: () =>
-                                                                    null)['logo_path'],
-                                                    fit: BoxFit.cover,
-                                                  )
-                                                : const Card(
-                                                    color: Colors.red,
-                                                    clipBehavior: Clip
-                                                        .antiAliasWithSaveLayer,
-                                                    shape: RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    10))),
-                                                  ));
-                                      },
-                                      separatorBuilder: (context, index) {
-                                        return const SizedBox(
-                                          width: 0.1,
-                                        );
-                                      },
-                                      itemCount:
-                                          sessionData['Platforms'].length == 0
-                                              ? allProviders.length
-                                              : sessionData['Platforms']
-                                                  .length))),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        sessionData['Genres'].length == 0
-                            ? sessionData['MoviesOrSeries'].toString() +
-                                ' of ' +
-                                'all genres'
-                            : sessionData['Genres'].length == 1
-                                ? sessionData['MoviesOrSeries'].toString() +
-                                    ' of ' +
-                                    List<String>.from(sessionData['Genres'])[0]
-                                : sessionData['MoviesOrSeries'].toString() +
-                                    ' of ' +
-                                    List<String>.from(sessionData['Genres'])
-                                        .sublist(
-                                            0, sessionData['Genres'].length - 1)
-                                        .join(', ') +
-                                    ' and ' +
-                                    List<String>.from(sessionData['Genres'])
-                                        .last,
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ))
+                  ],
+                )))
       ];
 
   void fetchCountries() async {
@@ -743,6 +784,17 @@ class _CreateWidgetState extends State<CreateWidget> {
               setState(() {
                 selectedItems.remove(item);
               });
+              if (selectedItems.isEmpty) {
+                if (field == 'Platforms') {
+                  setState(() {
+                    selectedItems.add('All platforms');
+                  });
+                } else if (field == 'Genres') {
+                  setState(() {
+                    selectedItems.add('All genres');
+                  });
+                }
+              }
               if (field == 'Platforms') {
                 setState(() {
                   sessionData['Platforms'].remove(item);
