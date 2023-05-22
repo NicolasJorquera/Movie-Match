@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'widgets/createOrJoin/create_widget.dart';
 import 'widgets/createOrJoin/join_widget.dart';
+import 'widgets/movieCards/movieTinder_widget.dart';
 
 class CreateOrJoinWidget extends StatefulWidget {
   List<dynamic> providers;

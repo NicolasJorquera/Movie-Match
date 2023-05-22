@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flixer/src/features/movieMatch/widgets/movieTinder_widget.dart';
+import 'package:flixer/src/features/movieMatch/widgets/movieCards/movieTinder_widget.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:http/http.dart' as http;
 
@@ -29,7 +29,6 @@ class _CreateWidgetState extends State<CreateWidget> {
   static const url_image = 'https://image.tmdb.org/t/p/w500';
   int currentStep = 0;
   Map<String, dynamic> sessionData = {
-    'Country': 'Chile',
     'Platforms': [],
     'MoviesOrSeries': 'Movies and Series',
     'Genres': []
@@ -541,218 +540,190 @@ class _CreateWidgetState extends State<CreateWidget> {
                 const Text('Share Link', style: TextStyle(color: Colors.white)),
             content: SizedBox(
                 height: 300,
-                child: ListView(
+                child: Column(
                   children: [
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(10)),
-                                      border: Border.all(color: Colors.white)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10),
-                                    child: SelectableText(
-                                      sessionid != ''
-                                          ? sessionid
-                                          : 'Session ID',
-                                      style: const TextStyle(
-                                          color: Colors.white, fontSize: 18),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10)),
+                                  border: Border.all(color: Colors.white)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: SelectableText(
+                                  sessionid != '' ? sessionid : 'Session ID',
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 18),
+                                  textAlign: TextAlign.center,
                                 ),
                               ),
-                              IconButton(
-                                  onPressed: () {
-                                    Share.share(
-                                        'Flixer Session ID: ' + sessionid,
-                                        subject: 'Flixer Session ID');
-                                  },
-                                  icon: const Icon(
-                                    Icons.ios_share,
-                                    color: Color.fromRGBO(180, 0, 0, 1),
-                                  ))
-                            ],
+                            ),
                           ),
+                          IconButton(
+                              onPressed: () {
+                                Share.share('Flixer Session ID: ' + sessionid,
+                                    subject: 'Flixer Session ID');
+                              },
+                              icon: const Icon(
+                                Icons.ios_share,
+                                color: Color.fromRGBO(180, 0, 0, 1),
+                              ))
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Session data',
+                          style: TextStyle(color: Colors.white, fontSize: 20),
                         ),
                         const SizedBox(
                           height: 10,
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        Row(
                           children: [
                             const Text(
-                              'Session data',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 20),
+                              'Platforms: ',
+                              style: TextStyle(color: Colors.white),
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  'Country:  ' + sessionData['Country'],
-                                  style: const TextStyle(color: Colors.white),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              children: [
-                                const Text(
-                                  'Platforms: ',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                SizedBox(
-                                    height: 40,
-                                    width: 250,
-                                    child: Theme(
-                                        data: Theme.of(context).copyWith(
-                                            colorScheme:
-                                                const ColorScheme.light(
-                                                    primary: Color.fromRGBO(
-                                                        180, 0, 0, 1),
-                                                    secondary: Color.fromRGBO(
-                                                        180, 0, 0, 1))),
-                                        child: ListView.separated(
-                                            physics:
-                                                const BouncingScrollPhysics(),
-                                            scrollDirection: Axis.horizontal,
-                                            itemBuilder: (context, index) {
-                                              return Card(
-                                                  color: Colors.transparent,
-                                                  clipBehavior: Clip
-                                                      .antiAliasWithSaveLayer,
-                                                  shape:
-                                                      const RoundedRectangleBorder(
+                            SizedBox(
+                                height: 40,
+                                width: 250,
+                                child: Theme(
+                                    data: Theme.of(context).copyWith(
+                                        colorScheme: const ColorScheme.light(
+                                            primary:
+                                                Color.fromRGBO(180, 0, 0, 1),
+                                            secondary:
+                                                Color.fromRGBO(180, 0, 0, 1))),
+                                    child: ListView.separated(
+                                        physics: const BouncingScrollPhysics(),
+                                        scrollDirection: Axis.horizontal,
+                                        itemBuilder: (context, index) {
+                                          return Card(
+                                              color: Colors.transparent,
+                                              clipBehavior:
+                                                  Clip.antiAliasWithSaveLayer,
+                                              shape:
+                                                  const RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  10))),
+                                              child: allProviders.length > 0
+                                                  ? Image.network(
+                                                      sessionData['Platforms']
+                                                                  .length ==
+                                                              0
+                                                          ? url_image +
+                                                              allProviders[
+                                                                      index]
+                                                                  ['logo_path']
+                                                          : url_image +
+                                                              allProviders.firstWhere(
+                                                                  (element) =>
+                                                                      element[
+                                                                          'provider_name'] ==
+                                                                      sessionData[
+                                                                              'Platforms']
+                                                                          [
+                                                                          index],
+                                                                  orElse: () =>
+                                                                      null)['logo_path'],
+                                                      fit: BoxFit.cover,
+                                                    )
+                                                  : const Card(
+                                                      color: Colors.red,
+                                                      clipBehavior: Clip
+                                                          .antiAliasWithSaveLayer,
+                                                      shape: RoundedRectangleBorder(
                                                           borderRadius:
                                                               BorderRadius.all(
                                                                   Radius
                                                                       .circular(
                                                                           10))),
-                                                  child: allProviders.length > 0
-                                                      ? Image.network(
-                                                          sessionData['Platforms']
-                                                                      .length ==
-                                                                  0
-                                                              ? url_image +
-                                                                  allProviders[
-                                                                          index]
-                                                                      [
-                                                                      'logo_path']
-                                                              : url_image +
-                                                                  allProviders.firstWhere(
-                                                                      (element) =>
-                                                                          element[
-                                                                              'provider_name'] ==
-                                                                          sessionData['Platforms']
-                                                                              [
-                                                                              index],
-                                                                      orElse: () =>
-                                                                          null)['logo_path'],
-                                                          fit: BoxFit.cover,
-                                                        )
-                                                      : const Card(
-                                                          color: Colors.red,
-                                                          clipBehavior: Clip
-                                                              .antiAliasWithSaveLayer,
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          10))),
-                                                        ));
-                                            },
-                                            separatorBuilder: (context, index) {
-                                              return const SizedBox(
-                                                width: 0.1,
-                                              );
-                                            },
-                                            itemCount: sessionData['Platforms']
-                                                        .length ==
-                                                    0
+                                                    ));
+                                        },
+                                        separatorBuilder: (context, index) {
+                                          return const SizedBox(
+                                            width: 0.1,
+                                          );
+                                        },
+                                        itemCount:
+                                            sessionData['Platforms'].length == 0
                                                 ? allProviders.length
                                                 : sessionData['Platforms']
                                                     .length))),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              sessionData['Genres'].length == 0
-                                  ? sessionData['MoviesOrSeries'].toString() +
-                                      ' of ' +
-                                      'all genres'
-                                  : sessionData['Genres'].length == 1
-                                      ? sessionData['MoviesOrSeries']
-                                              .toString() +
-                                          ' of ' +
-                                          List<String>.from(
-                                              sessionData['Genres'])[0]
-                                      : sessionData['MoviesOrSeries']
-                                              .toString() +
-                                          ' of ' +
-                                          List<String>.from(
-                                                  sessionData['Genres'])
-                                              .sublist(
-                                                  0,
-                                                  sessionData['Genres'].length -
-                                                      1)
-                                              .join(', ') +
-                                          ' and ' +
-                                          List<String>.from(
-                                                  sessionData['Genres'])
-                                              .last,
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              'Flixers:',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            SizedBox(
-                              height: 45,
-                              width: 400,
-                              child: ListView.separated(
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: (context, index) {
-                                    return Card(
-                                      color: Colors.white24,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Text(
-                                          flixers[index]['name'],
-                                          style: const TextStyle(
-                                              color: Colors.white),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  separatorBuilder: (context, index) {
-                                    return const SizedBox(
-                                      width: 10,
-                                    );
-                                  },
-                                  itemCount: flixers.length),
-                            )
                           ],
                         ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          sessionData['Genres'].length == 0
+                              ? sessionData['MoviesOrSeries'].toString() +
+                                  ' of ' +
+                                  'all genres'
+                              : sessionData['Genres'].length == 1
+                                  ? sessionData['MoviesOrSeries'].toString() +
+                                      ' of ' +
+                                      List<String>.from(
+                                          sessionData['Genres'])[0]
+                                  : sessionData['MoviesOrSeries'].toString() +
+                                      ' of ' +
+                                      List<String>.from(sessionData['Genres'])
+                                          .sublist(0,
+                                              sessionData['Genres'].length - 1)
+                                          .join(', ') +
+                                      ' and ' +
+                                      List<String>.from(sessionData['Genres'])
+                                          .last,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          'Flixers:',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          height: 45,
+                          width: 400,
+                          child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return Card(
+                                  color: Colors.white24,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Text(
+                                      flixers[index]['name'],
+                                      style:
+                                          const TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                );
+                              },
+                              separatorBuilder: (context, index) {
+                                return const SizedBox(
+                                  width: 10,
+                                );
+                              },
+                              itemCount: flixers.length),
+                        )
                       ],
                     ),
                   ],

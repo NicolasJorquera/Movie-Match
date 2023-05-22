@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
-import '../movieTinder_widget.dart';
+import '../movieCards/movieTinder_widget.dart';
 
 class JoinWidget extends StatefulWidget {
   List<dynamic> platformsSelected;
@@ -91,7 +91,6 @@ class _JoinWidgetState extends State<JoinWidget> {
                                       flixers.add(Map<dynamic, dynamic>.from(
                                           element.value as Map));
                                     });
-                                    print(flixers);
                                   }
                                 }
                               }
@@ -142,17 +141,6 @@ class _JoinWidgetState extends State<JoinWidget> {
                       ),
                       Row(
                         children: [
-                          Text(
-                            'Country:  ' + sessionData['Country'],
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        children: [
                           const Text(
                             'Platforms: ',
                             style: TextStyle(color: Colors.white),
@@ -169,7 +157,6 @@ class _JoinWidgetState extends State<JoinWidget> {
                                             secondary:
                                                 Color.fromRGBO(180, 0, 0, 1))),
                                     child: ListView.separated(
-                                        physics: const BouncingScrollPhysics(),
                                         scrollDirection: Axis.horizontal,
                                         itemBuilder: (context, index) {
                                           return Card(
@@ -211,8 +198,15 @@ class _JoinWidgetState extends State<JoinWidget> {
                                                                       index])['logo_path'],
                                                           fit: BoxFit.cover,
                                                         )
-                                                      : Container(
+                                                      : const Card(
                                                           color: Colors.red,
+                                                          clipBehavior: Clip
+                                                              .antiAliasWithSaveLayer,
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          10))),
                                                         ));
                                         },
                                         separatorBuilder: (context, index) {
@@ -253,7 +247,7 @@ class _JoinWidgetState extends State<JoinWidget> {
                       const SizedBox(
                         height: 40,
                       ),
-                      Text(
+                      const Text(
                         'Flixers:',
                         style: TextStyle(color: Colors.white),
                       ),
@@ -372,7 +366,7 @@ class _JoinWidgetState extends State<JoinWidget> {
                                         child: const Text(
                                           'Ok',
                                           style: TextStyle(
-                                            fontSize: 15,
+                                              fontSize: 15,
                                               color:
                                                   Color.fromRGBO(180, 0, 0, 1)),
                                         ))
