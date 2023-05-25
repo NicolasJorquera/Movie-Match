@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'features/home/home_page.dart';
 import 'features/search/search_page.dart';
@@ -19,6 +21,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   dynamic userData = {};
+  final user = FirebaseAuth.instance.currentUser!;
   static const url_image = 'https://image.tmdb.org/t/p/w500';
   int selectedIndex = 0;
   int previousSelectedIndex = 0;
@@ -27,7 +30,8 @@ class _HomePageState extends State<HomePage> {
   List<dynamic> movieProviders = [];
   List<dynamic> serieProviders = [];
   List<dynamic> providers = [];
-  List<dynamic> genres = [];
+  List<dynamic> genresMovies = [];
+  List<dynamic> genresSeries = [];
   _HomePageState(userData);
 
   @override
@@ -35,7 +39,8 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     fetchMovieProviders();
     fetchSerieProviders();
-    fetchGenres();
+    fetchGenresMovies();
+    fetchGenresSeries();
   }
 
   @override
@@ -49,12 +54,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final screens = [
       HomeView(
-        genres: genres,
+        genresMovies: genresMovies,
+        genresSeries: genresSeries,
       ),
       CreateOrJoinWidget(
           platformsSelected: platformsSelected,
           providers: providers,
-          genres: genres),
+          genres: genresMovies),
       const SearchView(),
       UsersView(
         fetchMovies: () {
@@ -516,7 +522,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void fetchGenres() async {
+  void fetchGenresMovies() async {
     const api_url = 'https://api.themoviedb.org/3';
     const api_Key = '36e984f2374fdfcbcea58dba752094dc';
     const image_path = 'https://image.tmdb.org/t/p/original';
@@ -531,14 +537,14 @@ class _HomePageState extends State<HomePage> {
     final gen = json['genres'];
 
     setState(() {
-      genres = gen;
+      genresMovies = gen;
     });
 
     fetchMovies();
   }
 
   void fetchMovies() async {
-    for (var genre in genres) {
+    for (var genre in genresMovies) {
       const api_url = 'https://api.themoviedb.org/3';
       const api_Key = '36e984f2374fdfcbcea58dba752094dc';
       const image_path = 'https://image.tmdb.org/t/p/original';
@@ -575,12 +581,119 @@ class _HomePageState extends State<HomePage> {
       final json = jsonDecode(body);
       final movs = json['results'];
 
+      final usersSnap = await FirebaseDatabase.instance.ref("users/").get();
+      String userID = usersSnap.children
+          .firstWhere((usr) => usr.child('email').value == user.email)
+          .key!;
+
+      final usersMoviesSnap = await FirebaseDatabase.instance
+          .ref("users/" + userID + "/likedMovies/")
+          .get();
+
       for (var element in movs) {
-        element['liked'] = false;
+        bool isMovieLiked = usersMoviesSnap.children
+            .any((movieLiked) => movieLiked.child('id').value == element['id']);
+        if (isMovieLiked) {
+          element['liked'] = true;
+        } else {
+          element['liked'] = false;
+        }
       }
 
       setState(() {
         genre['movies'] = movs;
+      });
+    }
+  }
+
+  void fetchGenresSeries() async {
+    const api_url = 'https://api.themoviedb.org/3';
+    const api_Key = '36e984f2374fdfcbcea58dba752094dc';
+    const image_path = 'https://image.tmdb.org/t/p/original';
+    const url_image = 'https://image.tmdb.org/t/p/w500';
+
+    var url = api_url + '/genre/tv/list?api_key=' + api_Key;
+
+    final uri = Uri.parse(url);
+    final response = await http.get(uri);
+    final body = response.body;
+    final json = jsonDecode(body);
+    final gen = json['genres'];
+
+    setState(() {
+      genresSeries = gen;
+    });
+
+    fetchSeries();
+  }
+
+  void fetchSeries() async {
+    for (var genre in genresSeries) {
+      const api_url = 'https://api.themoviedb.org/3';
+      const api_Key = '36e984f2374fdfcbcea58dba752094dc';
+      const image_path = 'https://image.tmdb.org/t/p/original';
+      const url_image = 'https://image.tmdb.org/t/p/w500';
+
+      List platformsSelectedIds = [];
+
+      if (platformsSelected.length > 0) {
+        platformsSelected.forEach((element) {
+          if (element['enable'] == true) {
+            dynamic serieProvider = serieProviders.firstWhere(
+              (serieProvider) =>
+                  serieProvider['provider_name'] == element['provider_name'],
+              orElse: () => null,
+            );
+
+            if (serieProvider != null) {
+              platformsSelectedIds.add(serieProvider['provider_id']);
+            }
+          }
+        });
+      }
+
+      var url = api_url +
+          '/discover/tv?api_key=' +
+          api_Key +
+          '&sort_by=popularity.desc&with_genres=' +
+          genre['id'].toString() +
+          '&watch_region=CL' +
+          '&with_watch_providers=' +
+          (platformsSelectedIds.isNotEmpty
+              ? platformsSelectedIds
+                  .toString()
+                  .replaceAll('[', '')
+                  .replaceAll(']', '')
+                  .replaceAll(',', '|')
+              : '');
+
+      final uri = Uri.parse(url);
+      final response = await http.get(uri);
+      final body = response.body;
+      final json = jsonDecode(body);
+      final srs = json['results'];
+
+      final usersSnap = await FirebaseDatabase.instance.ref("users/").get();
+      String userID = usersSnap.children
+          .firstWhere((usr) => usr.child('email').value == user.email)
+          .key!;
+
+      final usersMoviesSnap = await FirebaseDatabase.instance
+          .ref("users/" + userID + "/likedSeries/")
+          .get();
+
+      for (var element in srs) {
+        bool isSerieLiked = usersMoviesSnap.children
+            .any((movieLiked) => movieLiked.child('id').value == element['id']);
+        if (isSerieLiked) {
+          element['liked'] = true;
+        } else {
+          element['liked'] = false;
+        }
+      }
+
+      setState(() {
+        genre['series'] = srs;
       });
     }
   }

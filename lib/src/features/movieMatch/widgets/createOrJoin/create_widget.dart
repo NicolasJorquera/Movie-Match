@@ -50,12 +50,6 @@ class _CreateWidgetState extends State<CreateWidget> {
   void initState() {
     super.initState();
     fetchCountries();
-    // setState(() {
-    //   sessionData['Platforms'] = platformsSelected.map((e) => e['provider_name'] as String).toList();
-    // });
-    // setState(() {
-    //   sessionData['Genres'] = ['All genres'];
-    // });
   }
 
   @override
@@ -130,6 +124,7 @@ class _CreateWidgetState extends State<CreateWidget> {
                 MaterialPageRoute(
                     builder: (context) => MovieTinderWidget(
                           sessionID: sessionid,
+                          allProviders: allProviders,
                         )),
               );
 

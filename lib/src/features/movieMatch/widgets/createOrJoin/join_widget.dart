@@ -162,80 +162,79 @@ class _JoinWidgetState extends State<JoinWidget> {
                       const SizedBox(
                         height: 10,
                       ),
-                      // Row(
-                      //   children: [
-                      //     const Text(
-                      //       'Platforms: ',
-                      //       style: TextStyle(color: Colors.white),
-                      //     ),
-                      //     SizedBox(
-                      //       height: 40,
-                      //       width: 250,
-                      //       child: Expanded(
-                      //           child: ListView.separated(
-                      //               scrollDirection: Axis.horizontal,
-                      //               itemBuilder: (context, index) {
-                      //                 return Card(
-                      //                   color: Colors.transparent,
-                      //                   clipBehavior: Clip.antiAliasWithSaveLayer,
-                      //                     shape:
-                      //                         const RoundedRectangleBorder(
-                      //                             borderRadius:
-                      //                                 BorderRadius.all(
-                      //                                     Radius.circular(
-                      //                                         10))),
-                      //                     child: !sessionData
-                      //                             .containsKey('Platforms')
-                      //                         ? Image.network(
-                      //                             url_image +
-                      //                                 allProviders[index]
-                      //                                     ['logo_path'],
-                      //                             fit: BoxFit.cover,
-                      //                           )
-                      //                         : allProviders.firstWhere(
-                      //                                     (element) =>
-                      //                                         element[
-                      //                                             'provider_name'] ==
-                      //                                         sessionData[
-                      //                                                 'Platforms']
-                      //                                             [index],
-                      //                                     orElse: () =>
-                      //                                         null) !=
-                      //                                 null
-                      //                             ? Image.network(
-                      //                                 url_image +
-                      //                                     allProviders.firstWhere((element) =>
-                      //                                         element[
-                      //                                             'provider_name'] ==
-                      //                                         sessionData[
-                      //                                                 'Platforms']
-                      //                                             [
-                      //                                             index])['logo_path'],
-                      //                                 fit: BoxFit.cover,
-                      //                               )
-                      //                             : const Card(
-                      //                                 color: Colors.red,
-                      //                                 clipBehavior: Clip
-                      //                                     .antiAliasWithSaveLayer,
-                      //                                 shape: RoundedRectangleBorder(
-                      //                                     borderRadius: BorderRadius
-                      //                                         .all(Radius
-                      //                                             .circular(
-                      //                                                 10))),
-                      //                               ));
-                      //               },
-                      //               separatorBuilder: (context, index) {
-                      //                 return const SizedBox(
-                      //                   width: 0.1,
-                      //                 );
-                      //               },
-                      //               itemCount: sessionData
-                      //                       .containsKey('Platforms')
-                      //                   ? sessionData['Platforms'].length
-                      //                   : allProviders.length)),
-                      //     )
-                      //   ],
-                      // ),
+                      Row(
+                        children: [
+                          const Text(
+                            'Platforms: ',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          SizedBox(
+                            height: 40,
+                            width: 250,
+                            child: ListView.separated(
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (context, index) {
+                                  return Card(
+                                    color: Colors.transparent,
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                      shape:
+                                          const RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.all(
+                                                      Radius.circular(
+                                                          10))),
+                                      child: !sessionData
+                                              .containsKey('Platforms')
+                                          ? Image.network(
+                                              url_image +
+                                                  allProviders[index]
+                                                      ['logo_path'],
+                                              fit: BoxFit.cover,
+                                            )
+                                          : allProviders.firstWhere(
+                                                      (element) =>
+                                                          element[
+                                                              'provider_name'] ==
+                                                          sessionData[
+                                                                  'Platforms']
+                                                              [index],
+                                                      orElse: () =>
+                                                          null) !=
+                                                  null
+                                              ? Image.network(
+                                                  url_image +
+                                                      allProviders.firstWhere((element) =>
+                                                          element[
+                                                              'provider_name'] ==
+                                                          sessionData[
+                                                                  'Platforms']
+                                                              [
+                                                              index])['logo_path'],
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : const Card(
+                                                  color: Colors.red,
+                                                  clipBehavior: Clip
+                                                      .antiAliasWithSaveLayer,
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius
+                                                          .all(Radius
+                                                              .circular(
+                                                                  10))),
+                                                ));
+                                },
+                                separatorBuilder: (context, index) {
+                                  return const SizedBox(
+                                    width: 0.1,
+                                  );
+                                },
+                                itemCount: sessionData
+                                        .containsKey('Platforms')
+                                    ? sessionData['Platforms'].length
+                                    : allProviders.length),
+                          )
+                        ],
+                      ),
                       
                       const SizedBox(
                         height: 40,
@@ -328,6 +327,7 @@ class _JoinWidgetState extends State<JoinWidget> {
                             MaterialPageRoute(
                                 builder: (context) => MovieTinderWidget(
                                       sessionID: sessionID,
+                                      allProviders: allProviders,
                                     )),
                           );
                         } else {

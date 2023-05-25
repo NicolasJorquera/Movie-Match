@@ -12,7 +12,7 @@ import '../results/results_widget.dart';
 class MovieTinderWidget extends StatefulWidget {
   String sessionID = '';
   List<dynamic> allProviders = [];
-  MovieTinderWidget({super.key, required this.sessionID});
+  MovieTinderWidget({super.key, required this.sessionID, required this.allProviders});
 
   @override
   State<MovieTinderWidget> createState() =>

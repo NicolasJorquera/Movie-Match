@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:share_plus/share_plus.dart';
@@ -16,14 +17,22 @@ class UsersView extends StatefulWidget {
       required this.providers,
       required this.platformsSelected,
       required this.setPlatformsSelected,
-      required this.setProviders, required this.userData, required this.fetchMovies});
+      required this.setProviders,
+      required this.userData,
+      required this.fetchMovies});
 
   @override
-  State<UsersView> createState() => _UsersViewState(providers,
-      platformsSelected, setPlatformsSelected, setProviders, userData, fetchMovies);
+  State<UsersView> createState() => _UsersViewState(
+      providers,
+      platformsSelected,
+      setPlatformsSelected,
+      setProviders,
+      userData,
+      fetchMovies);
 }
 
 class _UsersViewState extends State<UsersView> {
+  final user = FirebaseAuth.instance.currentUser!;
   dynamic userData;
   int selectedIndex = 0;
   int previousSelectedIndex = 0;
@@ -31,15 +40,30 @@ class _UsersViewState extends State<UsersView> {
   Function setPlatformsSelected;
   Function setProviders;
   Function fetchMovies;
+  List likedMovies = [];
+  static const url_image = 'https://image.tmdb.org/t/p/w500';
 
-  _UsersViewState(this.providers, this.platformsSelected,
-      this.setPlatformsSelected, this.setProviders, this.userData, this.fetchMovies);
+  _UsersViewState(
+      this.providers,
+      this.platformsSelected,
+      this.setPlatformsSelected,
+      this.setProviders,
+      this.userData,
+      this.fetchMovies);
 
   List<dynamic> providers;
 
   @override
+  @override
+  void initState() {
+    super.initState();
+    fetchLikedMovies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser!;
+    fetchLikedMovies();
     return Theme(
         data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
@@ -130,8 +154,8 @@ class _UsersViewState extends State<UsersView> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => SettingsWidget(
-                                    fetchMovies: widget.fetchMovies,
-                                    userData: widget.userData,
+                                        fetchMovies: widget.fetchMovies,
+                                        userData: widget.userData,
                                         providers: widget.providers,
                                         platformsSelected:
                                             widget.platformsSelected,
@@ -192,69 +216,6 @@ class _UsersViewState extends State<UsersView> {
                     const Padding(
                       padding: EdgeInsets.only(left: 12),
                       child: Text(
-                        'Lists',
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                    ),
-                    Padding(
-                        padding: const EdgeInsets.only(right: 12),
-                        child: TextButton(
-                            onPressed: () {},
-                            child: const Text('SEE ALL',
-                                style: TextStyle(
-                                    color: Color.fromRGBO(180, 0, 0, 1),
-                                    fontSize: 12))))
-                  ],
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.2,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      top: 10,
-                    ),
-                    child: Theme(
-                        data: Theme.of(context).copyWith(
-                            colorScheme: const ColorScheme.light(
-                                primary: Color.fromRGBO(180, 0, 0, 1),
-                                secondary: Color.fromRGBO(180, 0, 0, 1))),
-                        child: ListView.separated(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) {
-                              return index == 0
-                                  ? Padding(
-                                      padding: const EdgeInsets.only(left: 5),
-                                      child: buildmovieCard(index))
-                                  : index == 19
-                                      ? Padding(
-                                          padding:
-                                              const EdgeInsets.only(right: 5),
-                                          child: buildmovieCard(index))
-                                      : buildmovieCard(index);
-                            },
-                            separatorBuilder: (context, index) {
-                              return const SizedBox(width: 5);
-                            },
-                            itemCount: 20)),
-                  ),
-                ),
-              ],
-            ),
-            const Divider(
-              height: 20,
-              thickness: 1,
-              indent: 0,
-              endIndent: 0,
-              color: Color.fromRGBO(50, 50, 50, 1),
-            ),
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: 12),
-                      child: Text(
                         'Shows',
                         style: TextStyle(color: Colors.white, fontSize: 20),
                       ),
@@ -273,7 +234,7 @@ class _UsersViewState extends State<UsersView> {
                   height: MediaQuery.of(context).size.height * 0.2,
                   child: Padding(
                     padding: const EdgeInsets.only(
-                      top: 10,
+                      top: 5,
                     ),
                     child: Theme(
                         data: Theme.of(context).copyWith(
@@ -284,16 +245,7 @@ class _UsersViewState extends State<UsersView> {
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (context, index) {
-                              return index == 0
-                                  ? Padding(
-                                      padding: const EdgeInsets.only(left: 5),
-                                      child: buildmovieCard(index))
-                                  : index == 19
-                                      ? Padding(
-                                          padding:
-                                              const EdgeInsets.only(right: 5),
-                                          child: buildmovieCard(index))
-                                      : buildmovieCard(index);
+                              return buildSerieCard(index);
                             },
                             separatorBuilder: (context, index) {
                               return const SizedBox(width: 5);
@@ -336,7 +288,7 @@ class _UsersViewState extends State<UsersView> {
                   height: MediaQuery.of(context).size.height * 0.2,
                   child: Padding(
                     padding: const EdgeInsets.only(
-                      top: 10,
+                      top: 5,
                     ),
                     child: Theme(
                         data: Theme.of(context).copyWith(
@@ -347,21 +299,16 @@ class _UsersViewState extends State<UsersView> {
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (context, index) {
-                              return index == 0
-                                  ? Padding(
-                                      padding: const EdgeInsets.only(left: 5),
-                                      child: buildmovieCard(index))
-                                  : index == 19
-                                      ? Padding(
-                                          padding:
-                                              const EdgeInsets.only(right: 5),
-                                          child: buildmovieCard(index))
-                                      : buildmovieCard(index);
+                              return Card(
+                                color: Colors.transparent,
+                                elevation: 0,
+                                child: buildMovieCard(index),
+                              );
                             },
                             separatorBuilder: (context, index) {
                               return const SizedBox(width: 5);
                             },
-                            itemCount: 20)),
+                            itemCount: likedMovies.length)),
                   ),
                 ),
               ],
@@ -390,23 +337,56 @@ class _UsersViewState extends State<UsersView> {
             onPressed: () {},
           )));
 
-  Widget buildmovieCard(int index) => SizedBox(
+  Widget buildMovieCard(int index) => SizedBox(
       width: MediaQuery.of(context).size.width * 0.3,
       child: ClipRRect(
           borderRadius: BorderRadius.circular(10),
-          child: TextButton(
-            style: ButtonStyle(
-                backgroundColor: const MaterialStatePropertyAll(
-                  Color.fromRGBO(42, 42, 42, 1),
-                ),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.0),
-                ))),
-            child: const Text(
-              '',
-              style: TextStyle(color: Colors.white, fontSize: 15),
+          child: GestureDetector(
+            onTap: () {},
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              clipBehavior: Clip.hardEdge,
+              color: Colors.transparent,
+              child: likedMovies.asMap().containsKey(index)
+                  ? Image.network(url_image + likedMovies[index]['poster_path'],
+                      fit: BoxFit.cover)
+                  : Container(),
             ),
-            onPressed: () {},
           )));
+
+  Widget buildSerieCard(int index) => SizedBox(
+      width: MediaQuery.of(context).size.width * 0.3,
+      child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: GestureDetector(
+            onTap: () {},
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              clipBehavior: Clip.hardEdge,
+              color: const Color.fromRGBO(42, 42, 42, 1),
+            ),
+          )));
+
+  void fetchLikedMovies() async {
+    final usersSnap = await FirebaseDatabase.instance.ref("users/").get();
+    String userID = usersSnap.children
+        .firstWhere((usr) => usr.child('email').value == user.email)
+        .key!;
+
+    final usersMoviesSnap = await FirebaseDatabase.instance
+        .ref("users/" + userID + "/likedMovies/")
+        .get();
+
+    setState(() {
+      likedMovies.clear();
+    });
+
+    for (var movie in usersMoviesSnap.children) {
+      likedMovies.add(movie.value);
+    }
+  }
 }

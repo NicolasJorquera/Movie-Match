@@ -75,24 +75,7 @@ class _CreateOrJoinWidgetState extends State<CreateOrJoinWidget>
     );
   }
 
-  List<Step> getSteps() => [
-        Step(
-            isActive: currentStep >= 0,
-            title: const Text(
-              'Platforms',
-              style: TextStyle(color: Colors.white),
-            ),
-            content: Container()),
-        Step(
-            isActive: currentStep >= 1,
-            title: const Text('Genres', style: TextStyle(color: Colors.white)),
-            content: Container()),
-        Step(
-            isActive: currentStep >= 2,
-            title:
-                const Text('Other step', style: TextStyle(color: Colors.white)),
-            content: Container()),
-      ];
+
 
   @override
   void dispose() {
