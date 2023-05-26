@@ -377,6 +377,7 @@ class _HomePageState extends State<HomePage> {
                                         }
                                       });
                                       fetchMovies();
+                                      fetchSeries();
                                     },
                                     child: const Text(
                                       'All',
@@ -616,11 +617,16 @@ class _HomePageState extends State<HomePage> {
         });
       }
 
+      if (providers.every((element) => element['enable']) &&
+          platformsSelected.every((element) => element['enable'])) { //checks if all button is pressed
+        platformsSelectedIds = [];
+      }
+
       var url = api_url +
           '/discover/movie?'
               'sort_by=popularity.desc&with_genres=' +
           genre['id'].toString() +
-          '&watch_region=CL' +
+          '&watch_region=CL&region=CL' +
           '&with_watch_providers=' +
           (platformsSelectedIds.isNotEmpty
               ? platformsSelectedIds
@@ -704,6 +710,11 @@ class _HomePageState extends State<HomePage> {
             }
           }
         });
+      }
+
+      if (providers.every((element) => element['enable']) &&
+          platformsSelected.every((element) => element['enable'])) { //checks if all button is pressed
+        platformsSelectedIds = [];
       }
 
       var url = api_url +

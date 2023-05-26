@@ -644,6 +644,9 @@ class _MovieInfoPageState extends State<MovieInfoPage> {
         if (videoData['type'] == 'Trailer') {
           trailer = videoData;
         }
+        if (videos.last == videoData && trailer == null) {
+          trailer = videoData;
+        }
       }
       setState(() {
         _controller = YoutubePlayerController(
