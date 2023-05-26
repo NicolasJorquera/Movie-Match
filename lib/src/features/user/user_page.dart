@@ -41,6 +41,7 @@ class _UsersViewState extends State<UsersView> {
   Function setProviders;
   Function fetchMovies;
   List likedMovies = [];
+  List likedSeries = [];
   static const url_image = 'https://image.tmdb.org/t/p/w500';
 
   _UsersViewState(
@@ -58,12 +59,14 @@ class _UsersViewState extends State<UsersView> {
   void initState() {
     super.initState();
     fetchLikedMovies();
+    fetchLikedSeries();
   }
 
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser!;
     fetchLikedMovies();
+    fetchLikedSeries();
     return Theme(
         data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
@@ -216,7 +219,7 @@ class _UsersViewState extends State<UsersView> {
                     const Padding(
                       padding: EdgeInsets.only(left: 12),
                       child: Text(
-                        'Shows',
+                        'Series',
                         style: TextStyle(color: Colors.white, fontSize: 20),
                       ),
                     ),
@@ -245,12 +248,16 @@ class _UsersViewState extends State<UsersView> {
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (context, index) {
-                              return buildSerieCard(index);
+                              return Card(
+                                color: Colors.transparent,
+                                elevation: 0,
+                                child: buildSerieCard(index),
+                              );
                             },
                             separatorBuilder: (context, index) {
                               return const SizedBox(width: 5);
                             },
-                            itemCount: 20)),
+                            itemCount: likedSeries.length)),
                   ),
                 ),
               ],
@@ -367,7 +374,11 @@ class _UsersViewState extends State<UsersView> {
                 borderRadius: BorderRadius.circular(12.0),
               ),
               clipBehavior: Clip.hardEdge,
-              color: const Color.fromRGBO(42, 42, 42, 1),
+              color: Colors.transparent,
+              child: likedSeries.asMap().containsKey(index)
+                  ? Image.network(url_image + likedSeries[index]['poster_path'],
+                      fit: BoxFit.cover)
+                  : Container(),
             ),
           )));
 
@@ -387,6 +398,25 @@ class _UsersViewState extends State<UsersView> {
 
     for (var movie in usersMoviesSnap.children) {
       likedMovies.add(movie.value);
+    }
+  }
+
+  void fetchLikedSeries() async {
+    final usersSnap = await FirebaseDatabase.instance.ref("users/").get();
+    String userID = usersSnap.children
+        .firstWhere((usr) => usr.child('email').value == user.email)
+        .key!;
+
+    final usersSeriesSnap = await FirebaseDatabase.instance
+        .ref("users/" + userID + "/likedSeries/")
+        .get();
+
+    setState(() {
+      likedSeries.clear();
+    });
+
+    for (var movie in usersSeriesSnap.children) {
+      likedSeries.add(movie.value);
     }
   }
 }

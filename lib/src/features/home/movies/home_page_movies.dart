@@ -130,7 +130,7 @@ class _HomeViewMoviesState extends State<HomeViewMovies> {
                                             movies[index]['id'],
                                       );
                                     } else {
-                                      movieAlreadyExists = null;
+                                      movieAlreadyExists = false;
                                     }
 
                                     if (movies[index]['liked'] &&
@@ -189,48 +189,55 @@ class _HomeViewMoviesState extends State<HomeViewMovies> {
         ],
       );
 
-  Widget buildRow(int index1) => Column(children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 12, top: 10),
-          child: Align(
-              alignment: Alignment.bottomLeft,
-              child: Text(
-                widget.genres.isNotEmpty ? widget.genres[index1]['name'] : '',
-                style: const TextStyle(color: Colors.white, fontSize: 20),
-                textAlign: TextAlign.left,
-              )),
-        ),
-        const SizedBox(
-          height: 5,
-        ),
-        SizedBox(
-            height: (MediaQuery.of(context).size.width * 0.4 * 3) / 2,
-            child: Theme(
-                data: Theme.of(context).copyWith(
-                    colorScheme: const ColorScheme.light(
-                        primary: Color.fromRGBO(180, 0, 0, 1),
-                        secondary: Color.fromRGBO(180, 0, 0, 1))),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.only(left: 12, right: 12),
-                  itemBuilder: (context, index) {
-                    return index != widget.genres[index1]['movies'].length - 1
-                        ? Row(
-                            children: [
-                              buildCard(index, widget.genres[index1]['movies']),
-                              const SizedBox(width: 5)
-                            ],
-                          )
-                        : Row(children: [
-                            buildCard(index, widget.genres[index1]['movies'])
-                          ]);
-                  },
-                  itemCount: widget.genres.isNotEmpty
-                      ? widget.genres[index1]['movies'] != null
-                          ? widget.genres[index1]['movies'].length
-                          : 0
-                      : 0,
-                )))
-      ]);
+  Widget buildRow(int index1) {
+    return widget.genres[index1]['movies'] == null
+        ? Container()
+        : List.from( widget.genres[index1]['movies'] ).length< 3
+            ? Container()
+            : Column(children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 12, top: 10),
+                  child: Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Text(
+                        widget.genres.isNotEmpty
+                            ? widget.genres[index1]['name']
+                            : '',
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 20),
+                        textAlign: TextAlign.left,
+                      )),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                SizedBox(
+                    height: (MediaQuery.of(context).size.width * 0.4 * 3) / 2,
+                    child: Theme(
+                        data: Theme.of(context).copyWith(
+                            colorScheme: const ColorScheme.light(
+                                primary: Color.fromRGBO(180, 0, 0, 1),
+                                secondary: Color.fromRGBO(180, 0, 0, 1))),
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.only(left: 12, right: 12),
+                          itemBuilder: (context, index) {
+                            return Row(children: [
+                              buildCard(index, widget.genres[index1]['movies'])
+                            ]);
+                          },
+                          separatorBuilder: (context, index) {
+                            return const SizedBox(
+                              width: 5,
+                            );
+                          },
+                          itemCount: widget.genres.isNotEmpty
+                              ? widget.genres[index1]['movies'] != null
+                                  ? widget.genres[index1]['movies'].length
+                                  : 0
+                              : 0,
+                        )))
+              ]);
+  }
 }

@@ -33,155 +33,165 @@ class _SearchViewState extends State<SearchView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Padding(
-            padding: const EdgeInsets.only(left: 15, right: 15),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                        child: SearchBar(
-                      hintText: 'Search...',
-                      hintStyle: const MaterialStatePropertyAll(
-                          TextStyle(color: Colors.white54, fontSize: 17)),
-                      backgroundColor:
-                          const MaterialStatePropertyAll(Colors.white24),
-                      textStyle: const MaterialStatePropertyAll(
-                          TextStyle(color: Colors.white, fontSize: 17)),
-                      onChanged: (value) {
-                        setState(() {
-                          searchString = value;
-                        });
-                        fetchSearch();
-                        if (value == '') {
-                          fetchTrendingMovies();
-                        }
+        body: SafeArea(
+      child: Padding(
+          padding: const EdgeInsets.only(left: 15, right: 15),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  BackButton(
+                    color: Colors.white,
+                  ),
+                  Text('Back', style: const TextStyle(color: Colors.white, fontSize: 20))
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                      child: SearchBar(
+                    hintText: 'Search...',
+                    hintStyle: const MaterialStatePropertyAll(
+                        TextStyle(color: Colors.white54, fontSize: 17)),
+                    backgroundColor:
+                        const MaterialStatePropertyAll(Colors.white24),
+                    textStyle: const MaterialStatePropertyAll(
+                        TextStyle(color: Colors.white, fontSize: 17)),
+                    onChanged: (value) {
+                      setState(() {
+                        searchString = value;
+                      });
+                      fetchSearch();
+                      if (value == '') {
+                        fetchTrendingMovies();
+                      }
+                    },
+                  ))
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Expanded(
+                  child: ListView.separated(
+                      itemBuilder: (context, index) {
+                        return SizedBox(
+                            height: 100,
+                            width: double.maxFinite,
+                            child: GestureDetector(
+                                // onDoubleTap: () {
+                                //   setState(() {
+                                //     search[index]['liked'] =
+                                //         !search[index]['liked'];
+                                //   });
+                                // },
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MovieInfoPage(
+                                              movie: search[index],
+                                            )),
+                                  );
+                                },
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        SizedBox(
+                                            height: 100,
+                                            width: 70,
+                                            child: search[index]
+                                                        ['poster_path'] ==
+                                                    null
+                                                ? Container(
+                                                    color: Colors.white24,
+                                                  )
+                                                : Image.network(
+                                                    image_path +
+                                                        search[index]
+                                                            ['poster_path'],
+                                                    fit: BoxFit.cover,
+                                                  )),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(
+                                              width: 200,
+                                              height: 50,
+                                              child: ListView(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                children: [
+                                                  Text(
+                                                    search[index]['title'],
+                                                    style: const TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 20),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 2,
+                                            ),
+                                            Text(
+                                              search[index]['genre_ids']
+                                                  .toString(),
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 10,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            search[index]['liked'] =
+                                                !search[index]['liked'];
+                                          });
+                                        },
+                                        icon: Icon(
+                                          search[index]['liked']
+                                              ? Icons.favorite
+                                              : Icons.favorite_border,
+                                          color: search[index]['liked']
+                                              ? const Color.fromRGBO(
+                                                  200, 0, 0, 1)
+                                              : Colors.white,
+                                        ))
+                                  ],
+                                )));
                       },
-                    ))
-                  ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Expanded(
-                    child: ListView.separated(
-                        itemBuilder: (context, index) {
-                          return SizedBox(
-                              height: 100,
-                              width: double.maxFinite,
-                              child: GestureDetector(
-                                  // onDoubleTap: () {
-                                  //   setState(() {
-                                  //     search[index]['liked'] =
-                                  //         !search[index]['liked'];
-                                  //   });
-                                  // },
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => MovieInfoPage(
-                                                movie: search[index],
-                                              )),
-                                    );
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          SizedBox(
-                                              height: 100,
-                                              width: 70,
-                                              child: search[index]
-                                                          ['poster_path'] ==
-                                                      null
-                                                  ? Container(
-                                                      color: Colors.white24,
-                                                    )
-                                                  : Image.network(
-                                                      image_path +
-                                                          search[index]
-                                                              ['poster_path'],
-                                                      fit: BoxFit.cover,
-                                                    )),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(
-                                                width: 200,
-                                                height: 50,
-                                                child: ListView(
-                                                  scrollDirection:
-                                                      Axis.horizontal,
-                                                  children: [
-                                                    Text(
-                                                      search[index]['title'],
-                                                      style: const TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 20),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                height: 2,
-                                              ),
-                                              Text(
-                                                search[index]['genre_ids']
-                                                    .toString(),
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 10,
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      IconButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              search[index]['liked'] =
-                                                  !search[index]['liked'];
-                                            });
-                                          },
-                                          icon: Icon(
-                                            search[index]['liked']
-                                                ? Icons.favorite
-                                                : Icons.favorite_border,
-                                            color: search[index]['liked']
-                                                ? const Color.fromRGBO(
-                                                    200, 0, 0, 1)
-                                                : Colors.white,
-                                          ))
-                                    ],
-                                  )));
-                        },
-                        separatorBuilder: (context, index) {
-                          return const Column(
-                            children: [
-                              SizedBox(
-                                height: 2,
-                              ),
-                              Divider(
-                                color: Colors.white24,
-                                thickness: 1,
-                              ),
-                              SizedBox(
-                                height: 2,
-                              ),
-                            ],
-                          );
-                        },
-                        itemCount: search.length))
-              ],
-            )));
+                      separatorBuilder: (context, index) {
+                        return const Column(
+                          children: [
+                            SizedBox(
+                              height: 2,
+                            ),
+                            Divider(
+                              color: Colors.white24,
+                              thickness: 1,
+                            ),
+                            SizedBox(
+                              height: 2,
+                            ),
+                          ],
+                        );
+                      },
+                      itemCount: search.length))
+            ],
+          )),
+    ));
   }
 
   void fetchTrendingMovies() async {

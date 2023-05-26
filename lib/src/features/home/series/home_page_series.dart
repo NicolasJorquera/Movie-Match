@@ -146,7 +146,7 @@ class _HomeViewSeriesState extends State<HomeViewSeries> {
                                             series[index]['id'],
                                       );
                                     } else {
-                                      serieAlreadyExists = null;
+                                      serieAlreadyExists = false;
                                     }
 
                                     if (series[index]['liked'] &&
@@ -204,48 +204,55 @@ class _HomeViewSeriesState extends State<HomeViewSeries> {
         ],
       );
 
-  Widget buildRow(int index1) => Column(children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 12, top: 10),
-          child: Align(
-              alignment: Alignment.bottomLeft,
-              child: Text(
-                widget.genres.isNotEmpty ? widget.genres[index1]['name'] : '',
-                style: const TextStyle(color: Colors.white, fontSize: 20),
-                textAlign: TextAlign.left,
-              )),
-        ),
-        const SizedBox(
-          height: 5,
-        ),
-        SizedBox(
-            height: (MediaQuery.of(context).size.width * 0.4 * 3) / 2,
-            child: Theme(
-                data: Theme.of(context).copyWith(
-                    colorScheme: const ColorScheme.light(
-                        primary: Color.fromRGBO(180, 0, 0, 1),
-                        secondary: Color.fromRGBO(180, 0, 0, 1))),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.only(left: 12, right: 12),
-                  itemBuilder: (context, index) {
-                    return index != widget.genres[index1]['series'].length - 1
-                        ? Row(
-                            children: [
-                              buildCard(index, widget.genres[index1]['series']),
-                              const SizedBox(width: 5)
-                            ],
-                          )
-                        : Row(children: [
-                            buildCard(index, widget.genres[index1]['series'])
-                          ]);
-                  },
-                  itemCount: widget.genres.isNotEmpty
-                      ? widget.genres[index1]['series'] != null
-                          ? widget.genres[index1]['series'].length
-                          : 0
-                      : 0,
-                )))
-      ]);
+  Widget buildRow(int index1) {
+    return widget.genres[index1]['series'] == null
+        ? Container()
+        : List.from( widget.genres[index1]['series'] ).length< 3
+            ? Container()
+            : Column(children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 12, top: 10),
+                  child: Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Text(
+                        widget.genres.isNotEmpty
+                            ? widget.genres[index1]['name']
+                            : '',
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 20),
+                        textAlign: TextAlign.left,
+                      )),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                SizedBox(
+                    height: (MediaQuery.of(context).size.width * 0.4 * 3) / 2,
+                    child: Theme(
+                        data: Theme.of(context).copyWith(
+                            colorScheme: const ColorScheme.light(
+                                primary: Color.fromRGBO(180, 0, 0, 1),
+                                secondary: Color.fromRGBO(180, 0, 0, 1))),
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.only(left: 12, right: 12),
+                          itemBuilder: (context, index) {
+                            return Row(children: [
+                              buildCard(index, widget.genres[index1]['series'])
+                            ]);
+                          },
+                          separatorBuilder: (context, index) {
+                            return const SizedBox(
+                              width: 5,
+                            );
+                          },
+                          itemCount: widget.genres.isNotEmpty
+                              ? widget.genres[index1]['series'] != null
+                                  ? widget.genres[index1]['series'].length
+                                  : 0
+                              : 0,
+                        )))
+              ]);
+  }
 }

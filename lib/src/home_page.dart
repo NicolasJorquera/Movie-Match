@@ -24,7 +24,6 @@ class _HomePageState extends State<HomePage> {
   final user = FirebaseAuth.instance.currentUser!;
   static const url_image = 'https://image.tmdb.org/t/p/w500';
   int selectedIndex = 0;
-  int previousSelectedIndex = 0;
   List<dynamic> platformsSelected = [];
 
   List<dynamic> movieProviders = [];
@@ -57,11 +56,11 @@ class _HomePageState extends State<HomePage> {
         genresMovies: genresMovies,
         genresSeries: genresSeries,
       ),
+      // const SearchView(),
       CreateOrJoinWidget(
           platformsSelected: platformsSelected,
           providers: providers,
           genres: genresMovies),
-      const SearchView(),
       UsersView(
         fetchMovies: () {
           fetchMovies();
@@ -97,6 +96,20 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SearchView()));
+                },
+                icon: const Icon(
+                  Icons.search,
+                  color: Colors.white,
+                  size: 30,
+                ))
+          ],
           title: Row(
             children: [
               Image.asset(
@@ -199,6 +212,7 @@ class _HomePageState extends State<HomePage> {
                                                 });
 
                                                 fetchMovies();
+                                                fetchSeries();
                                               },
                                               child: Card(
                                                 color: Colors.transparent,
@@ -388,62 +402,110 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         bottomNavigationBar: Theme(
-          data: ThemeData(
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-          ),
-          child: BottomNavigationBar(
-            backgroundColor: Colors.black,
-            type: BottomNavigationBarType.fixed,
-            showSelectedLabels: false,
-            showUnselectedLabels: false,
-            currentIndex: selectedIndex,
-            onTap: (value) {
-              setState(() {
-                previousSelectedIndex = selectedIndex;
-                selectedIndex = value;
-              });
-            },
-            elevation: 0,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home, color: Colors.white),
-                activeIcon:
-                    Icon(Icons.home, color: Color.fromRGBO(180, 0, 0, 1)),
-                label: '',
-                backgroundColor: Colors.transparent,
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.flash_on, color: Colors.white),
-                activeIcon:
-                    Icon(Icons.flash_on, color: Color.fromRGBO(180, 0, 0, 1)),
-                label: '',
-                backgroundColor: Colors.transparent,
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.search, color: Colors.white),
-                activeIcon:
-                    Icon(Icons.search, color: Color.fromRGBO(180, 0, 0, 1)),
-                label: '',
-                backgroundColor: Colors.transparent,
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person, color: Colors.white),
-                activeIcon:
-                    Icon(Icons.person, color: Color.fromRGBO(180, 0, 0, 1)),
-                label: '',
-                backgroundColor: Colors.transparent,
-              ),
-            ],
-          ),
-        ));
+            data: ThemeData(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                IconButton(
+                    onPressed: () {
+                      setState(() {
+                        selectedIndex = 0;
+                      });
+                    },
+                    icon: selectedIndex == 0
+                        ? const Icon(
+                            Icons.home,
+                            color: Color.fromRGBO(180, 0, 0, 1),
+                            size: 30,
+                          )
+                        : const Icon(
+                            Icons.home,
+                            color: Colors.white,
+                            size: 30,
+                          )),
+                IconButton(
+                    onPressed: () {
+                      setState(() {
+                        selectedIndex = 1;
+                      });
+                    },
+                    icon: selectedIndex == 1
+                        ? const Icon(
+                            Icons.flash_on,
+                            color: Color.fromRGBO(180, 0, 0, 1),
+                            size: 30,
+                          )
+                        : const Icon(
+                            Icons.flash_on,
+                            color: Colors.white,
+                            size: 30,
+                          )),
+                IconButton(
+                    onPressed: () {
+                      setState(() {
+                        selectedIndex = 2;
+                      });
+                    },
+                    icon: selectedIndex == 2
+                        ? const Icon(
+                            Icons.person,
+                            color: Color.fromRGBO(180, 0, 0, 1),
+                            size: 30,
+                          )
+                        : const Icon(
+                            Icons.person,
+                            color: Colors.white,
+                            size: 30,
+                          ))
+              ],
+            )
+            // BottomNavigationBar(
+            //   enableFeedback: true,
+            //   backgroundColor: Colors.black,
+            //   type: BottomNavigationBarType.fixed,
+            //   showSelectedLabels: false,
+            //   showUnselectedLabels: false,
+            //   currentIndex: selectedIndex,
+            //   onTap: (value) {
+            //     setState(() {
+            //       selectedIndex = value;
+            //     });
+            //   },
+            //   elevation: 0,
+            //   items: const [
+            //     BottomNavigationBarItem(
+            //       icon: Icon(Icons.home, color: Colors.white),
+            //       activeIcon:
+            //           Icon(Icons.home, color: Color.fromRGBO(180, 0, 0, 1)),
+            //       label: '',
+            //       backgroundColor: Colors.transparent,
+            //     ),
+            //     BottomNavigationBarItem(
+            //       icon: Icon(Icons.flash_on, color: Colors.white),
+            //       activeIcon:
+            //           Icon(Icons.flash_on, color: Color.fromRGBO(180, 0, 0, 1)),
+            //       label: '',
+            //       backgroundColor: Colors.transparent,
+            //     ),
+
+            //     BottomNavigationBarItem(
+            //       icon: Icon(Icons.person, color: Colors.white),
+            //       activeIcon:
+            //           Icon(Icons.person, color: Color.fromRGBO(180, 0, 0, 1)),
+            //       label: '',
+            //       backgroundColor: Colors.transparent,
+            //     ),
+            //   ],
+            // ),
+            ));
   }
 
   void fetchMovieProviders() async {
     const api_url = 'https://api.themoviedb.org/3';
     const api_Key = '36e984f2374fdfcbcea58dba752094dc';
-    const image_path = 'https://image.tmdb.org/t/p/original';
-    const url_image = 'https://image.tmdb.org/t/p/original';
 
     var url = api_url +
         '/watch/providers/movie?api_key=' +
@@ -494,8 +556,6 @@ class _HomePageState extends State<HomePage> {
   void fetchSerieProviders() async {
     const api_url = 'https://api.themoviedb.org/3';
     const api_Key = '36e984f2374fdfcbcea58dba752094dc';
-    const image_path = 'https://image.tmdb.org/t/p/original';
-    const url_image = 'https://image.tmdb.org/t/p/original';
 
     var url = api_url +
         '/watch/providers/tv?api_key=' +
@@ -525,8 +585,6 @@ class _HomePageState extends State<HomePage> {
   void fetchGenresMovies() async {
     const api_url = 'https://api.themoviedb.org/3';
     const api_Key = '36e984f2374fdfcbcea58dba752094dc';
-    const image_path = 'https://image.tmdb.org/t/p/original';
-    const url_image = 'https://image.tmdb.org/t/p/w500';
 
     var url = api_url + '/genre/movie/list?api_key=' + api_Key;
 
@@ -547,8 +605,6 @@ class _HomePageState extends State<HomePage> {
     for (var genre in genresMovies) {
       const api_url = 'https://api.themoviedb.org/3';
       const api_Key = '36e984f2374fdfcbcea58dba752094dc';
-      const image_path = 'https://image.tmdb.org/t/p/original';
-      const url_image = 'https://image.tmdb.org/t/p/w500';
 
       List platformsSelectedIds = [];
 
@@ -561,9 +617,8 @@ class _HomePageState extends State<HomePage> {
       }
 
       var url = api_url +
-          '/discover/movie?api_key=' +
-          api_Key +
-          '&sort_by=popularity.desc&with_genres=' +
+          '/discover/movie?'
+              'sort_by=popularity.desc&with_genres=' +
           genre['id'].toString() +
           '&watch_region=CL' +
           '&with_watch_providers=' +
@@ -573,7 +628,10 @@ class _HomePageState extends State<HomePage> {
                   .replaceAll('[', '')
                   .replaceAll(']', '')
                   .replaceAll(',', '|')
-              : '');
+                  .replaceAll(' ', '')
+              : '') +
+          '&api_key=' +
+          api_Key;
 
       final uri = Uri.parse(url);
       final response = await http.get(uri);
@@ -609,8 +667,6 @@ class _HomePageState extends State<HomePage> {
   void fetchGenresSeries() async {
     const api_url = 'https://api.themoviedb.org/3';
     const api_Key = '36e984f2374fdfcbcea58dba752094dc';
-    const image_path = 'https://image.tmdb.org/t/p/original';
-    const url_image = 'https://image.tmdb.org/t/p/w500';
 
     var url = api_url + '/genre/tv/list?api_key=' + api_Key;
 
@@ -631,8 +687,6 @@ class _HomePageState extends State<HomePage> {
     for (var genre in genresSeries) {
       const api_url = 'https://api.themoviedb.org/3';
       const api_Key = '36e984f2374fdfcbcea58dba752094dc';
-      const image_path = 'https://image.tmdb.org/t/p/original';
-      const url_image = 'https://image.tmdb.org/t/p/w500';
 
       List platformsSelectedIds = [];
 
@@ -653,8 +707,7 @@ class _HomePageState extends State<HomePage> {
       }
 
       var url = api_url +
-          '/discover/tv?api_key=' +
-          api_Key +
+          '/discover/tv?' +
           '&sort_by=popularity.desc&with_genres=' +
           genre['id'].toString() +
           '&watch_region=CL' +
@@ -665,7 +718,10 @@ class _HomePageState extends State<HomePage> {
                   .replaceAll('[', '')
                   .replaceAll(']', '')
                   .replaceAll(',', '|')
-              : '');
+                  .replaceAll(' ', '')
+              : '') +
+          '&api_key=' +
+          api_Key;
 
       final uri = Uri.parse(url);
       final response = await http.get(uri);
@@ -691,7 +747,6 @@ class _HomePageState extends State<HomePage> {
           element['liked'] = false;
         }
       }
-
       setState(() {
         genre['series'] = srs;
       });
