@@ -91,10 +91,9 @@ class _MovieInfoPageState extends State<MovieInfoPage> {
                                     MediaQuery.of(context).size.height * 0.3,
                                 width: MediaQuery.of(context).size.width,
                                 child: YoutubePlayer(
+                                  controlsTimeOut: Duration.zero,
                                   controller: _controller,
                                   showVideoProgressIndicator: false,
-                                  bottomActions: [],
-                                  topActions: [],
                                   onReady: () {
                                     setState(() {
                                       isVideoEnded = false;
@@ -421,40 +420,50 @@ class _MovieInfoPageState extends State<MovieInfoPage> {
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
                           return Stack(children: <Widget>[
-                            Card(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              clipBehavior: Clip.hardEdge,
-                              color: Colors.black,
-                              child: ShaderMask(
-                                  shaderCallback: (rect) {
-                                    return const LinearGradient(
-                                      begin: Alignment.center,
-                                      end: Alignment.bottomCenter,
-                                      colors: [
-                                        Colors.black,
-                                        Colors.transparent
-                                      ],
-                                    ).createShader(Rect.fromLTRB(
-                                        0, 0, rect.width, rect.height));
-                                  },
-                                  blendMode: BlendMode.dstIn,
-                                  child: recommendations[index]
-                                              ['poster_path'] !=
-                                          null
-                                      ? Image.network(
-                                          image_url +
-                                              recommendations[index]
-                                                  ['poster_path'],
-                                          height: 200,
-                                          width: 130,
-                                          fit: BoxFit.cover,
-                                        )
-                                      : Container(
-                                          height: 200,
-                                          width: 130,
-                                          color: Colors.white24,
-                                        )),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MovieInfoPage(
+                                            movie: recommendations[index])));
+                              
+                              },
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                clipBehavior: Clip.hardEdge,
+                                color: Colors.black,
+                                child: ShaderMask(
+                                    shaderCallback: (rect) {
+                                      return const LinearGradient(
+                                        begin: Alignment.center,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Colors.black,
+                                          Colors.transparent
+                                        ],
+                                      ).createShader(Rect.fromLTRB(
+                                          0, 0, rect.width, rect.height));
+                                    },
+                                    blendMode: BlendMode.dstIn,
+                                    child: recommendations[index]
+                                                ['poster_path'] !=
+                                            null
+                                        ? Image.network(
+                                            image_url +
+                                                recommendations[index]
+                                                    ['poster_path'],
+                                            height: 200,
+                                            width: 130,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Container(
+                                            height: 200,
+                                            width: 130,
+                                            color: Colors.white24,
+                                          )),
+                              ),
                             ),
                             Positioned(
                               top: 180,

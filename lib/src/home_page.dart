@@ -19,7 +19,8 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState(userData);
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   dynamic userData = {};
   final user = FirebaseAuth.instance.currentUser!;
   static const url_image = 'https://image.tmdb.org/t/p/w500';
@@ -33,6 +34,7 @@ class _HomePageState extends State<HomePage> {
   List<dynamic> genresSeries = [];
   _HomePageState(userData);
 
+
   @override
   void initState() {
     super.initState();
@@ -40,6 +42,7 @@ class _HomePageState extends State<HomePage> {
     fetchSerieProviders();
     fetchGenresMovies();
     fetchGenresSeries();
+
   }
 
   @override
@@ -51,6 +54,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
     final screens = [
       HomeView(
         genresMovies: genresMovies,
@@ -618,7 +622,8 @@ class _HomePageState extends State<HomePage> {
       }
 
       if (providers.every((element) => element['enable']) &&
-          platformsSelected.every((element) => element['enable'])) { //checks if all button is pressed
+          platformsSelected.every((element) => element['enable'])) {
+        //checks if all button is pressed
         platformsSelectedIds = [];
       }
 
@@ -713,7 +718,8 @@ class _HomePageState extends State<HomePage> {
       }
 
       if (providers.every((element) => element['enable']) &&
-          platformsSelected.every((element) => element['enable'])) { //checks if all button is pressed
+          platformsSelected.every((element) => element['enable'])) {
+        //checks if all button is pressed
         platformsSelectedIds = [];
       }
 

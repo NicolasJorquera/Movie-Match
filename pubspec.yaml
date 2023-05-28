@@ -29,6 +29,8 @@ dependencies:
 
   # Google Icon
   font_awesome_flutter: ^10.4.0
+
+  
   youtube_player_flutter: ^8.1.2
   
   

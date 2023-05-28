@@ -49,8 +49,8 @@ android {
         applicationId "com.app.flixer"
         minSdkVersion 19
         targetSdkVersion flutter.targetSdkVersion
-        versionCode 21
-        versionName "1.1.1"
+        versionCode 23
+        versionName "1.1.3"
 
         // Enabling multidex support.
              multiDexEnabled true

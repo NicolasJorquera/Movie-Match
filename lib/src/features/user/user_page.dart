@@ -55,6 +55,12 @@ class _UsersViewState extends State<UsersView> {
   List<dynamic> providers;
 
   @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+  
   @override
   void initState() {
     super.initState();
