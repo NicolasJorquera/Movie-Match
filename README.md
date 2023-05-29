@@ -1,2 +1,2 @@
-# Flutter Movie Ticket App
+# Flixer
 
