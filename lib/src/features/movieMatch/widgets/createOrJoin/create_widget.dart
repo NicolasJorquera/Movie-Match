@@ -44,13 +44,7 @@ class _CreateWidgetState extends State<CreateWidget> {
   List<dynamic> allProviders = [];
   _CreateWidgetState(this.platformsSelected, this.providers, this.genres);
 
-  int sec = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    fetchCountries();
-  }
+  
 
   @override
   void setState(fn) {
@@ -725,22 +719,7 @@ class _CreateWidgetState extends State<CreateWidget> {
                 )))
       ];
 
-  void fetchCountries() async {
-    const api_url = 'https://api.themoviedb.org/3';
-    const api_Key = '36e984f2374fdfcbcea58dba752094dc';
-
-    var url = api_url + '/configuration/countries?api_key=' + api_Key;
-
-    final uri = Uri.parse(url);
-    final response = await http.get(uri);
-    final body = response.body;
-    final ctr = jsonDecode(body);
-
-    setState(() {
-      countries = ctr;
-    });
-  }
-
+  
   Widget defaultItemMultiSelectionMode(
       String item, List<String> selectedItems, String field) {
     return Container(

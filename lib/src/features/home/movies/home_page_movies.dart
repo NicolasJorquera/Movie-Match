@@ -5,17 +5,19 @@ import 'package:firebase_database/firebase_database.dart';
 
 class HomeViewMovies extends StatefulWidget {
   List<dynamic> genres = [];
-  HomeViewMovies({super.key, required this.genres});
+  Function refreshMovies;
+  HomeViewMovies({super.key, required this.genres, required this.refreshMovies});
 
   @override
-  State<HomeViewMovies> createState() => _HomeViewMoviesState(genres);
+  State<HomeViewMovies> createState() => _HomeViewMoviesState(genres, refreshMovies);
 }
 
 class _HomeViewMoviesState extends State<HomeViewMovies> {
-  List<dynamic> genres = [];
+  List<dynamic> genres;
   final user = FirebaseAuth.instance.currentUser!;
+  Function refreshMovies;
 
-  _HomeViewMoviesState(genres);
+  _HomeViewMoviesState(this.genres, this.refreshMovies);
 
   // @override
   // void initState() {
@@ -31,20 +33,35 @@ class _HomeViewMoviesState extends State<HomeViewMovies> {
   // }
 
   @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Theme(
-        data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-                primary: Color.fromRGBO(180, 0, 0, 1),
-                secondary: Color.fromRGBO(180, 0, 0, 1))),
-        child: ListView.separated(
-            itemBuilder: (context, index) {
-              return buildRow(index);
-            },
-            separatorBuilder: (context, index) {
-              return const SizedBox(height: 0);
-            },
-            itemCount: widget.genres.length));
+    return RefreshIndicator(
+      color: const Color.fromRGBO(180, 0, 0, 1),
+      backgroundColor: Colors.black,
+      onRefresh: () {
+        widget.refreshMovies();
+        return Future.delayed(const Duration(seconds: 1));
+      },
+      child: Theme(
+          data: Theme.of(context).copyWith(
+              colorScheme: const ColorScheme.light(
+                  primary: Color.fromRGBO(180, 0, 0, 1),
+                  secondary: Color.fromRGBO(180, 0, 0, 1))),
+          child: ListView.separated(
+              itemBuilder: (context, index) {
+                return buildRow(index);
+              },
+              separatorBuilder: (context, index) {
+                return const SizedBox(height: 0);
+              },
+              itemCount: widget.genres.length)),
+    );
   }
 
   Widget buildCard(int index, List<dynamic> movies) => Column(
@@ -138,18 +155,8 @@ class _HomeViewMoviesState extends State<HomeViewMovies> {
                                       DatabaseReference movieKey =
                                           usersMoviesRef.push();
 
-                                      movieKey.set({
-                                        'id': movies[index]['id'],
-                                        'title': movies[index]['title'],
-                                        'poster_path': movies[index]
-                                            ['poster_path'],
-                                        'overview': movies[index]['overview'],
-                                        'vote_average': movies[index]
-                                            ['vote_average'],
-                                        'release_date': movies[index]
-                                            ['release_date'],
-                                        'liked': movies[index]['liked']
-                                      });
+                                      
+                                      movieKey.set(movies[index]);
                                     } else {
                                       final usersMoviesSnap =
                                           await usersMoviesRef.get();
@@ -192,7 +199,7 @@ class _HomeViewMoviesState extends State<HomeViewMovies> {
   Widget buildRow(int index1) {
     return widget.genres[index1]['movies'] == null
         ? Container()
-        : List.from( widget.genres[index1]['movies'] ).length< 3
+        : List.from(widget.genres[index1]['movies']).length < 3
             ? Container()
             : Column(children: [
                 Padding(

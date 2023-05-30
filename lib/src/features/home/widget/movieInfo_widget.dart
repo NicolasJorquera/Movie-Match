@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -18,12 +21,15 @@ class _MovieInfoPageState extends State<MovieInfoPage> {
   List videos = [];
   List cast = [];
   bool isVideoEnded = false;
+  bool delayTrailerEnded = false;
   List recommendations = [];
   List platforms = [];
   String genres = '';
   _MovieInfoPageState(this.movie);
 
   static const image_url = 'https://image.tmdb.org/t/p/w500';
+  static const image_original = 'https://image.tmdb.org/t/p/original';
+  final user = FirebaseAuth.instance.currentUser!;
 
   @override
   void initState() {
@@ -33,6 +39,27 @@ class _MovieInfoPageState extends State<MovieInfoPage> {
     fetchRecommendations();
     fetchPlatforms();
     fetchGenres();
+
+    _delayTrailer();
+  }
+
+  void _delayTrailer() {
+// Timer.periodic will execute the code which is in the callback,
+// in this case, we are increasing the sec state every second,
+// As you want to execute it every minute, put Duration(seconds: 60)
+
+    Timer(Duration(seconds: 5), () {
+      setState(() {
+        delayTrailerEnded = true;
+      });
+    });
+  }
+
+  @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
   }
 
   @override
@@ -41,451 +68,568 @@ class _MovieInfoPageState extends State<MovieInfoPage> {
       statusBarColor: Colors.transparent,
     ));
     return Scaffold(
-        body: Theme(
-      data: Theme.of(context).copyWith(
-          colorScheme: const ColorScheme.light(
-              primary: Color.fromRGBO(180, 0, 0, 1),
-              secondary: Color.fromRGBO(180, 0, 0, 1))),
-      child: WillPopScope(
-        onWillPop: () {
-          if (videos.isNotEmpty) {
-            setState(() {
-              _controller.pause();
-            });
-            setState(() {
-              isVideoEnded = true;
-            });
-          }
-
-          return Future.value(true);
-        },
-        child: ListView(
-          children: [
-            Stack(
-              alignment: Alignment.topCenter,
-              children: <Widget>[
-                Container(
-                  padding: const EdgeInsets.only(bottom: 0),
-                  child: ShaderMask(
-                    shaderCallback: (rect) {
-                      return const LinearGradient(
-                        begin: Alignment.center,
-                        end: Alignment.bottomCenter,
-                        colors: [Colors.black, Colors.transparent],
-                      ).createShader(
-                          Rect.fromLTRB(0, 0, rect.width, rect.height));
-                    },
-                    blendMode: BlendMode.dstIn,
-                    child: movie['backdrop_path'] == null
-                        ? Container()
-                        : (videos.isEmpty && !isVideoEnded) || isVideoEnded
-                            ? Image.network(
-                                image_url + movie['backdrop_path'],
-                                height:
-                                    MediaQuery.of(context).size.height * 0.3,
-                                width: MediaQuery.of(context).size.width,
-                                fit: BoxFit.cover,
-                              )
-                            : SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.3,
-                                width: MediaQuery.of(context).size.width,
-                                child: YoutubePlayer(
-                                  controlsTimeOut: Duration.zero,
-                                  controller: _controller,
-                                  showVideoProgressIndicator: false,
-                                  onReady: () {
-                                    setState(() {
-                                      isVideoEnded = false;
-                                    });
-                                  },
-                                  onEnded: (metaData) {
-                                    setState(() {
-                                      isVideoEnded = true;
-                                    });
-                                  },
-                                ),
-                              ),
-                  ),
-                ),
-                Positioned(
-                  bottom: MediaQuery.of(context).size.height * 0.22,
-                  right: MediaQuery.of(context).size.width * 0.85,
-                  child: BackButton(
-                    color: Colors.white,
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ),
-              ],
+        body: FutureBuilder(
+      future: Future.delayed(const Duration(seconds: 1)),
+      builder: (context, snapshot) {
+        if (cast.isEmpty && recommendations.isEmpty && platforms.isEmpty) {
+          return const Center(
+            child: CircularProgressIndicator(
+              color: Color.fromRGBO(180, 0, 0, 1),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10, right: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          );
+        } else {
+          return Theme(
+            data: Theme.of(context).copyWith(
+                colorScheme: const ColorScheme.light(
+                    primary: Color.fromRGBO(180, 0, 0, 1),
+                    secondary: Color.fromRGBO(180, 0, 0, 1))),
+            child: WillPopScope(
+              onWillPop: () {
+                if (videos.isNotEmpty) {
+                  setState(() {
+                    _controller.pause();
+                  });
+                  setState(() {
+                    isVideoEnded = true;
+                  });
+                }
+
+                return Future.value(true);
+              },
+              child: ListView(
                 children: [
-                  SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.04,
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      child: Theme(
-                        data: Theme.of(context).copyWith(
-                            colorScheme: const ColorScheme.light(
-                                primary: Color.fromRGBO(180, 0, 0, 1),
-                                secondary: Color.fromRGBO(180, 0, 0, 1))),
-                        child: ListView(
-                            scrollDirection: Axis.horizontal,
-                            children: [
-                              Text(
-                                movie['title'] == null
-                                    ? movie['name']
-                                    : movie['title'],
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 30,
-                                    overflow: TextOverflow.fade),
-                              ),
-                            ]),
-                      )),
+                  Stack(
+                    alignment: Alignment.topCenter,
+                    children: <Widget>[
+                      Container(
+                        padding: const EdgeInsets.only(bottom: 0),
+                        child: ShaderMask(
+                          shaderCallback: (rect) {
+                            return const LinearGradient(
+                              begin: Alignment.center,
+                              end: Alignment.bottomCenter,
+                              colors: [Colors.black, Colors.transparent],
+                            ).createShader(
+                                Rect.fromLTRB(0, 0, rect.width, rect.height));
+                          },
+                          blendMode: BlendMode.dstIn,
+                          child: movie['backdrop_path'] == null
+                              ? Container()
+                              : (videos.isEmpty && !isVideoEnded) ||
+                                      isVideoEnded ||
+                                      !delayTrailerEnded
+                                  ? Image.network(
+                                      image_url + movie['backdrop_path'],
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.3,
+                                      width: MediaQuery.of(context).size.width,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.3,
+                                      width: MediaQuery.of(context).size.width,
+                                      child: YoutubePlayer(
+                                        controlsTimeOut: Duration.zero,
+                                        controller: _controller,
+                                        showVideoProgressIndicator: false,
+                                        onReady: () {
+                                          setState(() {
+                                            isVideoEnded = false;
+                                          });
+                                        },
+                                        onEnded: (metaData) {
+                                          setState(() {
+                                            isVideoEnded = true;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: MediaQuery.of(context).size.height * 0.22,
+                        right: MediaQuery.of(context).size.width * 0.85,
+                        child: BackButton(
+                          color: Colors.white,
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ),
+                      Positioned(
+                          bottom: MediaQuery.of(context).size.height * 0.22,
+                          left: MediaQuery.of(context).size.width * 0.85,
+                          child: IconButton(
+                              onPressed: () async {
+                                setState(() {
+                                  movie['liked'] = !movie['liked'];
+                                });
+
+                                final usersSnap = await FirebaseDatabase
+                                    .instance
+                                    .ref("users/")
+                                    .get();
+                                String userID = usersSnap.children
+                                    .firstWhere((usr) =>
+                                        usr.child('email').value == user.email)
+                                    .key!;
+
+                                dynamic usersMoviesRef = '';
+
+                                if (movie['name'] == null) {
+                                  usersMoviesRef = await FirebaseDatabase
+                                      .instance
+                                      .ref("users/" + userID + "/likedMovies/");
+                                } else {
+                                  usersMoviesRef = await FirebaseDatabase
+                                      .instance
+                                      .ref("users/" + userID + "/likedSeries/");
+                                }
+                                DataSnapshot usersMoviesSnap =
+                                    await usersMoviesRef.get();
+
+                                dynamic movieAlreadyExists;
+                                if (usersMoviesSnap.value != null) {
+                                  movieAlreadyExists =
+                                      usersMoviesSnap.children.any(
+                                    (mov) =>
+                                        mov.child('id').value == movie['id'],
+                                  );
+                                } else {
+                                  movieAlreadyExists = false;
+                                }
+
+                                if (movie['liked'] && !movieAlreadyExists) {
+                                  DatabaseReference movieKey =
+                                      usersMoviesRef.push();
+
+                                  movieKey.set(movie);
+                                } else {
+                                  final usersMoviesSnap =
+                                      await usersMoviesRef.get();
+                                  if (usersMoviesSnap.children.any((mov) =>
+                                      mov.child('id').value == movie['id'])) {
+                                    String movieID = '';
+                                    if (usersMoviesSnap.value != null) {
+                                      movieID = usersMoviesSnap.children
+                                          .firstWhere((mov) =>
+                                              mov.child('id').value ==
+                                              movie['id'])
+                                          .key!;
+                                    }
+
+                                    usersMoviesRef.child(movieID).remove();
+                                  }
+                                }
+                              },
+                              icon: Icon(
+                                movie['liked']
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color: movie['liked']
+                                    ? const Color.fromRGBO(200, 0, 0, 1)
+                                    : Colors.white,
+                                shadows: const <Shadow>[
+                                  Shadow(color: Colors.black, blurRadius: 10.0)
+                                ],
+                                size: 30,
+                              )))
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10, right: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.04,
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            child: Theme(
+                              data: Theme.of(context).copyWith(
+                                  colorScheme: const ColorScheme.light(
+                                      primary: Color.fromRGBO(180, 0, 0, 1),
+                                      secondary: Color.fromRGBO(180, 0, 0, 1))),
+                              child: ListView(
+                                  scrollDirection: Axis.horizontal,
+                                  children: [
+                                    Text(
+                                      movie['title'] == null
+                                          ? movie['name']
+                                          : movie['title'],
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 30,
+                                          overflow: TextOverflow.fade),
+                                    ),
+                                  ]),
+                            )),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          height: 20,
+                          child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.star,
+                                      color: Colors.white,
+                                      size: 10,
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      movie['vote_average'].toString() + '/10',
+                                      style:
+                                          const TextStyle(color: Colors.white),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    const Icon(
+                                      Icons.circle,
+                                      color: Colors.white,
+                                      size: 5,
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      movie['release_date'] == null
+                                          ? movie['first_air_date'] == null
+                                              ? ''
+                                              : movie['first_air_date']
+                                          : movie['release_date'],
+                                      style:
+                                          const TextStyle(color: Colors.white),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    const Icon(
+                                      Icons.circle,
+                                      color: Colors.white,
+                                      size: 5,
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      genres,
+                                      style:
+                                          const TextStyle(color: Colors.white),
+                                    )
+                                  ],
+                                ),
+                              ]),
+                        )
+                      ],
+                    ),
+                  ),
                   const SizedBox(
                     height: 10,
                   ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10, right: 10),
+                    child: Text(
+                      movie['overview'],
+                      style: const TextStyle(color: Colors.white, fontSize: 15),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Divider(
+                    color: Colors.white24,
+                    thickness: 2,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  // const Padding(
+                  //   padding: EdgeInsets.all(8.0),
+                  //   child: Text(
+                  //     'Trailer',
+                  //     style: TextStyle(color: Colors.white, fontSize: 20),
+                  //   ),
+                  // ),
+                  // videos.length > 0
+                  //     ? Padding(
+                  //         padding: const EdgeInsets.all(8.0),
+                  //         child: YoutubePlayer(
+                  //           controller: _controller,
+                  //           showVideoProgressIndicator: false,
+                  //           bottomActions: [],
+                  //           topActions: [],
+                  //         ),
+                  //       )
+                  //     : Container(),
+                  // const SizedBox(
+                  //   height: 10,
+                  // ),
+                  // const Divider(
+                  //   color: Colors.white24,
+                  //   thickness: 2,
+                  // ),
+                  // const SizedBox(
+                  //   height: 10,
+                  // ),
+                  const Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      'Platforms',
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  platforms.length == 0
+                      ? Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: const Text(
+                              'No platforms available in your region',
+                              style: TextStyle(color: Colors.white)),
+                        )
+                      : SizedBox(
+                          height: 60,
+                          child: Theme(
+                              data: Theme.of(context).copyWith(
+                                  colorScheme: const ColorScheme.light(
+                                      primary: Color.fromRGBO(180, 0, 0, 1),
+                                      secondary: Color.fromRGBO(180, 0, 0, 1))),
+                              child: ListView.separated(
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: (context, index) {
+                                    return Card(
+                                      color: Colors.transparent,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      clipBehavior: Clip.hardEdge,
+                                      child: Image.network(
+                                        image_url +
+                                            platforms[index]['logo_path'],
+                                        height: 50,
+                                        width: 50,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    );
+                                  },
+                                  separatorBuilder: (context, index) {
+                                    return const SizedBox(
+                                      width: 5,
+                                    );
+                                  },
+                                  itemCount: platforms.length))),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Divider(
+                    color: Colors.white24,
+                    thickness: 2,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      'Cast',
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
                   SizedBox(
-                    height: 20,
-                    child:
-                        ListView(scrollDirection: Axis.horizontal, children: [
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.star,
-                            color: Colors.white,
-                            size: 10,
-                          ),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Text(
-                            movie['vote_average'].toString() + '/10',
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          const Icon(
-                            Icons.circle,
-                            color: Colors.white,
-                            size: 5,
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            movie['release_date'] == null
-                                ? movie['first_air_date']
-                                : movie['release_date'],
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          const Icon(
-                            Icons.circle,
-                            color: Colors.white,
-                            size: 5,
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            genres,
-                            style: const TextStyle(color: Colors.white),
-                          )
-                        ],
-                      ),
-                    ]),
-                  )
+                      height: 200,
+                      child: Theme(
+                          data: Theme.of(context).copyWith(
+                              colorScheme: const ColorScheme.light(
+                                  primary: Color.fromRGBO(180, 0, 0, 1),
+                                  secondary: Color.fromRGBO(180, 0, 0, 1))),
+                          child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return Stack(children: <Widget>[
+                                  Card(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    clipBehavior: Clip.hardEdge,
+                                    color: Colors.black,
+                                    child: ShaderMask(
+                                        shaderCallback: (rect) {
+                                          return const LinearGradient(
+                                            begin: Alignment.center,
+                                            end: Alignment.bottomCenter,
+                                            colors: [
+                                              Colors.black,
+                                              Colors.transparent
+                                            ],
+                                          ).createShader(Rect.fromLTRB(
+                                              0, 0, rect.width, rect.height));
+                                        },
+                                        blendMode: BlendMode.dstIn,
+                                        child: cast[index]['profile_path'] !=
+                                                null
+                                            ? Image.network(
+                                                image_url +
+                                                    cast[index]['profile_path'],
+                                                height: 200,
+                                                width: 130,
+                                                fit: BoxFit.cover,
+                                              )
+                                            : Container(
+                                                height: 200,
+                                                width: 130,
+                                                color: Colors.white24,
+                                              )),
+                                  ),
+                                  Positioned(
+                                    top: 160,
+                                    left: 5,
+                                    child: Text(
+                                      cast[index]['name'] + ' as',
+                                      style: const TextStyle(
+                                          color: Colors.white, fontSize: 12),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 180,
+                                    left: 5,
+                                    child: Text(
+                                      cast[index]['character'],
+                                      style: const TextStyle(
+                                          color: Colors.white, fontSize: 12),
+                                    ),
+                                  )
+                                ]);
+                              },
+                              separatorBuilder: (context, index) {
+                                return const SizedBox(
+                                  width: 5,
+                                );
+                              },
+                              itemCount: cast.length))),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Divider(
+                    color: Colors.white24,
+                    thickness: 2,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      'Related',
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  SizedBox(
+                      height: 200,
+                      child: Theme(
+                          data: Theme.of(context).copyWith(
+                              colorScheme: const ColorScheme.light(
+                                  primary: Color.fromRGBO(180, 0, 0, 1),
+                                  secondary: Color.fromRGBO(180, 0, 0, 1))),
+                          child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return Stack(children: <Widget>[
+                                  GestureDetector(
+                                    onTap: () {
+                                      if (videos.isNotEmpty) {
+                                        setState(() {
+                                          _controller.pause();
+                                        });
+                                        setState(() {
+                                          isVideoEnded = true;
+                                        });
+                                      }
+
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  MovieInfoPage(
+                                                      movie: recommendations[
+                                                          index])));
+                                    },
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      clipBehavior: Clip.hardEdge,
+                                      color: Colors.black,
+                                      child: ShaderMask(
+                                          shaderCallback: (rect) {
+                                            return const LinearGradient(
+                                              begin: Alignment.center,
+                                              end: Alignment.bottomCenter,
+                                              colors: [
+                                                Colors.black,
+                                                Colors.transparent
+                                              ],
+                                            ).createShader(Rect.fromLTRB(
+                                                0, 0, rect.width, rect.height));
+                                          },
+                                          blendMode: BlendMode.dstIn,
+                                          child: recommendations[index]
+                                                      ['poster_path'] !=
+                                                  null
+                                              ? Image.network(
+                                                  image_url +
+                                                      recommendations[index]
+                                                          ['poster_path'],
+                                                  height: 200,
+                                                  width: 130,
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : Container(
+                                                  height: 200,
+                                                  width: 130,
+                                                  color: Colors.white24,
+                                                )),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 180,
+                                    left: 5,
+                                    child: Text(
+                                      recommendations[index]['name'] ??
+                                          recommendations[index]['title'],
+                                      style: const TextStyle(
+                                          color: Colors.white, fontSize: 12),
+                                    ),
+                                  )
+                                ]);
+                              },
+                              separatorBuilder: (context, index) {
+                                return const SizedBox(
+                                  width: 5,
+                                );
+                              },
+                              itemCount: recommendations.length))),
                 ],
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10, right: 10),
-              child: Text(
-                movie['overview'],
-                style: const TextStyle(color: Colors.white, fontSize: 15),
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            const Divider(
-              color: Colors.white24,
-              thickness: 2,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            // const Padding(
-            //   padding: EdgeInsets.all(8.0),
-            //   child: Text(
-            //     'Trailer',
-            //     style: TextStyle(color: Colors.white, fontSize: 20),
-            //   ),
-            // ),
-            // videos.length > 0
-            //     ? Padding(
-            //         padding: const EdgeInsets.all(8.0),
-            //         child: YoutubePlayer(
-            //           controller: _controller,
-            //           showVideoProgressIndicator: false,
-            //           bottomActions: [],
-            //           topActions: [],
-            //         ),
-            //       )
-            //     : Container(),
-            // const SizedBox(
-            //   height: 10,
-            // ),
-            // const Divider(
-            //   color: Colors.white24,
-            //   thickness: 2,
-            // ),
-            // const SizedBox(
-            //   height: 10,
-            // ),
-            const Padding(
-              padding: EdgeInsets.all(10),
-              child: Text(
-                'Platforms',
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            platforms.length == 0
-                ? Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: const Text('No platforms available in your region',
-                        style: TextStyle(color: Colors.white)),
-                  )
-                : SizedBox(
-                    height: 60,
-                    child: Theme(
-                        data: Theme.of(context).copyWith(
-                            colorScheme: const ColorScheme.light(
-                                primary: Color.fromRGBO(180, 0, 0, 1),
-                                secondary: Color.fromRGBO(180, 0, 0, 1))),
-                        child: ListView.separated(
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) {
-                              return Card(
-                                color: Colors.transparent,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)),
-                                clipBehavior: Clip.hardEdge,
-                                child: Image.network(
-                                  image_url + platforms[index]['logo_path'],
-                                  height: 50,
-                                  width: 50,
-                                  fit: BoxFit.cover,
-                                ),
-                              );
-                            },
-                            separatorBuilder: (context, index) {
-                              return const SizedBox(
-                                width: 5,
-                              );
-                            },
-                            itemCount: platforms.length))),
-            const SizedBox(
-              height: 10,
-            ),
-            const Divider(
-              color: Colors.white24,
-              thickness: 2,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            const Padding(
-              padding: EdgeInsets.all(10),
-              child: Text(
-                'Cast',
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            SizedBox(
-                height: 200,
-                child: Theme(
-                    data: Theme.of(context).copyWith(
-                        colorScheme: const ColorScheme.light(
-                            primary: Color.fromRGBO(180, 0, 0, 1),
-                            secondary: Color.fromRGBO(180, 0, 0, 1))),
-                    child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return Stack(children: <Widget>[
-                            Card(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              clipBehavior: Clip.hardEdge,
-                              color: Colors.black,
-                              child: ShaderMask(
-                                  shaderCallback: (rect) {
-                                    return const LinearGradient(
-                                      begin: Alignment.center,
-                                      end: Alignment.bottomCenter,
-                                      colors: [
-                                        Colors.black,
-                                        Colors.transparent
-                                      ],
-                                    ).createShader(Rect.fromLTRB(
-                                        0, 0, rect.width, rect.height));
-                                  },
-                                  blendMode: BlendMode.dstIn,
-                                  child: cast[index]['profile_path'] != null
-                                      ? Image.network(
-                                          image_url +
-                                              cast[index]['profile_path'],
-                                          height: 200,
-                                          width: 130,
-                                          fit: BoxFit.cover,
-                                        )
-                                      : Container(
-                                          height: 200,
-                                          width: 130,
-                                          color: Colors.white24,
-                                        )),
-                            ),
-                            Positioned(
-                              top: 160,
-                              left: 5,
-                              child: Text(
-                                cast[index]['name'] + ' as',
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 12),
-                              ),
-                            ),
-                            Positioned(
-                              top: 180,
-                              left: 5,
-                              child: Text(
-                                cast[index]['character'],
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 12),
-                              ),
-                            )
-                          ]);
-                        },
-                        separatorBuilder: (context, index) {
-                          return const SizedBox(
-                            width: 5,
-                          );
-                        },
-                        itemCount: cast.length))),
-            const SizedBox(
-              height: 10,
-            ),
-            const Divider(
-              color: Colors.white24,
-              thickness: 2,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            const Padding(
-              padding: EdgeInsets.all(10),
-              child: Text(
-                'Related',
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            SizedBox(
-                height: 200,
-                child: Theme(
-                    data: Theme.of(context).copyWith(
-                        colorScheme: const ColorScheme.light(
-                            primary: Color.fromRGBO(180, 0, 0, 1),
-                            secondary: Color.fromRGBO(180, 0, 0, 1))),
-                    child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return Stack(children: <Widget>[
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => MovieInfoPage(
-                                            movie: recommendations[index])));
-                              
-                              },
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)),
-                                clipBehavior: Clip.hardEdge,
-                                color: Colors.black,
-                                child: ShaderMask(
-                                    shaderCallback: (rect) {
-                                      return const LinearGradient(
-                                        begin: Alignment.center,
-                                        end: Alignment.bottomCenter,
-                                        colors: [
-                                          Colors.black,
-                                          Colors.transparent
-                                        ],
-                                      ).createShader(Rect.fromLTRB(
-                                          0, 0, rect.width, rect.height));
-                                    },
-                                    blendMode: BlendMode.dstIn,
-                                    child: recommendations[index]
-                                                ['poster_path'] !=
-                                            null
-                                        ? Image.network(
-                                            image_url +
-                                                recommendations[index]
-                                                    ['poster_path'],
-                                            height: 200,
-                                            width: 130,
-                                            fit: BoxFit.cover,
-                                          )
-                                        : Container(
-                                            height: 200,
-                                            width: 130,
-                                            color: Colors.white24,
-                                          )),
-                              ),
-                            ),
-                            Positioned(
-                              top: 180,
-                              left: 5,
-                              child: Text(
-                                recommendations[index]['name'] ??
-                                    recommendations[index]['title'],
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 12),
-                              ),
-                            )
-                          ]);
-                        },
-                        separatorBuilder: (context, index) {
-                          return const SizedBox(
-                            width: 5,
-                          );
-                        },
-                        itemCount: recommendations.length))),
-          ],
-        ),
-      ),
+          );
+        }
+      },
     ));
   }
 

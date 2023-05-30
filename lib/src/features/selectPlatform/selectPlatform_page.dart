@@ -57,7 +57,7 @@ class _SelectPlatformViewState extends State<SelectPlatformView> {
               offset++;
             }
           }
-          widget.fetchMovies;
+          widget.fetchMovies();
 
           return true;
         },

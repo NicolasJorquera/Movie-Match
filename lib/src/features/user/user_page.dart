@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../home/widget/movieInfo_widget.dart';
 import 'settings/settings_widget.dart';
 
 class UsersView extends StatefulWidget {
@@ -60,7 +61,7 @@ class _UsersViewState extends State<UsersView> {
       super.setState(fn);
     }
   }
-  
+
   @override
   void initState() {
     super.initState();
@@ -121,7 +122,8 @@ class _UsersViewState extends State<UsersView> {
                               ))),
                           child: const Text(
                             'Share',
-                            style: TextStyle(color: Colors.black, fontSize: 15),
+                            style:
+                                TextStyle(color: Colors.black, fontSize: 15),
                           ),
                           onPressed: () {
                             Share.share(
@@ -156,7 +158,8 @@ class _UsersViewState extends State<UsersView> {
                               ))),
                           child: const Text(
                             'Settings',
-                            style: TextStyle(color: Colors.black, fontSize: 15),
+                            style:
+                                TextStyle(color: Colors.black, fontSize: 15),
                           ),
                           onPressed: () {
                             Navigator.push(
@@ -254,11 +257,7 @@ class _UsersViewState extends State<UsersView> {
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (context, index) {
-                              return Card(
-                                color: Colors.transparent,
-                                elevation: 0,
-                                child: buildSerieCard(index),
-                              );
+                              return buildSerieCard(index);
                             },
                             separatorBuilder: (context, index) {
                               return const SizedBox(width: 5);
@@ -312,11 +311,7 @@ class _UsersViewState extends State<UsersView> {
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (context, index) {
-                              return Card(
-                                color: Colors.transparent,
-                                elevation: 0,
-                                child: buildMovieCard(index),
-                              );
+                              return buildMovieCard(index);
                             },
                             separatorBuilder: (context, index) {
                               return const SizedBox(width: 5);
@@ -355,7 +350,15 @@ class _UsersViewState extends State<UsersView> {
       child: ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => MovieInfoPage(
+                          movie: likedMovies[index],
+                        )),
+              );
+            },
             child: Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.0),
@@ -374,7 +377,15 @@ class _UsersViewState extends State<UsersView> {
       child: ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => MovieInfoPage(
+                          movie: likedSeries[index],
+                        )),
+              );
+            },
             child: Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.0),

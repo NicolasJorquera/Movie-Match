@@ -57,6 +57,7 @@ class _SearchViewState extends State<SearchView> {
                 children: [
                   Expanded(
                       child: SearchBar(
+                        focusNode: FocusNode(),
                     hintText: 'Search...',
                     hintStyle: const MaterialStatePropertyAll(
                         TextStyle(color: Colors.white54, fontSize: 17)),
@@ -245,19 +246,7 @@ class _SearchViewState extends State<SearchView> {
                                             DatabaseReference movieKey =
                                                 usersMoviesRef.push();
 
-                                            movieKey.set({
-                                              'id': search[index]['id'],
-                                              'title': search[index]['title'],
-                                              'poster_path': search[index]
-                                                  ['poster_path'],
-                                              'overview': search[index]
-                                                  ['overview'],
-                                              'vote_average': search[index]
-                                                  ['vote_average'],
-                                              'release_date': search[index]
-                                                  ['release_date'],
-                                              'liked': search[index]['liked']
-                                            });
+                                            movieKey.set(search[index]);
                                           } else {
                                             final usersMoviesSnap =
                                                 await usersMoviesRef.get();

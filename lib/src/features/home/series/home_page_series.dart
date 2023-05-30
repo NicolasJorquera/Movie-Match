@@ -5,17 +5,19 @@ import 'package:firebase_database/firebase_database.dart';
 
 class HomeViewSeries extends StatefulWidget {
   List<dynamic> genres = [];
-  HomeViewSeries({super.key, required this.genres});
+  Function refreshSeries;
+  HomeViewSeries({super.key, required this.genres, required this.refreshSeries});
 
   @override
-  State<HomeViewSeries> createState() => _HomeViewSeriesState(genres);
+  State<HomeViewSeries> createState() => _HomeViewSeriesState(genres, refreshSeries);
 }
 
 class _HomeViewSeriesState extends State<HomeViewSeries> {
-  List<dynamic> genres = [];
+  List<dynamic> genres;
   final user = FirebaseAuth.instance.currentUser!;
+  Function refreshSeries;
 
-  _HomeViewSeriesState(genres);
+  _HomeViewSeriesState(this.genres, this.refreshSeries);
 
   // @override
   // void initState() {
@@ -32,19 +34,27 @@ class _HomeViewSeriesState extends State<HomeViewSeries> {
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-        data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-                primary: Color.fromRGBO(180, 0, 0, 1),
-                secondary: Color.fromRGBO(180, 0, 0, 1))),
-        child: ListView.separated(
-            itemBuilder: (context, index) {
-              return buildRow(index);
-            },
-            separatorBuilder: (context, index) {
-              return const SizedBox(height: 0);
-            },
-            itemCount: widget.genres.length));
+    return RefreshIndicator(
+      color: const Color.fromRGBO(180, 0, 0, 1),
+      backgroundColor: Colors.black,
+      onRefresh: () {
+        widget.refreshSeries();
+        return Future.delayed(const Duration(seconds: 1));
+      },
+      child: Theme(
+          data: Theme.of(context).copyWith(
+              colorScheme: const ColorScheme.light(
+                  primary: Color.fromRGBO(180, 0, 0, 1),
+                  secondary: Color.fromRGBO(180, 0, 0, 1))),
+          child: ListView.separated(
+              itemBuilder: (context, index) {
+                return buildRow(index);
+              },
+              separatorBuilder: (context, index) {
+                return const SizedBox(height: 0);
+              },
+              itemCount: widget.genres.length)),
+    );
   }
 
   Widget buildCard(int index, List<dynamic> series) => Column(
@@ -154,18 +164,7 @@ class _HomeViewSeriesState extends State<HomeViewSeries> {
                                       DatabaseReference serieKey =
                                           usersSeriesRef.push();
 
-                                      serieKey.set({
-                                        'id': series[index]['id'],
-                                        'name': series[index]['name'],
-                                        'poster_path': series[index]
-                                            ['poster_path'],
-                                        'overview': series[index]['overview'],
-                                        'vote_average': series[index]
-                                            ['vote_average'],
-                                        'release_date': series[index]
-                                            ['release_date'],
-                                        'liked': series[index]['liked']
-                                      });
+                                      serieKey.set(series[index]);
                                     } else {
                                       final usersSerieSnap =
                                           await usersSeriesRef.get();

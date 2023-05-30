@@ -34,15 +34,14 @@ class _HomePageState extends State<HomePage>
   List<dynamic> genresSeries = [];
   _HomePageState(userData);
 
-
   @override
   void initState() {
     super.initState();
-    fetchMovieProviders();
     fetchSerieProviders();
+    fetchMovieProviders();
+
     fetchGenresMovies();
     fetchGenresSeries();
-
   }
 
   @override
@@ -55,10 +54,17 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
 
+
     final screens = [
       HomeView(
         genresMovies: genresMovies,
         genresSeries: genresSeries,
+        refreshMovies: (){
+          fetchMovies();
+        },
+        refreshSeries: (){
+          fetchSeries();
+        },
       ),
       // const SearchView(),
       CreateOrJoinWidget(
@@ -299,6 +305,7 @@ class _HomePageState extends State<HomePage>
                                               SelectPlatformView(
                                                 fetchMovies: () {
                                                   fetchMovies();
+                                                  fetchSeries();
                                                 },
                                                 providers: providers,
                                                 platformsSelected:
@@ -556,6 +563,9 @@ class _HomePageState extends State<HomePage>
           .toString()
           .compareTo(b['provider_name'].toString()));
     });
+
+    fetchMovies();
+    fetchSeries();
   }
 
   void fetchSerieProviders() async {
@@ -585,6 +595,7 @@ class _HomePageState extends State<HomePage>
         element['enable'] = false;
       }
     });
+    // fetchSeries();
   }
 
   void fetchGenresMovies() async {
@@ -603,7 +614,7 @@ class _HomePageState extends State<HomePage>
       genresMovies = gen;
     });
 
-    fetchMovies();
+    // fetchMovies();
   }
 
   void fetchMovies() async {
@@ -613,7 +624,7 @@ class _HomePageState extends State<HomePage>
 
       List platformsSelectedIds = [];
 
-      if (platformsSelected.length > 0) {
+      if (platformsSelected.isNotEmpty) {
         platformsSelected.forEach((element) {
           if (element['enable'] == true) {
             platformsSelectedIds.add(element['provider_id']);
@@ -631,7 +642,7 @@ class _HomePageState extends State<HomePage>
           '/discover/movie?'
               'sort_by=popularity.desc&with_genres=' +
           genre['id'].toString() +
-          '&watch_region=CL&region=CL' +
+          '&watch_region=CL' +
           '&with_watch_providers=' +
           (platformsSelectedIds.isNotEmpty
               ? platformsSelectedIds
@@ -643,6 +654,8 @@ class _HomePageState extends State<HomePage>
               : '') +
           '&api_key=' +
           api_Key;
+
+      print(url);
 
       final uri = Uri.parse(url);
       final response = await http.get(uri);
@@ -668,7 +681,7 @@ class _HomePageState extends State<HomePage>
           element['liked'] = false;
         }
       }
-
+      movs.shuffle();
       setState(() {
         genre['movies'] = movs;
       });
@@ -691,7 +704,9 @@ class _HomePageState extends State<HomePage>
       genresSeries = gen;
     });
 
-    fetchSeries();
+    // if (platformsSelected.isNotEmpty || providers.isNotEmpty) {
+    //   fetchSeries();
+    // }
   }
 
   void fetchSeries() async {
@@ -701,7 +716,7 @@ class _HomePageState extends State<HomePage>
 
       List platformsSelectedIds = [];
 
-      if (platformsSelected.length > 0) {
+      if (platformsSelected.isNotEmpty) {
         platformsSelected.forEach((element) {
           if (element['enable'] == true) {
             dynamic serieProvider = serieProviders.firstWhere(
@@ -764,6 +779,8 @@ class _HomePageState extends State<HomePage>
           element['liked'] = false;
         }
       }
+
+      srs.shuffle();
       setState(() {
         genre['series'] = srs;
       });
