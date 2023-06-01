@@ -226,15 +226,23 @@ class _MovieInfoPageState extends State<MovieInfoPage> {
                                 }
                               },
                               icon: Icon(
-                                movie['liked']
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                color: movie['liked']
-                                    ? const Color.fromRGBO(200, 0, 0, 1)
-                                    : Colors.white,
-                                shadows: const <Shadow>[
-                                  Shadow(color: Colors.black, blurRadius: 10.0)
-                                ],
+                                movie['liked'] == null
+                                    ? Icons.favorite_border
+                                    : movie['liked']
+                                        ? Icons.favorite
+                                        : Icons.favorite_border,
+                                color: movie['liked'] == null
+                                    ? Colors.transparent
+                                    : movie['liked']
+                                        ? const Color.fromRGBO(200, 0, 0, 1)
+                                        : Colors.white,
+                                shadows: movie['liked'] == null
+                                    ? []
+                                    : const <Shadow>[
+                                        Shadow(
+                                            color: Colors.black,
+                                            blurRadius: 10.0)
+                                      ],
                                 size: 30,
                               )))
                     ],
